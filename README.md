@@ -1,7 +1,7 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&height=200&section=header&text=자유%20프로젝트%20%204조&color=gradient)
 ![](https://img.shields.io/badge/Last_Upadate-2023--10--10-blue)
 
-# 4️⃣ 자유 프로젝트 - Gaemi Marble #4
+# 🐜 자유 프로젝트 - Gaemi Marble #4
 
 > - 자유 프로젝트 4조
 > - 2023 코드스쿼드 마스터즈 Max에서 진행한 자유 그룹 프로젝트 
