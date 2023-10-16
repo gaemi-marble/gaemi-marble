@@ -13,3 +13,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true # (2.5~) Hibernate ??? ?? data.sql ??
+jwt:
+  secret_key: gaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemigaemi
+  access_token_expiration_time: 180000000
+  refresh_token_expiration_time: 360000000
