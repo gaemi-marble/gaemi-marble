@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { GlobalStyle } from './styles/GlobalStyle.ts';
 import Home from './components/Home.tsx';
 import Login from './components/Login.tsx';
+import { GlobalStyle } from './styles/GlobalStyle.ts';
 
 const router = createBrowserRouter([
   {
