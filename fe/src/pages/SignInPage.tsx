@@ -19,6 +19,9 @@ export default function SignInPage() {
     const res = await signin(playerId, password);
     // TODO: accessToken 및 refreshToken 저장
     if (res.status === 200) {
+      localStorage.setItem('accessToken', res.headers['authorization']);
+      localStorage.setItem('refreshToken', res.headers['refresh-token']);
+
       navigate('/');
     }
     // TODO: 로그인시 에러 처리

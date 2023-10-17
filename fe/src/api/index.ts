@@ -6,6 +6,7 @@ export const signup = async (playerId: string, password: string) => {
     playerId,
     password,
   });
+
   return res;
 };
 
@@ -14,6 +15,7 @@ export const signin = async (playerId: string, password: string) => {
     playerId,
     password,
   });
+
   return res;
 };
 
