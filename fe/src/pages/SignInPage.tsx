@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { Container, Title } from '../styles/common';
 
 export default function SignInPage() {
   const navigate = useNavigate();
@@ -23,6 +22,22 @@ export default function SignInPage() {
     </Container>
   );
 }
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  color: ${({ theme: { color } }) => color.accentText};
+  background-color: ${({ theme: { color } }) => color.accentPrimary};
+`;
+
+const Title = styled.h1`
+  font-size: ${({ theme: { fontSize } }) => fontSize.xLarge};
+`;
 
 const Wrapper = styled.div`
   display: flex;
