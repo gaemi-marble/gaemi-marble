@@ -1,11 +1,15 @@
+import { useSetAtom } from 'jotai';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { signin } from '../api';
+import { accessTokenAtom, refreshTokenAtom } from '../store';
 
 export default function SignInPage() {
   const [playerId, setPlayerId] = useState('');
   const [password, setPassword] = useState('');
+  const setAccessToken = useSetAtom(accessTokenAtom);
+  const setRefreshToken = useSetAtom(refreshTokenAtom);
   const navigate = useNavigate();
 
   const isValidId = /^[A-Za-z0-9]{6,20}$/.test(playerId);
@@ -19,8 +23,8 @@ export default function SignInPage() {
     const res = await signin(playerId, password);
     // TODO: accessToken 및 refreshToken 저장
     if (res.status === 200) {
-      localStorage.setItem('accessToken', res.headers['authorization']);
-      localStorage.setItem('refreshToken', res.headers['refresh-token']);
+      setAccessToken(res.headers['authorization']);
+      setRefreshToken(res.headers['refresh-token']);
 
       navigate('/');
     }

@@ -10,15 +10,17 @@ export const handlers = [
   rest.post(API_END_POINT.SIGNIN, (_, res, ctx) => {
     return res(
       ctx.status(200),
-      ctx.json(playerId),
+      ctx.json({
+        playerId: 'antman',
+      }),
       ctx.set({
         Authorization: 'Bearer access-token',
         'Refresh-Token': 'Bearer refresh-token',
       })
     );
   }),
-];
 
-const playerId = {
-  playerId: 'antman',
-};
+  rest.post(API_END_POINT.LOGOUT, (_, res, ctx) => {
+    return res(ctx.status(200));
+  }),
+];
