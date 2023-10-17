@@ -11,18 +11,15 @@ export const fetcher = axios.create({
   },
 });
 
-// fetcher.interceptors.request.use(
-//   config => {
-//     const authStorage = localStorage.getItem('auth-storage');
-//     if (!authStorage) return config;
-
-//     const accessToken = JSON.parse(authStorage).state.accessToken;
-//     if (accessToken) {
-//       config.headers['Authorization'] = accessToken;
-//     }
-//     return config;
-//   },
-//   error => {
-//     Promise.reject(error);
-//   }
-// );
+fetcher.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers['Authorization'] = accessToken;
+    }
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
