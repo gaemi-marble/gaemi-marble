@@ -6,42 +6,50 @@ export default function SignUpPage() {
   const [playerId, setPlayerId] = useState('');
   const [password, setPassword] = useState('');
 
+  const isSubmitDisabled = !playerId || !password;
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const res = await signup(playerId, password);
-    return res.data;
+    if (res.status === 201) {
+      alert('회원가입 성공!');
+    }
   };
 
   return (
     <Container>
       <Title>Gaemi Marble</Title>
       <SignUpForm onSubmit={handleSubmit}>
-        <Input>
-          <span>아이디</span>
-          <input
-            aria-label="아이디"
-            type="text"
-            name="playerId"
-            value={playerId}
-            onChange={(event) => {
-              setPlayerId(event.target.value);
-            }}
-          />
-        </Input>
-        <Input>
-          <span>비밀번호</span>
-          <input
-            aria-label="비밀번호"
-            type="password"
-            name="password"
-            value={password}
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-          />
-        </Input>
-        <Button type="submit">가입하기</Button>
+        <InputWrapper>
+          <Input>
+            <span>아이디</span>
+            <input
+              aria-label="아이디"
+              type="text"
+              name="playerId"
+              value={playerId}
+              onChange={(event) => {
+                setPlayerId(event.target.value);
+              }}
+            />
+          </Input>
+          <Input>
+            <span>비밀번호</span>
+            <input
+              aria-label="비밀번호"
+              type="password"
+              name="password"
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+            />
+          </Input>
+        </InputWrapper>
+        <Button type="submit" disabled={isSubmitDisabled}>
+          가입하기
+        </Button>
       </SignUpForm>
     </Container>
   );
@@ -66,8 +74,15 @@ const Title = styled.h1`
 const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 16px;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 `;
 
 const Input = styled.label`
@@ -83,14 +98,22 @@ const Input = styled.label`
 const Button = styled.button`
   width: 200px;
   height: 50px;
-  border: 1px solid white;
-  border-radius: 10px;
-  font-size: 32px;
+  border: 1px solid;
+  border-color: ${({ theme: { color } }) => color.accentText};
+  border-radius: ${({ theme: { radius } }) => radius.medium};
+  font-size: ${({ theme: { fontSize } }) => fontSize.medium};
   cursor: pointer;
 
   &:hover {
-    color: black;
-    border-color: black;
-    background-color: #e5e5e5;
+    color: ${({ theme: { color } }) => color.neutralTextStrong};
+    border-color: ${({ theme: { color } }) => color.neutralTextStrong};
+    background-color: ${({ theme: { color } }) => color.neutralBackground};
+  }
+
+  &:disabled {
+    color: ${({ theme: { color } }) => color.neutralBackgroundBold};
+    border-color: ${({ theme: { color } }) => color.neutralBorder};
+    background-color: ${({ theme: { color } }) => color.systemBackground};
+    cursor: default;
   }
 `;
