@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const { VITE_API_URL } = import.meta.env;
+const { DEV, VITE_API_URL } = import.meta.env;
 
-export const BASE_URL = VITE_API_URL;
+export const BASE_URL = DEV ? '' : VITE_API_URL;
 
 export const fetcher = axios.create({
   baseURL: BASE_URL,
