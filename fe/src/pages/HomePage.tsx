@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Title } from '../styles/common';
 
-export default function Home() {
+export default function HomePage() {
   const navigate = useNavigate();
 
   return (
