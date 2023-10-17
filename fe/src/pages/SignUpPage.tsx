@@ -1,25 +1,32 @@
 import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { signup } from '../api';
 
 export default function SignUpPage() {
   const [playerId, setPlayerId] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const isSubmitDisabled = !playerId || !password;
+  const isValidId = /^[A-Za-z0-9]{6,20}$/.test(playerId);
+  const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
+
+  const isSubmitDisabled = !isValidId || !isValidPassword;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const res = await signup(playerId, password);
     if (res.status === 201) {
-      alert('회원가입 성공!');
+      navigate('/signin');
     }
+    // TODO: 회원가입시 에러 처리
   };
 
   return (
     <Container>
       <Title>Gaemi Marble</Title>
+      <span>* 아이디와 비밀번호는 6~20자 사이 영숫자로 만들어주세요.</span>
       <SignUpForm onSubmit={handleSubmit}>
         <InputWrapper>
           <Input>
@@ -91,7 +98,7 @@ const Input = styled.label`
   }
 
   input {
-    color: black;
+    color: ${({ theme: { color } }) => color.neutralTextStrong};
   }
 `;
 

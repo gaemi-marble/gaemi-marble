@@ -8,15 +8,20 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const isSubmitDisabled = !playerId || !password;
+  const isValidId = /^[A-Za-z0-9]{6,20}$/.test(playerId);
+  const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
+
+  const isSubmitDisabled = !isValidId || !isValidPassword;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const res = await signin(playerId, password);
+    // TODO: accessToken 및 refreshToken 저장
     if (res.status === 200) {
-      alert('로그인 성공!');
+      navigate('/');
     }
+    // TODO: 로그인시 에러 처리
   };
 
   return (
@@ -94,6 +99,7 @@ const Input = styled.label`
   }
 
   input {
+    margin-right: 8px;
     color: black;
   }
 `;
