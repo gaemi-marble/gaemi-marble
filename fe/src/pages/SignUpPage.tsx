@@ -1,14 +1,14 @@
-import { useAtom } from 'jotai';
+import { FormEvent, useState } from 'react';
 import { styled } from 'styled-components';
 import { signup } from '../api';
-import { passwordInputAtom, playerIdInputAtom } from '../store';
-import { Container, Title } from '../styles/common';
 
 export default function SignUpPage() {
-  const [playerId, setPlayerId] = useAtom(playerIdInputAtom);
-  const [password, setPassword] = useAtom(passwordInputAtom);
+  const [playerId, setPlayerId] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
     const res = await signup(playerId, password);
     return res.data;
   };
@@ -16,7 +16,7 @@ export default function SignUpPage() {
   return (
     <Container>
       <Title>Gaemi Marble</Title>
-      <Wrapper>
+      <SignUpForm onSubmit={handleSubmit}>
         <Input>
           <span>아이디</span>
           <input
@@ -33,7 +33,7 @@ export default function SignUpPage() {
           <span>비밀번호</span>
           <input
             aria-label="비밀번호"
-            type="text"
+            type="password"
             name="password"
             value={password}
             onChange={(event) => {
@@ -41,13 +41,29 @@ export default function SignUpPage() {
             }}
           />
         </Input>
-      </Wrapper>
-      <Button onClick={handleSubmit}>가입하기</Button>
+        <Button type="submit">가입하기</Button>
+      </SignUpForm>
     </Container>
   );
 }
 
-const Wrapper = styled.div`
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  color: ${({ theme: { color } }) => color.accentText};
+  background-color: ${({ theme: { color } }) => color.accentPrimary};
+`;
+
+const Title = styled.h1`
+  font-size: ${({ theme: { fontSize } }) => fontSize.xLarge};
+`;
+
+const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
