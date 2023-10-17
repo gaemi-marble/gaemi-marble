@@ -1,4 +1,4 @@
-package codesquad.gaemimarble.filter;
+package codesquad.gaemimarble.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import codesquad.gaemimarble.Jwt.service.JwtProvider;
 import codesquad.gaemimarble.Jwt.service.JwtService;
+import codesquad.gaemimarble.filter.AuthorizationFilter;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 
