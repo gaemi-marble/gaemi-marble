@@ -1,13 +1,10 @@
 {
-  "singleQuote": false,
-  "quoteProps": "consistent",
+  "singleQuote": true,
+  "quoteProps": "as-needed",
   "printWidth": 80,
   "tabWidth": 2,
-  "bracketSameLine": true,
   "bracketSpacing": true,
-  "arrowParens": "always",
   "trailingComma": "es5",
   "semi": true,
-  "endOfLine": "auto",
-  "eslintIntegration": false
+  "endOfLine": "auto"
 }

@@ -1,34 +1,34 @@
-import { DefaultTheme } from "styled-components";
+import { DefaultTheme } from 'styled-components';
 
 const colors = {
-  white: "#FFF",
-  black: "#000",
-  royalBlue: "#4169E1",
-  purple: "#823FE8",
-  red: "#FF3B30",
-  grey10: "#E5E5E5",
-  grey20: "#CCC",
-  grey30: "#B3B3B3",
-  grey40: "#999",
-  grey50: "#808080",
-  grey60: "#666",
-  grey70: "#4D4D4D",
-  grey80: "#333",
-  grey90: "#1A1A1A",
+  white: '#FFF',
+  black: '#000',
+  royalBlue: '#4169E1',
+  purple: '#823FE8',
+  red: '#FF3B30',
+  grey10: '#E5E5E5',
+  grey20: '#CCC',
+  grey30: '#B3B3B3',
+  grey40: '#999',
+  grey50: '#808080',
+  grey60: '#666',
+  grey70: '#4D4D4D',
+  grey80: '#333',
+  grey90: '#1A1A1A',
 };
 
 const radius = {
-  small: "6px",
-  medium: "10px",
-  large: "16px",
-  half: "50%",
+  small: '6px',
+  medium: '10px',
+  large: '16px',
+  half: '50%',
 };
 
 const fontSize = {
-  small: "16px",
-  medium: "32px",
-  large: "48px",
-  xLarge: "64px",
+  small: '16px',
+  medium: '32px',
+  large: '48px',
+  xLarge: '64px',
 };
 
 const opacity = {
@@ -61,39 +61,39 @@ export const designSystem = {
   },
   filter: {
     neutralText:
-      "invert(0%) sepia(20%) saturate(7313%) hue-rotate(106deg) brightness(79%) contrast(80%)",
+      'invert(0%) sepia(20%) saturate(7313%) hue-rotate(106deg) brightness(79%) contrast(80%)',
     neutralTextWeak:
-      "invert(13%) sepia(0%) saturate(1%) hue-rotate(193deg) brightness(93%) contrast(80%)",
+      'invert(13%) sepia(0%) saturate(1%) hue-rotate(193deg) brightness(93%) contrast(80%)',
     neutralTextStrong:
-      "invert(0%) sepia(93%) saturate(0%) hue-rotate(235deg) brightness(107%) contrast(107%)",
+      'invert(0%) sepia(93%) saturate(0%) hue-rotate(235deg) brightness(107%) contrast(107%)',
     neutralBackground:
-      "invert(100%) sepia(3%) saturate(758%) hue-rotate(270deg) brightness(116%) contrast(80%)",
+      'invert(100%) sepia(3%) saturate(758%) hue-rotate(270deg) brightness(116%) contrast(80%)',
     neutralBackgroundBold:
-      "invert(81%) sepia(0%) saturate(37%) hue-rotate(298deg) brightness(74%) contrast(104%)",
+      'invert(81%) sepia(0%) saturate(37%) hue-rotate(298deg) brightness(74%) contrast(104%)',
     neutralBorder:
-      "invert(58%) sepia(0%) saturate(623%) hue-rotate(256deg) brightness(87%) contrast(76%)",
+      'invert(58%) sepia(0%) saturate(623%) hue-rotate(256deg) brightness(87%) contrast(76%)',
     neutralBorderStrong:
-      "invert(29%) sepia(1%) saturate(0%) hue-rotate(135deg) brightness(92%) contrast(84%)",
+      'invert(29%) sepia(1%) saturate(0%) hue-rotate(135deg) brightness(92%) contrast(84%)',
     neutralOverlay:
-      "invert(44%) sepia(0%) saturate(0%) hue-rotate(137deg) brightness(88%) contrast(88%)",
+      'invert(44%) sepia(0%) saturate(0%) hue-rotate(137deg) brightness(88%) contrast(88%)',
 
     accentText:
-      "invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)",
+      'invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)',
     accentBorder:
-      "invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)",
+      'invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)',
     accentBackground:
-      "invert(40%) sepia(13%) saturate(6951%) hue-rotate(209deg) brightness(90%) contrast(96%)",
+      'invert(40%) sepia(13%) saturate(6951%) hue-rotate(209deg) brightness(90%) contrast(96%)',
     accentPrimary:
-      "invert(40%) sepia(13%) saturate(6951%) hue-rotate(209deg) brightness(90%) contrast(96%)",
+      'invert(40%) sepia(13%) saturate(6951%) hue-rotate(209deg) brightness(90%) contrast(96%)',
     accentSecondary:
-      "invert(33%) sepia(84%) saturate(4403%) hue-rotate(252deg) brightness(92%) contrast(98%)",
+      'invert(33%) sepia(84%) saturate(4403%) hue-rotate(252deg) brightness(92%) contrast(98%)',
 
     systemWarning:
-      "invert(29%) sepia(64%) saturate(2063%) hue-rotate(339deg) brightness(108%) contrast(108%)",
+      'invert(29%) sepia(64%) saturate(2063%) hue-rotate(339deg) brightness(108%) contrast(108%)',
     systemBackground:
-      "invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)",
+      'invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)',
     systemBackgroundWeak:
-      "invert(100%) sepia(3%) saturate(758%) hue-rotate(270deg) brightness(116%) contrast(80%)",
+      'invert(100%) sepia(3%) saturate(758%) hue-rotate(270deg) brightness(116%) contrast(80%)',
   },
   fontSize,
   opacity,

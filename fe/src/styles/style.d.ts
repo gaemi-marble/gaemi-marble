@@ -1,6 +1,6 @@
-import { designSystem } from "./designSystem";
+import { designSystem } from './designSystem';
 
-declare module "styled-components" {
+declare module 'styled-components' {
   export interface DefaultTheme {
     color: typeof designSystem.color;
     filter: typeof designSystem.filter;
