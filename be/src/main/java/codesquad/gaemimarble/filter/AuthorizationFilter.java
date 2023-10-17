@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthorizationFilter implements Filter {
 	private static final String[] whiteListUris = {"/api/signup", "/api/login", "/api/reissue-token",
-		"/api/ws/**", "/api/ws**"};
+		"/api/games/**"};
 
 	private final JwtProvider jwtProvider;
 	private final JwtService jwtService;
