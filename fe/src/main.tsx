@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './components/Home.tsx';
-import Login from './components/Login.tsx';
+import Home from './pages/HomePage.tsx';
+import SignInPage from './pages/SignInPage.tsx';
+import SignUpPage from './pages/SignUpPage.tsx';
 import { GlobalStyle } from './styles/GlobalStyle.ts';
 
 const router = createBrowserRouter([
@@ -12,7 +13,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/signin',
-    element: <Login />,
+    element: <SignInPage />,
+  },
+  {
+    path: '/signup',
+    element: <SignUpPage />,
   },
 ]);
 
