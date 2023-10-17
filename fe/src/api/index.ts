@@ -16,3 +16,8 @@ export const signin = async (playerId: string, password: string) => {
   });
   return res;
 };
+
+export const logout = async () => {
+  const res = await fetcher.post(API_END_POINT.LOGOUT);
+  return res;
+};
