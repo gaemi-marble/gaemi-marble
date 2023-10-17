@@ -1,12 +1,12 @@
 import { styled } from 'styled-components';
 
-export default function Home() {
+export default function SignUpPage() {
   return (
     <Container>
       <Title>Gaemi Marble</Title>
       <IdInput />
       <PWInput />
-      <Button>로그인</Button>
+      <Button>가입하기</Button>
     </Container>
   );
 }
@@ -33,7 +33,7 @@ const PWInput = styled.input``;
 
 const Button = styled.button`
   width: 200px;
-  height: 100px;
+  height: 50px;
   border: 1px solid white;
   border-radius: 10px;
   font-size: 32px;
