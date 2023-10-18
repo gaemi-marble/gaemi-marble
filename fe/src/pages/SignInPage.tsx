@@ -21,14 +21,16 @@ export default function SignInPage() {
     event.preventDefault();
 
     const res = await signin(playerId, password);
-    // TODO: accessToken 및 refreshToken 저장
+
     if (res.status === 200) {
       setAccessToken(res.headers['authorization']);
       setRefreshToken(res.headers['refresh-token']);
-
-      navigate('/');
     }
     // TODO: 로그인시 에러 처리
+  };
+
+  const handleSignUp = () => {
+    navigate('/signup');
   };
 
   return (
@@ -65,7 +67,7 @@ export default function SignInPage() {
           로그인
         </Button>
       </SignInForm>
-      <Button onClick={() => navigate('/signup')}>회원가입</Button>
+      <Button onClick={handleSignUp}>회원가입</Button>
     </Container>
   );
 }

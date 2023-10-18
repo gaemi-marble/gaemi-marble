@@ -1,12 +1,10 @@
 import { useSetAtom } from 'jotai';
 import { RESET } from 'jotai/utils';
-import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { logout } from '../api';
 import { accessTokenAtom, refreshTokenAtom } from '../store';
 
 export default function HomePage() {
-  const navigate = useNavigate();
   const setAccessToken = useSetAtom(accessTokenAtom);
   const setRefreshToken = useSetAtom(refreshTokenAtom);
 
@@ -15,14 +13,13 @@ export default function HomePage() {
     if (res.status === 200) {
       setAccessToken(RESET);
       setRefreshToken(RESET);
-      navigate('/signin');
     }
   };
 
   return (
     <Container>
       <Title onClick={() => console.log('hi')}>Gaemi Marble</Title>
-      <Button onClick={() => navigate('/signin')}>게임시작</Button>
+      <Button>게임시작</Button>
       <Button onClick={handleLogout}>로그아웃</Button>
     </Container>
   );
