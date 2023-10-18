@@ -14,8 +14,10 @@ export const handlers = [
         playerId: 'antman',
       }),
       ctx.set({
-        Authorization: 'Bearer access-token',
-        'Refresh-Token': 'Bearer refresh-token',
+        Authorization:
+          'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbklkIjoiZnVzZTEyIiwiZXhwIjoxNjk3NTk5MTM5fQ.LMkskjLUkPlUMbpzqmraYY3zQr0d5wQETGyecPbgdbpe7dsMVTOe6_kZMczTMfA2kE1NI9OycNvA4b_dlgK_jw',
+        'Refresh-Token':
+          'eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2OTc2MDA5Mzl9.6sbeiPzyOM1G8nUJ_4UzdNBWTTUgwPJeQN3aPQmCDi83ncoMUf5JDRDaSIHN6yFf3sDwvkgO7U9-L6s9lGOq-Q',
       })
     );
   }),

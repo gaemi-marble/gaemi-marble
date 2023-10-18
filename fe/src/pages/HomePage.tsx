@@ -1,18 +1,18 @@
-import { useSetAtom } from 'jotai';
-import { RESET } from 'jotai/utils';
 import { styled } from 'styled-components';
 import { logout } from '../api';
-import { accessTokenAtom, refreshTokenAtom } from '../store';
+import { useSetAccessToken, useSetRefreshToken } from '../store';
 
 export default function HomePage() {
-  const setAccessToken = useSetAtom(accessTokenAtom);
-  const setRefreshToken = useSetAtom(refreshTokenAtom);
+  const setAccessToken = useSetAccessToken();
+  const setRefreshToken = useSetRefreshToken();
 
   const handleLogout = async () => {
     const res = await logout();
     if (res.status === 200) {
-      setAccessToken(RESET);
-      setRefreshToken(RESET);
+      setAccessToken('');
+      setRefreshToken('');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
     }
   };
 

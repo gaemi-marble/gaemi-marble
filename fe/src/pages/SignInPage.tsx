@@ -1,20 +1,19 @@
-import { useSetAtom } from 'jotai';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { signin } from '../api';
-import { accessTokenAtom, refreshTokenAtom } from '../store';
+import { useSetAccessToken, useSetRefreshToken } from '../store';
 
 export default function SignInPage() {
   const [playerId, setPlayerId] = useState('');
   const [password, setPassword] = useState('');
-  const setAccessToken = useSetAtom(accessTokenAtom);
-  const setRefreshToken = useSetAtom(refreshTokenAtom);
+
   const navigate = useNavigate();
+  const setAccessToken = useSetAccessToken();
+  const setRefreshToken = useSetRefreshToken();
 
   const isValidId = /^[A-Za-z0-9]{6,20}$/.test(playerId);
   const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
-
   const isSubmitDisabled = !isValidId || !isValidPassword;
 
   const handleSubmit = async (event: FormEvent) => {
@@ -29,7 +28,7 @@ export default function SignInPage() {
     // TODO: 로그인시 에러 처리
   };
 
-  const handleSignUp = () => {
+  const handleClickSignUpBtn = () => {
     navigate('/signup');
   };
 
@@ -67,7 +66,7 @@ export default function SignInPage() {
           로그인
         </Button>
       </SignInForm>
-      <Button onClick={handleSignUp}>회원가입</Button>
+      <Button onClick={handleClickSignUpBtn}>회원가입</Button>
     </Container>
   );
 }

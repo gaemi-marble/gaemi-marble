@@ -10,7 +10,6 @@ export default function SignUpPage() {
 
   const isValidId = /^[A-Za-z0-9]{6,20}$/.test(playerId);
   const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
-
   const isSubmitDisabled = !isValidId || !isValidPassword;
 
   const handleSubmit = async (event: FormEvent) => {
