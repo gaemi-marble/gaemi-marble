@@ -2,13 +2,14 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { signin } from '../api';
-import { useSetAccessToken, useSetRefreshToken } from '../store';
+import { useSetAccessToken, useSetPlayer, useSetRefreshToken } from '../store';
 
 export default function SignInPage() {
   const [playerId, setPlayerId] = useState('');
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
+  const setPlayer = useSetPlayer();
   const setAccessToken = useSetAccessToken();
   const setRefreshToken = useSetRefreshToken();
 
@@ -22,6 +23,7 @@ export default function SignInPage() {
     const res = await signin(playerId, password);
 
     if (res.status === 200) {
+      setPlayer(res.data.playerId);
       setAccessToken(res.headers['authorization']);
       setRefreshToken(res.headers['refresh-token']);
     }

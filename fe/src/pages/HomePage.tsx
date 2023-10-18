@@ -1,16 +1,19 @@
 import { styled } from 'styled-components';
 import { logout } from '../api';
-import { useSetAccessToken, useSetRefreshToken } from '../store';
+import { useSetAccessToken, useSetPlayer, useSetRefreshToken } from '../store';
 
 export default function HomePage() {
+  const setPlayer = useSetPlayer();
   const setAccessToken = useSetAccessToken();
   const setRefreshToken = useSetRefreshToken();
 
   const handleLogout = async () => {
     const res = await logout();
     if (res.status === 200) {
+      setPlayer('');
       setAccessToken('');
       setRefreshToken('');
+      localStorage.removeItem('playerId');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
     }
