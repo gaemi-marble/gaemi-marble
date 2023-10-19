@@ -1,11 +1,12 @@
 import type { DefaultTheme } from 'styled-components';
 
-const colors = {
+export const colors = {
   white: '#FFF',
   black: '#000',
   royalBlue: '#4169E1',
   purple: '#823FE8',
   red: '#FF3B30',
+  greyWithBlur: '#00000033',
   grey10: '#E5E5E5',
   grey20: '#CCC',
   grey30: '#B3B3B3',
@@ -47,7 +48,7 @@ export const designSystem = {
     neutralBackgroundBold: colors.grey40,
     neutralBorder: colors.grey50,
     neutralBorderStrong: colors.grey70,
-    neutralOverlay: colors.grey60,
+    neutralOverlay: colors.greyWithBlur,
 
     accentText: colors.white,
     accentBorder: colors.white,
@@ -74,8 +75,7 @@ export const designSystem = {
       'invert(58%) sepia(0%) saturate(623%) hue-rotate(256deg) brightness(87%) contrast(76%)',
     neutralBorderStrong:
       'invert(29%) sepia(1%) saturate(0%) hue-rotate(135deg) brightness(92%) contrast(84%)',
-    neutralOverlay:
-      'invert(44%) sepia(0%) saturate(0%) hue-rotate(137deg) brightness(88%) contrast(88%)',
+    neutralOverlay: '',
 
     accentText:
       'invert(100%) sepia(100%) saturate(2%) hue-rotate(93deg) brightness(103%) contrast(101%)',

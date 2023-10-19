@@ -1,60 +1,68 @@
+import EnterModal from '@components/Modal/EnterModal/EnterModal';
+import { Icon } from '@components/icon/Icon';
+import { useState } from 'react';
 import { styled } from 'styled-components';
-import { logout } from '../api';
-import { useSetAccessToken, useSetPlayer, useSetRefreshToken } from '../store';
 
 export default function HomePage() {
-  const setPlayer = useSetPlayer();
-  const setAccessToken = useSetAccessToken();
-  const setRefreshToken = useSetRefreshToken();
+  const [isEnterModalOpen, setIsEnterModalOpen] = useState(false);
 
-  const handleLogout = async () => {
-    const res = await logout();
-    if (res.status === 200) {
-      setPlayer('');
-      setAccessToken('');
-      setRefreshToken('');
-      localStorage.removeItem('playerId');
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-    }
+  const onCloseModal = () => {
+    setIsEnterModalOpen(false);
+  };
+
+  const onCreateRoom = () => {
+    console.log('방 생성');
+  };
+
+  const onEnterRoom = () => {
+    // Memo: 현재 버전 - 모달 띄워서 방 번호 입력
+    // Todo: 버전업 - 방 목록 보여주기
+    setIsEnterModalOpen(true);
   };
 
   return (
-    <Container>
-      <Title onClick={() => console.log('hi')}>Gaemi Marble</Title>
-      <Button>게임시작</Button>
-      <Button onClick={handleLogout}>로그아웃</Button>
-    </Container>
+    <>
+      <Main>
+        <Button onClick={onCreateRoom}>
+          방 만들기
+          <Icon name="plus" size="3rem" />
+        </Button>
+        <Button onClick={onEnterRoom}>입장하기</Button>
+      </Main>
+      {isEnterModalOpen && <EnterModal onClose={onCloseModal} />}
+    </>
   );
 }
 
-const Container = styled.div`
+const Main = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 16px;
+  gap: 8rem;
   color: ${({ theme: { color } }) => color.accentText};
   background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
-const Title = styled.h1`
-  font-size: ${({ theme: { fontSize } }) => fontSize.xLarge};
-`;
-
 const Button = styled.button`
-  width: 200px;
-  height: 50px;
-  border: 1px solid white;
-  border-radius: 10px;
-  font-size: 32px;
+  width: 16rem;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12rem;
+  border: ${({ theme: { color } }) => `1px solid ${color.accentBorder}`};
+  border-radius: ${({ theme: { radius } }) => radius.medium};
+  font-size: ${({ theme: { fontSize } }) => fontSize.medium};
   cursor: pointer;
 
   &:hover {
-    color: black;
-    border-color: black;
-    background-color: #e5e5e5;
+    border-color: ${({ theme: { color } }) => color.neutralBorderStrong};
+    color: ${({ theme: { color } }) => color.neutralTextStrong};
+    background-color: ${({ theme: { color } }) => color.neutralBackground};
+
+    svg path {
+      stroke: ${({ theme: { color } }) => color.neutralTextStrong};
+    }
   }
 `;

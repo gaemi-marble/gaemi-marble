@@ -1,7 +1,7 @@
 import { API_END_POINT } from './constants';
 import { fetcher } from './fetcher';
 
-export const signup = async (playerId: string, password: string) => {
+export const postSignup = async (playerId: string, password: string) => {
   const res = await fetcher.post(API_END_POINT.SIGNUP, {
     playerId,
     password,
@@ -10,7 +10,7 @@ export const signup = async (playerId: string, password: string) => {
   return res;
 };
 
-export const signin = async (playerId: string, password: string) => {
+export const postSignin = async (playerId: string, password: string) => {
   const res = await fetcher.post(API_END_POINT.SIGNIN, {
     playerId,
     password,
@@ -19,7 +19,7 @@ export const signin = async (playerId: string, password: string) => {
   return res;
 };
 
-export const logout = async () => {
+export const postLogout = async () => {
   const res = await fetcher.post(API_END_POINT.LOGOUT);
   return res;
 };

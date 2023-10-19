@@ -1,7 +1,7 @@
+import { postSignup } from '@api/index';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { signup } from '../api';
 
 export default function SignUpPage() {
   const [playerId, setPlayerId] = useState('');
@@ -15,7 +15,7 @@ export default function SignUpPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    const res = await signup(playerId, password);
+    const res = await postSignup(playerId, password);
     if (res.status === 201) {
       navigate('/signin');
     }

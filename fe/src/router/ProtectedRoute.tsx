@@ -1,5 +1,5 @@
+import { useAuth } from '@store/index';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../store';
 
 type RouteProps = {
   needAuth: boolean;

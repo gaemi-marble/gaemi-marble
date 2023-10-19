@@ -1,8 +1,12 @@
+import { postSignin } from '@api/index';
+import {
+  useSetAccessToken,
+  useSetPlayer,
+  useSetRefreshToken,
+} from '@store/index';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { signin } from '../api';
-import { useSetAccessToken, useSetPlayer, useSetRefreshToken } from '../store';
 
 export default function SignInPage() {
   const [playerId, setPlayerId] = useState('');
@@ -20,7 +24,7 @@ export default function SignInPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    const res = await signin(playerId, password);
+    const res = await postSignin(playerId, password);
 
     if (res.status === 200) {
       setPlayer(res.data.playerId);

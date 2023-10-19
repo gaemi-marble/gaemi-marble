@@ -1,7 +1,7 @@
+import { worker } from '@mocks/browser';
+import App from 'App';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import { worker } from './mocks/browser';
 
 if (process.env.NODE_ENV === 'development') {
   worker.start({
