@@ -23,3 +23,8 @@ export const postLogout = async () => {
   const res = await fetcher.post(API_END_POINT.LOGOUT);
   return res;
 };
+
+export const postCreateRoom = async () => {
+  const res = await fetcher.post(API_END_POINT.GAMES);
+  return res;
+};
