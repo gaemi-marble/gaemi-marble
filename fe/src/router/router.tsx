@@ -1,13 +1,13 @@
+import Layout from '@components/Layout';
+import HomePage from '@pages/HomePage';
+import SignInPage from '@pages/SignInPage';
+import SignUpPage from '@pages/SignUpPage';
 import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
-import HomePage from '../pages/HomePage';
-import SignInPage from '../pages/SignInPage';
-import SignUpPage from '../pages/SignUpPage';
 import { ROUTE_PATH } from './constants';
-import Layout from '../components/Layout';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
