@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const { VITE_API_URL } = import.meta.env;
+const { DEV, VITE_API_URL } = import.meta.env;
 
-export const BASE_URL = VITE_API_URL;
+export const BASE_URL = DEV ? '' : VITE_API_URL;
 
 export const fetcher = axios.create({
   baseURL: BASE_URL,
@@ -12,17 +12,15 @@ export const fetcher = axios.create({
 });
 
 fetcher.interceptors.request.use(
-  config => {
-    const authStorage = localStorage.getItem('auth-storage');
-    if (!authStorage) return config;
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken');
 
-    const accessToken = JSON.parse(authStorage).state.accessToken;
     if (accessToken) {
-      config.headers['Authorization'] = accessToken;
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return config;
   },
-  error => {
+  (error) => {
     Promise.reject(error);
   }
 );
