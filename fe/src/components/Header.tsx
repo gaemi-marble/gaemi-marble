@@ -1,5 +1,11 @@
+import { postLogout } from '@api/index';
 import useHover from '@hooks/useHover';
 import { ROUTE_PATH } from '@router/constants';
+import {
+  useSetAccessToken,
+  useSetPlayer,
+  useSetRefreshToken,
+} from '@store/index';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Icon } from './icon/Icon';
@@ -8,10 +14,22 @@ import { Icon } from './icon/Icon';
 export default function Header() {
   const navigate = useNavigate();
   const { hoverRef, isHover } = useHover<HTMLDivElement>();
+  const setPlayer = useSetPlayer();
+  const setAccessToken = useSetAccessToken();
+  const setRefreshToken = useSetRefreshToken();
 
-  const onLogout = () => {
-    // Todo: 로그아웃 기능 추가
-    navigate(ROUTE_PATH.SIGNIN);
+  const handleLogout = async () => {
+    const res = await postLogout();
+    if (res.status === 200) {
+      setPlayer('');
+      setAccessToken('');
+      setRefreshToken('');
+      localStorage.removeItem('playerId');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+
+      navigate(ROUTE_PATH.SIGNIN);
+    }
   };
 
   return (
@@ -19,7 +37,7 @@ export default function Header() {
       <Logo>Gaemi Marble</Logo>
       <User ref={hoverRef}>
         {isHover ? (
-          <Icon name="logout" size="3rem" onClick={onLogout} />
+          <Icon name="logout" size="3rem" onClick={handleLogout} />
         ) : (
           <Icon name="sample" size="3rem" />
         )}

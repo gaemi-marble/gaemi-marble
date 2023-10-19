@@ -30,7 +30,8 @@
       "@api/*": ["api/*"],
       "@hooks/*": ["hooks/*"],
       "@styles/*": ["styles/*"],
-      "@mocks/*": ["mocks/*"]
+      "@mocks/*": ["mocks/*"],
+      "@store/*": ["store/*"]
     },
 
     "esModuleInterop": true

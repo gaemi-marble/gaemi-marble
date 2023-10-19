@@ -1,4 +1,4 @@
-import EnterModal from '@components/\bModal/EnterModal/EnterModal';
+import EnterModal from '@components/Modal/EnterModal/EnterModal';
 import { Icon } from '@components/icon/Icon';
 import { useState } from 'react';
 import { styled } from 'styled-components';
