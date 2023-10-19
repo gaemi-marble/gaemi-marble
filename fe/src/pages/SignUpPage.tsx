@@ -1,5 +1,4 @@
 import { styled } from 'styled-components';
-import { Container, Title } from '../styles/common';
 
 export default function SignUpPage() {
   return (
@@ -19,6 +18,22 @@ export default function SignUpPage() {
     </Container>
   );
 }
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  color: ${({ theme: { color } }) => color.accentText};
+  background-color: ${({ theme: { color } }) => color.accentPrimary};
+`;
+
+const Title = styled.h1`
+  font-size: ${({ theme: { fontSize } }) => fontSize.xLarge};
+`;
 
 const Wrapper = styled.div`
   display: flex;
