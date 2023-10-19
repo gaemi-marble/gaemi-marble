@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameReadyRequest {
+public class GameRollDiceRequest {
 	private Long gameId;
 	private String playerId;
-	private boolean isReady;
 
 	@Builder
-	public GameReadyRequest(Long gameId, String playerId, boolean isReady) {
+	public GameRollDiceRequest(Long gameId, String playerId) {
 		this.gameId = gameId;
 		this.playerId = playerId;
-		this.isReady = isReady;
 	}
 }
