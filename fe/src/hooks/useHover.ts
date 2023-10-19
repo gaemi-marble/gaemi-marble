@@ -1,4 +1,10 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 type HoverReturnType<T extends HTMLElement> = {
   hoverRef: MutableRefObject<T | null>;
@@ -9,13 +15,25 @@ export default function useHover<T extends HTMLElement>(): HoverReturnType<T> {
   const hoverRef = useRef<T>(null);
   const [isHover, setIsHover] = useState(false);
 
-  useEffect(() => {
-    const onMouseEnter = () => setIsHover(true);
-    const onMouseLeave = () => setIsHover(false);
-
-    hoverRef.current?.addEventListener('mouseenter', onMouseEnter);
-    hoverRef.current?.addEventListener('mouseleave', onMouseLeave);
+  const onMouseEnter = useCallback(() => {
+    setIsHover(true);
   }, []);
+
+  const onMouseLeave = useCallback(() => {
+    setIsHover(false);
+  }, []);
+
+  useEffect(() => {
+    const currentRef = hoverRef.current;
+
+    currentRef?.addEventListener('mouseenter', onMouseEnter);
+    currentRef?.addEventListener('mouseleave', onMouseLeave);
+
+    return () => {
+      currentRef?.removeEventListener('mouseenter', onMouseEnter);
+      currentRef?.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, [onMouseEnter, onMouseLeave]);
 
   return { hoverRef, isHover };
 }

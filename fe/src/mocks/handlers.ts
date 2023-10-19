@@ -25,4 +25,23 @@ export const handlers = [
   rest.post(API_END_POINT.LOGOUT, (_, res, ctx) => {
     return res(ctx.status(200));
   }),
+
+  rest.post(API_END_POINT.GAMES, (_, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        gameId: 1,
+      })
+    );
+  }),
+
+  rest.get(`${API_END_POINT.GAMES}/1`, (_, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        isPresent: true,
+        isFull: false,
+      })
+    );
+  }),
 ];

@@ -1,4 +1,5 @@
 import { postSignup } from '@api/index';
+import { ROUTE_PATH } from '@router/constants';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -17,7 +18,7 @@ export default function SignUpPage() {
 
     const res = await postSignup(playerId, password);
     if (res.status === 201) {
-      navigate('/signin');
+      navigate(ROUTE_PATH.SIGNIN);
     }
     // TODO: 회원가입시 에러 처리
   };
@@ -62,15 +63,13 @@ export default function SignUpPage() {
 }
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 16px;
-  color: ${({ theme: { color } }) => color.accentText};
-  background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
 const Title = styled.h1`

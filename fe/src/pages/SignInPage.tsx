@@ -1,4 +1,5 @@
 import { postSignin } from '@api/index';
+import { ROUTE_PATH } from '@router/constants';
 import {
   useSetAccessToken,
   useSetPlayer,
@@ -35,7 +36,7 @@ export default function SignInPage() {
   };
 
   const handleClickSignUpBtn = () => {
-    navigate('/signup');
+    navigate(ROUTE_PATH.SIGNUP);
   };
 
   return (
@@ -78,15 +79,13 @@ export default function SignInPage() {
 }
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 16px;
-  color: ${({ theme: { color } }) => color.accentText};
-  background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
 const Title = styled.h1`
