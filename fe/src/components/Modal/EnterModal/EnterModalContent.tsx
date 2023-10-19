@@ -1,7 +1,10 @@
+import { ROUTE_PATH } from '@router/constants';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 export default function EnterModalContent() {
+  const navigate = useNavigate();
   const [roomNumber, setRoomNumber] = useState('');
 
   const onChangeRoomNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -9,8 +12,8 @@ export default function EnterModalContent() {
   };
 
   const onEnterRoom = () => {
-    // Todo: navigate 추가
-    console.log('입장하기');
+    // Todo: 유효한 방인지 검증하는 api 완성되면 추가
+    navigate(`${ROUTE_PATH.GAME}/${roomNumber}`);
   };
 
   return (

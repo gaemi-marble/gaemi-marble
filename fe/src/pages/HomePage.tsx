@@ -1,17 +1,26 @@
+import { postCreateRoom } from '@api/index';
+import Header from '@components/Header';
 import EnterModal from '@components/Modal/EnterModal/EnterModal';
 import { Icon } from '@components/icon/Icon';
+import { ROUTE_PATH } from '@router/constants';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const [isEnterModalOpen, setIsEnterModalOpen] = useState(false);
 
   const onCloseModal = () => {
     setIsEnterModalOpen(false);
   };
 
-  const onCreateRoom = () => {
-    console.log('방 생성');
+  const onCreateRoom = async () => {
+    const res = await postCreateRoom();
+
+    if (res.status === 201) {
+      navigate(`${ROUTE_PATH.GAME}/${res.data.gameId}`);
+    }
   };
 
   const onEnterRoom = () => {
@@ -22,6 +31,7 @@ export default function HomePage() {
 
   return (
     <>
+      <Header />
       <Main>
         <Button onClick={onCreateRoom}>
           방 만들기
@@ -40,8 +50,6 @@ const Main = styled.div`
   display: flex;
   justify-content: center;
   gap: 8rem;
-  color: ${({ theme: { color } }) => color.accentText};
-  background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
 const Button = styled.button`
