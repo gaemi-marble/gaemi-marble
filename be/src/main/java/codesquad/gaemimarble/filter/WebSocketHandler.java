@@ -42,7 +42,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	private Long extractGameIdFromUri(String uri) {
 		String[] parts = uri.split("/");
-		return Long.parseLong(parts[3]); // Assuming /api/games/{room}
+		return Long.parseLong(parts[3]); // Assuming /api/games/{gameId}/{playerId}
+	}
 
+	private String extractPlayerIdFromUri(String uri) {
+		String[] parts = uri.split("/");
+		return parts[4]; // Assuming /api/games/{gameId}/{playerId}
 	}
 }
