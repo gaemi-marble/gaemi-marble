@@ -1,3 +1,4 @@
+import { getGameCheck } from '@api/index';
 import { ROUTE_PATH } from '@router/constants';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,9 +12,20 @@ export default function EnterModalContent() {
     setRoomNumber(e.target.value);
   };
 
-  const onEnterRoom = () => {
+  const onEnterRoom = async () => {
     // Todo: 유효한 방인지 검증하는 api 완성되면 추가
-    navigate(`${ROUTE_PATH.GAME}/${roomNumber}`);
+    const gameId = +roomNumber;
+    const res = await getGameCheck(gameId);
+
+    if (!(res.status === 200)) {
+      return;
+    }
+
+    const isSuccess = res.data.isPresent && !res.data.isFull;
+
+    if (isSuccess) {
+      navigate(`${ROUTE_PATH.GAME}/${roomNumber}`);
+    }
   };
 
   return (
