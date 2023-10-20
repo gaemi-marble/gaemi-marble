@@ -1,3 +1,4 @@
+import GameBoard from '@components/GameBoard/GameBoard';
 import GameHeader from '@components/Header/GameHeader';
 import PlayerCard from '@components/Player/PlayerCard';
 import PlayerTestModal from '@components/Player/PlayerTestModal';
@@ -67,13 +68,6 @@ const Main = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
-`;
-
-const GameBoard = styled.div`
-  width: 42rem;
-  height: 42rem;
-  border: 1px solid;
-  border-color: ${({ theme: { color } }) => color.accentText};
 `;
 
 const Players = styled.div`
