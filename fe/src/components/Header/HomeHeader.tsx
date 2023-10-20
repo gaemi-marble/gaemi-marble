@@ -8,10 +8,10 @@ import {
 } from '@store/index';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { Icon } from './icon/Icon';
+import { Icon } from '../icon/Icon';
 
 // Memo: 홈 화면에만 적용시켜야 할듯?
-export default function Header() {
+export default function HomeHeader() {
   const navigate = useNavigate();
   const { hoverRef, isHover } = useHover<HTMLDivElement>();
   const setPlayer = useSetPlayer();
@@ -37,7 +37,7 @@ export default function Header() {
       <Logo>Gaemi Marble</Logo>
       <User ref={hoverRef}>
         {isHover ? (
-          <Icon name="logout" size="3rem" onClick={handleLogout} />
+          <Icon name="exit" size="3rem" onClick={handleLogout} />
         ) : (
           <Icon name="sample" size="3rem" />
         )}
