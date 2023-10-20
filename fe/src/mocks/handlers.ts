@@ -44,4 +44,109 @@ export const handlers = [
       })
     );
   }),
+
+  rest.post('/enter', (_, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        type: 'enter',
+        data: [
+          {
+            order: 1,
+            playerId: 'fuse12',
+          },
+          {
+            order: 2,
+            playerId: 'TOMMY',
+          },
+          {
+            order: 3,
+            playerId: 'MOVIE99',
+          },
+          {
+            order: 4,
+            playerId: 'toko123',
+          },
+        ],
+      })
+    );
+  }),
+
+  rest.post('/ready', (_, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        type: 'ready',
+        data: {
+          playerId: 'fuse12',
+          isReady: true,
+        },
+      })
+    );
+  }),
+
+  rest.post('/buy', (_, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        type: 'userStatusBoard',
+        data: {
+          playerId: 'fuse12',
+          userStatusBoard: {
+            cashAsset: 0,
+            stockAsset: 1000000,
+            totalAsset: 1000000,
+            stockList: [
+              {
+                id: 1,
+                name: 'Google',
+                quantity: 20,
+                price: 50000,
+              },
+            ],
+          },
+        },
+      })
+    );
+  }),
+
+  rest.post('/sell', (_, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        type: 'userStatusBoard',
+        data: {
+          playerId: 'fuse12',
+          userStatusBoard: {
+            cashAsset: 500000,
+            stockAsset: 500000,
+            totalAsset: 1000000,
+            stockList: [
+              {
+                id: 1,
+                name: 'Google',
+                quantity: 10,
+                price: 50000,
+              },
+            ],
+          },
+        },
+      })
+    );
+  }),
+
+  rest.get('/cell', (_, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        type: 'cell',
+        data: {
+          playerId: 'fuse12',
+          location: 6,
+          salary: 1000000,
+          dividend: 1000000,
+        },
+      })
+    );
+  }),
 ];

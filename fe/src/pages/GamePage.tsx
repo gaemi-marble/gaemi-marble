@@ -1,23 +1,58 @@
+import GameHeader from '@components/Header/GameHeader';
+import PlayerCard from '@components/Player/PlayerCard';
+import PlayerTestModal from '@components/Player/PlayerTestModal';
+import { usePlayersValue } from '@store/reducer/player';
+import { useState } from 'react';
 import { styled } from 'styled-components';
+import { leftPlayerOrderList, rightPlayerOrderList } from './constants';
 
 export default function GamePage() {
+  // Memo: 테스트용 임시 모달
+  const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+  const playersInfo = usePlayersValue();
+
+  const handleOpenModal = () => {
+    setIsTestModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsTestModalOpen(false);
+  };
+
+  const leftPlayersInfo = playersInfo.filter((player) =>
+    leftPlayerOrderList.includes(player.order)
+  );
+
+  const rightPlayerInfo = playersInfo.filter((player) =>
+    rightPlayerOrderList.includes(player.order)
+  );
+
   return (
-    <Container>
-      <Header>
-        <Logo>Gaemi Marble</Logo>
-        <Button>나가기</Button>
-      </Header>
-      <Main>
-        <PlayerList />
-        <GameBoard />
-      </Main>
-    </Container>
+    <>
+      <Container>
+        <GameHeader handleClickTest={handleOpenModal} />
+        <Main>
+          <Players>
+            {leftPlayersInfo.map((playerInfo) => (
+              <PlayerCard key={playerInfo.order} player={playerInfo} />
+            ))}
+          </Players>
+          <GameBoard />
+          <Players>
+            {rightPlayerInfo.map((playerInfo) => (
+              <PlayerCard key={playerInfo.order} player={playerInfo} />
+            ))}
+          </Players>
+        </Main>
+      </Container>
+      {isTestModalOpen && <PlayerTestModal handleClose={handleCloseModal} />}
+    </>
   );
 }
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,41 +62,22 @@ const Container = styled.div`
   background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
-const Header = styled.div`
+const Main = styled.div`
   width: 100%;
-  height: 8rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-  font-size: ${({ theme: { fontSize } }) => fontSize.xLarge};
-  background-color: ${({ theme: { color } }) => color.accentPrimary};
+  padding: 0 1rem;
 `;
-
-const Logo = styled.h1`
-  display: block;
-  color: ${({ theme: { color } }) => color.accentText};
-`;
-
-const Main = styled.div`
-  height: 100%;
-`;
-
-const Button = styled.button`
-  width: 200px;
-  height: 50px;
-  border: 1px solid;
-  border-color: ${({ theme: { color } }) => color.accentText};
-  border-radius: ${({ theme: { radius } }) => radius.medium};
-  font-size: ${({ theme: { fontSize } }) => fontSize.medium};
-  cursor: pointer;
-`;
-
-const PlayerList = styled.div``;
 
 const GameBoard = styled.div`
-  width: 500px;
-  height: 500px;
+  width: 42rem;
+  height: 42rem;
   border: 1px solid;
   border-color: ${({ theme: { color } }) => color.accentText};
+`;
+
+const Players = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;

@@ -1,5 +1,5 @@
 import { postCreateRoom } from '@api/index';
-import Header from '@components/Header';
+import HomeHeader from '@components/Header/HomeHeader';
 import EnterModal from '@components/Modal/EnterModal/EnterModal';
 import { Icon } from '@components/icon/Icon';
 import { ROUTE_PATH } from '@router/constants';
@@ -11,11 +11,17 @@ export default function HomePage() {
   const navigate = useNavigate();
   const [isEnterModalOpen, setIsEnterModalOpen] = useState(false);
 
-  const onCloseModal = () => {
+  const handleOpenModal = () => {
+    // Memo: 현재 버전 - 모달 띄워서 방 번호 입력
+    // Todo: 버전업 - 방 목록 보여주기
+    setIsEnterModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
     setIsEnterModalOpen(false);
   };
 
-  const onCreateRoom = async () => {
+  const handleCreateRoom = async () => {
     const res = await postCreateRoom();
 
     if (res.status === 201) {
@@ -23,23 +29,17 @@ export default function HomePage() {
     }
   };
 
-  const onEnterRoom = () => {
-    // Memo: 현재 버전 - 모달 띄워서 방 번호 입력
-    // Todo: 버전업 - 방 목록 보여주기
-    setIsEnterModalOpen(true);
-  };
-
   return (
     <>
-      <Header />
+      <HomeHeader />
       <Main>
-        <Button onClick={onCreateRoom}>
+        <Button onClick={handleCreateRoom}>
           방 만들기
           <Icon name="plus" size="3rem" />
         </Button>
-        <Button onClick={onEnterRoom}>입장하기</Button>
+        <Button onClick={handleOpenModal}>입장하기</Button>
       </Main>
-      {isEnterModalOpen && <EnterModal onClose={onCloseModal} />}
+      {isEnterModalOpen && <EnterModal handleClose={handleCloseModal} />}
     </>
   );
 }
