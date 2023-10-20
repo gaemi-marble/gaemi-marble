@@ -1,5 +1,6 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
+// Memo: 전역으로 쓰이는 상태는 여기에 !!!
 const playerIdAtom = atom(localStorage.getItem('playerId') || '');
 const accessTokenAtom = atom(localStorage.getItem('accessToken') || '');
 const refreshTokenAtom = atom(localStorage.getItem('refreshToken') || '');

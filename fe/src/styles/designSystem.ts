@@ -26,7 +26,10 @@ const radius = {
 };
 
 const fontSize = {
+  xxSmall: '12px',
+  xSmall: '14px',
   small: '16px',
+  sMedium: '24px',
   medium: '32px',
   large: '48px',
   xLarge: '64px',
