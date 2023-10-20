@@ -8,11 +8,11 @@ export default function EnterModalContent() {
   const navigate = useNavigate();
   const [roomNumber, setRoomNumber] = useState('');
 
-  const onChangeRoomNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRoomNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomNumber(e.target.value);
   };
 
-  const onEnterRoom = async () => {
+  const handleEnterRoom = async () => {
     // Todo: 유효한 방인지 검증하는 api 완성되면 추가
     const gameId = +roomNumber;
     const res = await getGameCheck(gameId);
@@ -30,8 +30,8 @@ export default function EnterModalContent() {
 
   return (
     <Content>
-      <Input value={roomNumber} onChange={onChangeRoomNumber} />
-      <Button onClick={onEnterRoom}>입장하기</Button>
+      <Input value={roomNumber} onChange={handleChangeRoomNumber} />
+      <Button onClick={handleEnterRoom}>입장하기</Button>
     </Content>
   );
 }

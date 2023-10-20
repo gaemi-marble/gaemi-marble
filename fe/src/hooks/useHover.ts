@@ -15,25 +15,25 @@ export default function useHover<T extends HTMLElement>(): HoverReturnType<T> {
   const hoverRef = useRef<T>(null);
   const [isHover, setIsHover] = useState(false);
 
-  const onMouseEnter = useCallback(() => {
+  const handleMouseEnter = useCallback(() => {
     setIsHover(true);
   }, []);
 
-  const onMouseLeave = useCallback(() => {
+  const handleMouseLeave = useCallback(() => {
     setIsHover(false);
   }, []);
 
   useEffect(() => {
     const currentRef = hoverRef.current;
 
-    currentRef?.addEventListener('mouseenter', onMouseEnter);
-    currentRef?.addEventListener('mouseleave', onMouseLeave);
+    currentRef?.addEventListener('mouseenter', handleMouseEnter);
+    currentRef?.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      currentRef?.removeEventListener('mouseenter', onMouseEnter);
-      currentRef?.removeEventListener('mouseleave', onMouseLeave);
+      currentRef?.removeEventListener('mouseenter', handleMouseEnter);
+      currentRef?.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [onMouseEnter, onMouseLeave]);
+  }, [handleMouseEnter, handleMouseLeave]);
 
   return { hoverRef, isHover };
 }
