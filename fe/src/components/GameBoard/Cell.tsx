@@ -1,4 +1,4 @@
-import { categoryIconMap } from '@assets/images';
+import { cellImageMap } from '@assets/images';
 import { styled } from 'styled-components';
 
 type Cellprops = {
@@ -6,26 +6,24 @@ type Cellprops = {
   name: string;
   logo: string;
   sharePrice?: number;
-  remainingStock?: number;
 };
 
-export default function Cell({
-  theme,
-  name,
-  logo,
-  sharePrice,
-  remainingStock,
-}: Cellprops) {
+export default function Cell({ theme, name, logo, sharePrice }: Cellprops) {
+  const addCommasToNumber = (number: number): string => {
+    return `${number.toLocaleString('ko')}`;
+  };
+
   return (
     <Container>
-      <Header>
-        {theme && <Logo src={categoryIconMap[logo]} />}
-        <Name>{name}</Name>
-      </Header>
+      {theme && (
+        <Header>
+          <Logo src={cellImageMap[logo]} />
+          <Name>{name}</Name>
+        </Header>
+      )}
       <Content>
-        {!theme && <CellImg src={categoryIconMap[logo]} />}
-        {sharePrice && <Price>{sharePrice}</Price>}
-        {remainingStock && <Count>{remainingStock}</Count>}
+        {!theme && <CellImg src={cellImageMap[logo]} />}
+        {sharePrice && <Price>{addCommasToNumber(sharePrice)}</Price>}
       </Content>
     </Container>
   );
@@ -52,8 +50,8 @@ const Logo = styled.img`
 `;
 
 const CellImg = styled.img`
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
 `;
 
 const Name = styled.div`
@@ -69,5 +67,3 @@ const Content = styled.div`
 `;
 
 const Price = styled.div``;
-
-const Count = styled.div``;
