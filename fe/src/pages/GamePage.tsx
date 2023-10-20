@@ -45,7 +45,7 @@ export default function GamePage() {
           </Players>
         </Main>
       </Container>
-      {isTestModalOpen && <PlayerTestModal onClose={handleCloseModal} />}
+      {isTestModalOpen && <PlayerTestModal handleClose={handleCloseModal} />}
     </>
   );
 }

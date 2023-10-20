@@ -3,11 +3,11 @@ import Modal from '../Modal';
 import EnterModalContent from './EnterModalContent';
 
 type EnterModalProps = {
-  onClose: () => void;
+  handleClose: () => void;
 };
 
-export default function EnterModal({ onClose }: EnterModalProps) {
-  const { ref: enterModalRef } = useOutsideClick<HTMLDivElement>(onClose);
+export default function EnterModal({ handleClose }: EnterModalProps) {
+  const { ref: enterModalRef } = useOutsideClick<HTMLDivElement>(handleClose);
 
   return (
     <Modal

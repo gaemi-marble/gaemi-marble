@@ -4,8 +4,12 @@ import usePlayerReducer from '@store/reducer/player/usePlayerReducer';
 import { styled } from 'styled-components';
 import Modal from '../Modal/Modal';
 
-export default function PlayerTestModal({ onClose }: { onClose: () => void }) {
-  const { ref: testModalRef } = useOutsideClick<HTMLDivElement>(onClose);
+type PlayerTestModalProps = {
+  handleClose: () => void;
+};
+
+export default function PlayerTestModal({ handleClose }: PlayerTestModalProps) {
+  const { ref: testModalRef } = useOutsideClick<HTMLDivElement>(handleClose);
   const { dispatch } = usePlayerReducer();
 
   const handleEnter = async () => {

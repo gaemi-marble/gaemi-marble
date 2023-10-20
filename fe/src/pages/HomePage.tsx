@@ -39,7 +39,7 @@ export default function HomePage() {
         </Button>
         <Button onClick={handleOpenModal}>입장하기</Button>
       </Main>
-      {isEnterModalOpen && <EnterModal onClose={handleCloseModal} />}
+      {isEnterModalOpen && <EnterModal handleClose={handleCloseModal} />}
     </>
   );
 }
