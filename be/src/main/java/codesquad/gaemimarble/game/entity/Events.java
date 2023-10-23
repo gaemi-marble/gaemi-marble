@@ -1,13 +1,18 @@
 package codesquad.gaemimarble.game.entity;
 
+import java.util.Map;
+
 import lombok.Getter;
 
 @Getter
 public enum Events {
 
-	EPIDEMIC("역병", "새로운 바이러스의 탄생...", "제약 / 바이오 + 50%, 나머지- 30%"),
-	EUREKA("유레카", "초전도체 발견 !", "IT + 50%"),
-	WAR("전쟁", "전쟁 발발 !", "군수 + 50%, 여행 -30%"),
+	EPIDEMIC("역병", "새로운 바이러스의 탄생...", "제약 / 바이오 + 50%, 나머지- 30%",
+		Map.of(Theme.PHARMACEUTICAL, 50, Theme.IT, -30, Theme.FOOD, -30,
+			Theme.FASHION, -30, Theme.MILITARY, -30, Theme.TRIP, -30, Theme.ELON_MUSK, -30, Theme.CONSTRUCTION, -30)),
+	EUREKA("유레카", "초전도체 발견 !", "IT + 50%", Map.of(Theme.IT, 50)),
+	WAR("전쟁", "전쟁 발발 !", "군수 + 50%, 여행 -30%", Map.of(Theme.PHARMACEUTICAL, 50, Theme.IT, -30, Theme.FOOD, -30,
+		Theme.FASHION, -30, Theme.MILITARY, -30, Theme.TRIP, -30, Theme.ELON_MUSK, -30, Theme.CONSTRUCTION, -30)),
 	GREAT_BOOM("역대급 불장", "영차 영차 !!", "모든 기업 + 50%"),
 	GREAT_BUST("역대급 물장", "돔황챠 !!", "모든 기업 - 30%"),
 	DOGECOIN("도지 화성 갈끄니까", "이 사기꾼 또 뻘글", "일론 머스크 - 20%"),
@@ -21,7 +26,7 @@ public enum Events {
 	ECONOMIC_BOOM("경기 호황", "경제가 성장한다!", "모든 주식 + 30%"),
 	LARGE_SCALE_HACKING("대규모 해킹 사건 발생", "개인 정보 해킹 당함, 보안 문제", "IT 주식 - 30%"),
 	TRAVEL_ALERT_LIFTED("여행 경보 해제", "여행 붐", "여행 + 40%"),
-	CONSUMER_SENTIMENT("소비심리", "패션관련 소비가 증가하고 있다.", "패션 관련주 +"),
+	CONSUMER_SENTIMENT("소비심리", "패션관련 소비가 증가하고 있다.", "패션 관련주 + 30%"),
 	ELON_VS_ZUCKERBERG("일론머스크 vs 저커버그", "1라운드 뒤에 둘이 스파링 뜬다고 한다. 누가이길지는 모른다.", "승리: + 20%, 패배: - 20%"),
 	WAR_OUTCOME("전쟁의 기류", "N 라운드 뒤에 전쟁이 일어날 확률 / 일어나지 않을 확률", "전쟁 발발: 군수 업, 전쟁 X: 군수 다운"),
 	KOREAN_AIR_STRIKE("대한항공, 하나투어 파업", "20일 동안 대규모 파업", "여행 - 20%"),
@@ -29,11 +34,13 @@ public enum Events {
 
 	private final String title;
 	private final String contents;
-	private final String impact;
+	private final String impactDescription;
+	private final Map<Theme, Integer> impact;
 
-	Events(String title, String contents, String impact) {
+	Events(String title, String contents, String impactDescription, Map<Theme, Integer> impact) {
 		this.title = title;
 		this.contents = contents;
+		this.impactDescription = impactDescription;
 		this.impact = impact;
 	}
 }

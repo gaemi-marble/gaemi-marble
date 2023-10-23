@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
+import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
@@ -109,11 +110,15 @@ public class GameService {
 				gameEventListResponse.getEvents().add(GameEventResponse.builder()
 					.title(event.getTitle())
 					.content(event.getContents())
-					.impact(event.getImpact())
+					.impact(event.getImpactDescription())
 					.build());
 			}
 		}
 		return gameEventListResponse;
+
+	}
+
+	public void proceedEvent(GameEventResultRequest gameEventResultRequest) {
 
 	}
 }
