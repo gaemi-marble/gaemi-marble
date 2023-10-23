@@ -12,6 +12,7 @@ import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
+import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
@@ -45,7 +46,7 @@ public class GameService {
 		Player player = Player.init(playerId);
 		List<Player> players = gameRepository.enterGame(gameId, player);
 		return players.stream()
-			.map(Player::toDto)
+			.map(p -> GameEnterResponse.of(p.getOrder(), p.getPlayerId()))
 			.collect(Collectors.toList());
 	}
 

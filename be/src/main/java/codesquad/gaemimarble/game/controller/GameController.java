@@ -20,6 +20,7 @@ import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
+import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
@@ -64,6 +65,11 @@ public class GameController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(gameRoomCreateResponse);
 	}
 
+	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
+		socketDataSender.saveSocket(gameId, session);
+		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER,gameService.enterGame(gameId, playerId)));
+	}
+
 	@GetMapping("/api/games/{gameId}")
 	public ResponseEntity<GameAccessibleResponse> checkAccessiblity(@PathVariable Long gameId) {
 		return ResponseEntity.ok().body(gameService.checkAccessibility(gameId));
@@ -106,11 +112,5 @@ public class GameController {
 
 	private void handleRequest(GameStockBuyRequest gameStockBuyRequest) {
 		System.out.println(2);
-	}
-
-	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
-		socketDataSender.saveSocket(gameId, session);
-		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER,
-			Map.of("order", gameService.enterGame(gameId, playerId), "playerId", playerId)));
 	}
 }

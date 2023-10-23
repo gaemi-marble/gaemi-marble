@@ -3,6 +3,7 @@ package codesquad.gaemimarble.game.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import lombok.Builder;
 import lombok.Getter;
 
