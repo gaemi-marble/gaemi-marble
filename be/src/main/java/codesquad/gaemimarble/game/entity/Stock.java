@@ -8,14 +8,14 @@ import lombok.Getter;
 
 @Getter
 public class Stock {
-	private String theme;
+	private Theme theme;
 	private String name;
 	private Integer startPrice;
 	private Integer currentPrice;
 	private Integer remainingStock;
 
 	@Builder
-	private Stock(String theme, String name, Integer startPrice, Integer currentPrice, Integer remainingStock) {
+	private Stock(Theme theme, String name, Integer startPrice, Integer currentPrice, Integer remainingStock) {
 		this.theme = theme;
 		this.name = name;
 		this.startPrice = startPrice;
@@ -37,5 +37,9 @@ public class Stock {
 			stocks.add(new Stock(share));
 		}
 		return stocks;
+	}
+
+	public void changePrice(Integer percentage) {
+		this.currentPrice += (this.startPrice * percentage / 100);
 	}
 }
