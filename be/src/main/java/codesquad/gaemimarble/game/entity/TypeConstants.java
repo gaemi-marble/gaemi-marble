@@ -6,5 +6,6 @@ public final class TypeConstants {
 	public static final String START = "start";
 	public static final String DICE = "dice";
 	public static final String EVENTS = "events";
-	public static final String EVENTS_RESULT = "event-result";
+	public static final String EVENTS_RESULT = "evenResult";
+	public static final String STATUS_BOARD = "statusBoard";
 }

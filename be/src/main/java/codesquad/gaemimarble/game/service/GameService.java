@@ -2,11 +2,13 @@ package codesquad.gaemimarble.game.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
@@ -16,11 +18,13 @@ import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.GameStatusBoardResponse;
 import codesquad.gaemimarble.game.entity.Board;
 import codesquad.gaemimarble.game.entity.Events;
 import codesquad.gaemimarble.game.entity.GameStatus;
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.Stock;
+import codesquad.gaemimarble.game.entity.Theme;
 import codesquad.gaemimarble.game.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -119,7 +123,34 @@ public class GameService {
 
 	}
 
-	public void proceedEvent(GameEventResultRequest gameEventResultRequest) {
-
+	public GameStatusBoardResponse proceedEvent(GameEventResultRequest gameEventResultRequest) {
+		Events eventToProceed = null;
+		for (Events events : Events.values()) {
+			if (events.getTitle().equals(gameEventResultRequest.getEventName())) {
+				eventToProceed = events;
+			}
+		}
+		if (eventToProceed == null) {
+			throw new RuntimeException("이벤트 이름이 맞지 않습니다");
+		}
+		GameStatus gameStatus = gameRepository.getGameStatus(gameEventResultRequest.getGameId());
+		Map<Theme, Integer> impactMap = eventToProceed.getImpact();
+		List<Stock> stockList = gameStatus.getStocks();
+		for (Stock stock : stockList) {
+			if (impactMap.containsKey(stock.getTheme())) {
+				stock.changePrice(impactMap.get(stock.getTheme()));
+			}
+		}
+		return createGameStatusBoardResponse(gameEventResultRequest.getGameId());
 	}
+
+	public GameStatusBoardResponse createGameStatusBoardResponse(Long gameId) {
+		List<Stock> stockList = gameRepository.getGameStatus(gameId).getStocks();
+		return GameStatusBoardResponse.builder()
+			.stockStatusBoard(stockList.stream()
+				.map(stock -> GameMapper.INSTANCE.toGameStockStatusResponse(stock, stock.getTheme().getName()))
+				.collect(Collectors.toList()))
+			.build();
+	}
+
 }

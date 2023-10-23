@@ -55,7 +55,8 @@ public class GameController {
 	}
 
 	private void sendEventResult(GameEventResultRequest gameEventResultRequest) {
-		gameService.proceedEvent(gameEventResultRequest);
+		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS_RESULT,
+			gameService.proceedEvent(gameEventResultRequest)));
 	}
 
 	@PostMapping("/api/games")
