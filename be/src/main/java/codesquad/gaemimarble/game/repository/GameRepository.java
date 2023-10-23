@@ -22,21 +22,14 @@ public class GameRepository {
 	}
 
 	public List<Player> enterGame(Long gameId, Player player) {
-		GameStatus gameStatus = gameStatusMap.get(gameId);
-		List<Player> players = gameStatus.getPlayers();
+		List<Player> players = gameStatusMap.get(gameId).getPlayers();
 		player.setOrder(players.size() + 1);
 		players.add(player);
-		gameStatusMap.put(gameId, gameStatus);
 		return players;
 	}
 
 	public List<Player> getAllPlayer(Long gameId) {
 		return gameStatusMap.get(gameId).getPlayers();
-	}
-
-	public void increaseCountDouble(Long gameId) {
-		gameStatusMap.get(gameId).increaseCountDouble();
-
 	}
 
 	public void setOrder(Long gameId, Player player) {

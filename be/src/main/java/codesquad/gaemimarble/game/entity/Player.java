@@ -49,4 +49,12 @@ public class Player {
 	public GameEnterResponse toDto() {
 		return new GameEnterResponse(this.getOrder(), this.getPlayerId());
 	}
+
+	public void move(int i) {
+		this.location += i;
+	}
+
+	public void goToPrison() {
+		this.location = 6;
+	}
 }

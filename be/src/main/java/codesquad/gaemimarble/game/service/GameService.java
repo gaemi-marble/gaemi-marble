@@ -3,6 +3,7 @@ package codesquad.gaemimarble.game.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -77,21 +78,22 @@ public class GameService {
 	}
 
 	public GameDiceResult rollDice(GameRollDiceRequest gameRollDiceRequest) {
-		// 여기서 이동 미리 반영?
 		int dice1 = (int)(Math.random() * 6) + 1;
 		int dice2 = (int)(Math.random() * 6) + 1;
-		List<Player> players = gameRepository.getAllPlayer(gameRollDiceRequest.getGameId());
-		Player currentPlayer = players.stream()
-			.filter(player -> player.getPlayerId() == gameRollDiceRequest.getPlayerId())
-			.findFirst().orElse(null);
+
+		GameStatus gameStatus = gameRepository.getGameStatus(gameRollDiceRequest.getGameId());
+		Player player = gameStatus.getPlayer(gameRollDiceRequest.getPlayerId());
+		int startLocation = player.getLocation();
 
 		if (dice1 == dice2) {
-			gameRepository.increaseCountDouble(currentPlayer);
-		} else {
-			gameRepository.updateCurrentPlayerInfo(currentPlayer);
+			int countDouble = gameStatus.increaseCountDouble();
+			if (countDouble == 3) {
+				player.goToPrison();
+				return new GameDiceResult(startLocation, dice1, dice2);
+			}
 		}
-
-		return new GameDiceResult(dice1, dice2);
+		player.move(dice1 + dice2);
+		return new GameDiceResult(startLocation, dice1, dice2);
 	}
 
 	public GameEventListResponse selectEvents(GameEventRequest gameEventRequest) {

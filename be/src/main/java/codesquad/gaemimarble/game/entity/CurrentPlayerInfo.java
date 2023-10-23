@@ -18,13 +18,17 @@ public class CurrentPlayerInfo {
 		this.countDouble = countDouble;
 	}
 
-	public void increaseCountDouble() {
-		this.countDouble += 1;
+	public int increaseCountDouble() {
+		return this.countDouble += 1;
 	}
 
 	public void update(Player player) {
 		this.playerId = player.getPlayerId();
 		//this.order = player;
+		this.countDouble = 0;
+	}
+
+	public void resetCountDouble() {
 		this.countDouble = 0;
 	}
 }

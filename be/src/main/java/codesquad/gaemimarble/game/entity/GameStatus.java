@@ -31,11 +31,26 @@ public class GameStatus {
 		}
 	}
 
-	public void increaseCountDouble() {
-		this.currentPlayerInfo.increaseCountDouble();
+	public int increaseCountDouble() {
+		return this.currentPlayerInfo.increaseCountDouble();
 	}
 
 	public void updateCurrentPlayerInfo(Player player) {
 		this.currentPlayerInfo.update(player);
+	}
+
+	public Player getPlayer(String playerId) {
+		return this.players.stream()
+			.filter(player -> player.getPlayerId().equals(playerId))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("해당하는 플레이어가 없습니다."));
+	}
+
+	public int getCountDouble() {
+		return this.currentPlayerInfo.getCountDouble();
+	}
+
+	public void resetCountDouble() {
+		this.currentPlayerInfo.resetCountDouble();
 	}
 }
