@@ -82,12 +82,21 @@ public class GameService {
 	}
 
 	public GameDiceResult rollDice(GameRollDiceRequest gameRollDiceRequest) {
-		int dice1 = (int)(Math.random() * 6) + 1;
-		int dice2 = (int)(Math.random() * 6) + 1;
-
 		GameStatus gameStatus = gameRepository.getGameStatus(gameRollDiceRequest.getGameId());
 		Player player = gameStatus.getPlayer(gameRollDiceRequest.getPlayerId());
 		int startLocation = player.getLocation();
+
+		if (startLocation == 6) {
+			// 탈출 시도 or 보석금
+			return null;
+		}
+		if (startLocation == 18) {
+			// 순간 이동 진행
+			return null;
+		}
+
+		int dice1 = (int)(Math.random() * 6) + 1;
+		int dice2 = (int)(Math.random() * 6) + 1;
 
 		if (dice1 == dice2) {
 			int countDouble = gameStatus.increaseCountDouble();
