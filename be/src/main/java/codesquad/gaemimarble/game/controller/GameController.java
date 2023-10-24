@@ -92,7 +92,7 @@ public class GameController {
 	private void sendReadyStatus(GameReadyRequest gameReadyRequest) {
 		socketDataSender.send(gameReadyRequest.getGameId(), new ResponseDTO<>(TypeConstants.READY,
 			GameReadyResponse.builder()
-				.isReady(gameReadyRequest.isReady())
+				.isReady(gameReadyRequest.getIsReady())
 				.playerId(gameReadyRequest.getPlayerId()).build()));
 	}
 

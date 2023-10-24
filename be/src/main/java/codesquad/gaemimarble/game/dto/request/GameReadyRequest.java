@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 public class GameReadyRequest {
 	private Long gameId;
 	private String playerId;
-	private boolean isReady;
+	private Boolean isReady;
 
 	@Builder
-	public GameReadyRequest(Long gameId, String playerId, boolean isReady) {
+	public GameReadyRequest(Long gameId, String playerId, Boolean isReady) {
 		this.gameId = gameId;
 		this.playerId = playerId;
 		this.isReady = isReady;

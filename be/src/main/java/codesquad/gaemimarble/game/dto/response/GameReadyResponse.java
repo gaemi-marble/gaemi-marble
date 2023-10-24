@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class GameReadyResponse {
 	private String playerId;
-	private boolean isReady;
+	private Boolean isReady;
 
 	@Builder
-	public GameReadyResponse(String playerId, boolean isReady) {
+	public GameReadyResponse(String playerId, Boolean isReady) {
 		this.playerId = playerId;
 		this.isReady = isReady;
 	}
