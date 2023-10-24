@@ -2,15 +2,15 @@ package codesquad.gaemimarble.game;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class GameMessage {
-	private final Long gameId;
-	private final String type;
+	private String type;
 
 	@Builder
-	public GameMessage(Long gameId, String type) {
-		this.gameId = gameId;
+	public GameMessage(String type) {
 		this.type = type;
 	}
 }

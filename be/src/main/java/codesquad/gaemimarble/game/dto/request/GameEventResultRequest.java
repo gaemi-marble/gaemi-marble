@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameReadyRequest {
+public class GameEventResultRequest {
+	private String type;
 	private Long gameId;
-	private String playerId;
-	private Boolean isReady;
+	private String eventName;
 
 	@Builder
-	public GameReadyRequest(Long gameId, String playerId, Boolean isReady) {
+	private GameEventResultRequest(String type, Long gameId, String eventName) {
+		this.type = type;
 		this.gameId = gameId;
-		this.playerId = playerId;
-		this.isReady = isReady;
+		this.eventName = eventName;
 	}
 }

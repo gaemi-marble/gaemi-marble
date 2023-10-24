@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import codesquad.gaemimarble.game.GameMessage;
 import codesquad.gaemimarble.game.controller.GameController;
-import codesquad.gaemimarble.game.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class WebSocketHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
-	private final GameRepository gameRepository;
 	private final GameController gameController;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		Long gameId = extractGameIdFromUri(session.getUri().getPath());
-		gameRepository.saveSocket(gameId, session);
+		String playerId = extractPlayerIdFromUri(session.getUri().getPath());
+		gameController.enterGame(gameId, session, playerId);
 	}
 
 	@Override
@@ -43,7 +42,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	private Long extractGameIdFromUri(String uri) {
 		String[] parts = uri.split("/");
-		return Long.parseLong(parts[3]); // Assuming /api/games/{room}
+		return Long.parseLong(parts[3]); // Assuming /api/games/{gameId}/{playerId}
+	}
 
+	private String extractPlayerIdFromUri(String uri) {
+		String[] parts = uri.split("/");
+		return parts[4]; // Assuming /api/games/{gameId}/{playerId}
 	}
 }

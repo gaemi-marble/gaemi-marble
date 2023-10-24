@@ -1,20 +1,43 @@
 package codesquad.gaemimarble.game.repository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.web.socket.WebSocketSession;
+
+import codesquad.gaemimarble.game.entity.GameStatus;
+import codesquad.gaemimarble.game.entity.Player;
 
 @Repository
 public class GameRepository {
-	private final ConcurrentMap<Long, Set<WebSocketSession>> gameSocketMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<Long, GameStatus> gameStatusMap = new ConcurrentHashMap<>();
+	private final AtomicLong gameId = new AtomicLong(0);
 
-	public void saveSocket(Long gameId, WebSocketSession session) {
-		Set<WebSocketSession> sessionSet = gameSocketMap.getOrDefault(gameId, new HashSet<>());
-		sessionSet.add(session);
-		gameSocketMap.put(gameId, sessionSet);
+	public Long createRoom(GameStatus gameStatus) {
+		Long gameRoomId = gameId.getAndAdd(1L);
+		gameStatusMap.put(gameRoomId, gameStatus);
+		return gameRoomId;
+	}
+
+	public List<Player> enterGame(Long gameId, Player player) {
+		List<Player> players = gameStatusMap.get(gameId).getPlayers();
+		player.setOrder(players.size() + 1);
+		players.add(player);
+		return players;
+	}
+
+	public List<Player> getAllPlayer(Long gameId) {
+		return gameStatusMap.get(gameId).getPlayers();
+	}
+
+	public void setOrder(Long gameId, Player player) {
+		gameStatusMap.get(gameId).updateCurrentPlayerInfo(player);
+		gameStatusMap.get(gameId).setOrder(player.getOrder());
+	}
+
+	public GameStatus getGameStatus(Long gameId) {
+		return gameStatusMap.get(gameId);
 	}
 }
