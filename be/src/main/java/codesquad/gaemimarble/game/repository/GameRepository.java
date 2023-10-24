@@ -32,11 +32,6 @@ public class GameRepository {
 		return gameStatusMap.get(gameId).getPlayers();
 	}
 
-	public void setOrder(Long gameId, Player player) {
-		gameStatusMap.get(gameId).updateCurrentPlayerInfo(player);
-		gameStatusMap.get(gameId).setOrder(player.getOrder());
-	}
-
 	public GameStatus getGameStatus(Long gameId) {
 		return gameStatusMap.get(gameId);
 	}

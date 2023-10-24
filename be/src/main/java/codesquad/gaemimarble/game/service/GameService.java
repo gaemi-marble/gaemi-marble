@@ -56,10 +56,14 @@ public class GameService {
 	}
 
 	public String getFirstPlayer(Long gameId) {
-		List<Player> players = gameRepository.getAllPlayer(gameId);
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		List<Player> players = gameStatus.getPlayers();
 		int randomIndex = (int)(Math.random() * players.size()) + 1;
-		gameRepository.setOrder(gameId, players.get(randomIndex));
-		return players.get(randomIndex).getPlayerId();
+		Player player = players.get(randomIndex-1);
+
+		gameStatus.initCurrentPlayerInfo(player);
+		gameStatus.setOrder(player.getOrder());
+		return player.getPlayerId();
 	}
 
 	public GameAccessibleResponse checkAccessibility(Long gameId) {

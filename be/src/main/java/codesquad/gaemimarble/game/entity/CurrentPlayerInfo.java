@@ -24,7 +24,7 @@ public class CurrentPlayerInfo {
 
 	public void update(Player player) {
 		this.playerId = player.getPlayerId();
-		//this.order = player;
+		this.order = player.getOrder();
 		this.countDouble = 0;
 	}
 

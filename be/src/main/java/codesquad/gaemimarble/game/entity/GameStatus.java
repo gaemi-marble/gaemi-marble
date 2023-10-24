@@ -35,6 +35,14 @@ public class GameStatus {
 		return this.currentPlayerInfo.increaseCountDouble();
 	}
 
+	public void initCurrentPlayerInfo(Player player) {
+		this.currentPlayerInfo = CurrentPlayerInfo.builder()
+			.playerId(player.getPlayerId())
+			.order(player.getOrder())
+			.countDouble(0)
+			.build();
+	}
+
 	public void updateCurrentPlayerInfo(Player player) {
 		this.currentPlayerInfo.update(player);
 	}
