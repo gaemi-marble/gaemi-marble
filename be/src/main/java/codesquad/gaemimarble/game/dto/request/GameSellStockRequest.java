@@ -1,22 +1,22 @@
 package codesquad.gaemimarble.game.dto.request;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameStockBuyRequest {
+public class GameSellStockRequest {
 	private Long gameId;
 	private String playerId;
-	private String stockName;
-	private Integer quantity;
+	private List<StockNameQuantity> stockList;
 
 	@Builder
-	private GameStockBuyRequest(Long gameId, String playerId, String stockName, Integer quantity) {
+	private GameSellStockRequest(Long gameId, String playerId, List<StockNameQuantity> stockList) {
 		this.gameId = gameId;
 		this.playerId = playerId;
-		this.stockName = stockName;
-		this.quantity = quantity;
+		this.stockList = stockList;
 	}
 }
