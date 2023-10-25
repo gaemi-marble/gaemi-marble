@@ -1,26 +1,32 @@
 package codesquad.gaemimarble.game.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import codesquad.gaemimarble.game.dto.GameMapper;
-import codesquad.gaemimarble.game.dto.request.GameEventRequest;
+import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
+import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
+import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
+import codesquad.gaemimarble.game.dto.request.StockNameQuantity;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
+import codesquad.gaemimarble.game.dto.response.GameEndTurnResponse;
 import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
-import codesquad.gaemimarble.game.dto.response.GameStatusBoardResponse;
+import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
+import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
 import codesquad.gaemimarble.game.entity.Board;
+import codesquad.gaemimarble.game.entity.CurrentPlayerInfo;
 import codesquad.gaemimarble.game.entity.Events;
 import codesquad.gaemimarble.game.entity.GameStatus;
 import codesquad.gaemimarble.game.entity.Player;
@@ -43,8 +49,7 @@ public class GameService {
 			.board(new Board())
 			.build();
 		Long gameRoomId = gameRepository.createRoom(gameStatus);
-		return GameRoomCreateResponse.builder()
-			.gameId(gameRoomId).build();
+		return GameRoomCreateResponse.builder().gameId(gameRoomId).build();
 	}
 
 	public List<GameEnterResponse> enterGame(Long gameId, String playerId) {
@@ -64,17 +69,16 @@ public class GameService {
 
 	public GameAccessibleResponse checkAccessibility(Long gameId) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
-		boolean isPresent = true;
+		boolean isPresent = false;
 		boolean isFull = false;
 		if (gameStatus != null) {
-			isPresent = false;
-		} else if (gameStatus.getPlayers().size() == 4) {
-			isFull = true;
+			isPresent = true;
+			if (gameStatus.getPlayers().size() == 4) {
+				isFull = true;
+			}
 		}
-		return GameAccessibleResponse.builder()
-			.isPresent(isPresent)
-			.isFull(isFull)
-			.build();
+
+		return GameAccessibleResponse.builder().isPresent(isPresent).isFull(isFull).build();
 	}
 
 	public GameDiceResult rollDice(GameRollDiceRequest gameRollDiceRequest) {
@@ -96,7 +100,7 @@ public class GameService {
 		return new GameDiceResult(startLocation, dice1, dice2);
 	}
 
-	public GameEventListResponse selectEvents(GameEventRequest gameEventRequest) {
+	public GameEventListResponse selectEvents() {
 		List<Integer> numbers = new ArrayList<>();
 		GameEventListResponse gameEventListResponse = GameEventListResponse.builder().events(new ArrayList<>()).build();
 
@@ -114,11 +118,12 @@ public class GameService {
 		int count = 1;
 		for (Events event : Events.values()) {
 			if (selectedNumbers.contains(count)) {
-				gameEventListResponse.getEvents().add(GameEventResponse.builder()
-					.title(event.getTitle())
-					.content(event.getContents())
-					.impact(event.getImpactDescription())
-					.build());
+				gameEventListResponse.getEvents()
+					.add(GameEventResponse.builder()
+						.title(event.getTitle())
+						.content(event.getContents())
+						.impact(event.getImpactDescription())
+						.build());
 			}
 		}
 		return gameEventListResponse;
@@ -141,6 +146,9 @@ public class GameService {
 		for (Stock stock : stockList) {
 			if (impactMap.containsKey(stock.getTheme())) {
 				stock.changePrice(impactMap.get(stock.getTheme()));
+			} else {
+				Random random = new Random();
+				stock.changePrice(random.nextBoolean() ? -10 : 10);
 			}
 		}
 		return createGameStatusBoardResponse(gameEventResultRequest.getGameId());
@@ -155,4 +163,89 @@ public class GameService {
 			.build();
 	}
 
+	public GameUserBoardResponse buyStock(GameStockBuyRequest gameStockBuyRequest) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameStockBuyRequest.getGameId());
+		Player player = gameRepository.getAllPlayer(gameStockBuyRequest.getGameId())
+			.stream()
+			.filter(p -> p.getPlayerId().equals(gameStockBuyRequest.getPlayerId()))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("해당 플레이어가 존재하지 않습니다"));
+		Stock stock = gameStatus.getStocks()
+			.stream()
+			.filter(s -> s.getName().equals(gameStockBuyRequest.getStockName()))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식이름입니다"));
+		if (stock.getRemainingStock() < gameStockBuyRequest.getQuantity()
+			| player.getCashAsset() < stock.getCurrentPrice() * gameStockBuyRequest.getQuantity()) {
+			throw new RuntimeException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다");
+		}
+		player.buy(stock, gameStockBuyRequest.getQuantity());
+		stock.decrementQuantity(gameStockBuyRequest.getQuantity());
+		return createUserBoardResponse(player, gameStatus.getStocks());
+	}
+
+	private GameUserBoardResponse createUserBoardResponse(Player player, List<Stock> stocks) {
+		return GameUserBoardResponse.builder()
+			.playerId(player.getPlayerId())
+			.userStatusBoard(GameMapper.INSTANCE.toGameUserStatusBoardResponse(player, stocks
+				.stream()
+				.map(GameMapper.INSTANCE::toStockNameResponse)
+				.collect(Collectors.toList())))
+			.build();
+	}
+
+	public GameUserBoardResponse sellStock(GameSellStockRequest gameSellStockRequest) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameSellStockRequest.getGameId());
+		Player player = gameRepository.getAllPlayer(gameSellStockRequest.getGameId())
+			.stream()
+			.filter(p -> p.getPlayerId().equals(gameSellStockRequest.getPlayerId()))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("해당 플레이어가 존재하지 않습니다"));
+
+		Map<String, Integer> sellingStockInfoMap = new HashMap<>();
+		for (StockNameQuantity stock : gameSellStockRequest.getStockList()) {
+			sellingStockInfoMap.put(stock.getName(), stock.getQuantity());
+		}
+		for (String stockName : sellingStockInfoMap.keySet()) {
+			if (player.getMyStocks().get(stockName) < sellingStockInfoMap.get(stockName)) {
+				throw new RuntimeException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다");
+			}
+		}
+
+		List<Stock> stocks = gameStatus.getStocks();
+		for (Stock stock : stocks) {
+			String stockName = stock.getName();
+			if (sellingStockInfoMap.containsKey(stockName)) {
+				stock.incrementQuantity(sellingStockInfoMap.get(stockName));
+				player.sellStock(stock, sellingStockInfoMap.get(stockName));
+			}
+		}
+
+		return createUserBoardResponse(player, gameStatus.getStocks());
+
+	}
+
+	public GameEndTurnResponse endTurn(GameEndTurnRequest gameEndTurnRequest) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameEndTurnRequest.getGameId());
+		CurrentPlayerInfo currentPlayerInfo = gameStatus.getCurrentPlayerInfo();
+		// TODO: 전에 더블을 굴렸으면 한번 더해야하는 로직 추가해야함
+		if (currentPlayerInfo.getOrder() != gameStatus.getPlayers().size()) {
+			for (Player player : gameStatus.getPlayers()) {
+				if (player.getOrder() == currentPlayerInfo.getOrder() + 1) {
+					currentPlayerInfo.update(player);
+					return GameEndTurnResponse.builder()
+						.nextPlayerId(player.getPlayerId())
+						.build();
+				}
+			}
+		}
+		for (Player player : gameStatus.getPlayers()) {
+			if (player.getOrder() == 1) {
+				currentPlayerInfo.update(player);
+			}
+		}
+		return GameEndTurnResponse.builder()
+			.nextPlayerId(null)
+			.build();
+	}
 }
