@@ -2,7 +2,7 @@ version: "3.8"
 services:
   app: # 서비스 이름
     container_name: gaemi-marble-app
-    image: issutracker/gaemi-marble-app:latest #cicd.yml에서 설정한 이미지 이름
+    image: issuetracker/gaemi-marble-app:latest #cicd.yml에서 설정한 이미지 이름
     ports:
       - 8080:8080
     volumes:
