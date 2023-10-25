@@ -8,4 +8,5 @@ public final class TypeConstants {
 	public static final String EVENTS = "events";
 	public static final String EVENTS_RESULT = "evenResult";
 	public static final String STATUS_BOARD = "statusBoard";
+	public static final String CELL = "cell";
 }

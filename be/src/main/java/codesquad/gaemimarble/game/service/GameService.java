@@ -14,6 +14,7 @@ import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
+import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
 import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
@@ -109,6 +110,27 @@ public class GameService {
 		return new GameDiceResult(startLocation, dice1, dice2);
 	}
 
+	public GameCellResponse arriveAtCell(GameRollDiceRequest gameRollDiceRequest) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameRollDiceRequest.getGameId());
+		Player player = gameStatus.getPlayer(gameRollDiceRequest.getPlayerId());
+
+		int location = player.getLocation();
+		int salary = 0;
+		if (location > 23) {
+			salary = 5_000_000;
+			player.setLocation(location%24);
+		}
+		int dividend = (int)((player.getStockAsset() * 5) / 100);
+		player.setAsset(salary, dividend);
+
+		return GameCellResponse.builder()
+			.playerId(player.getPlayerId())
+			.location(player.getLocation())
+			.salary(salary)
+			.dividend(dividend)
+			.build();
+	}
+
 	public GameEventListResponse selectEvents(GameEventRequest gameEventRequest) {
 		List<Integer> numbers = new ArrayList<>();
 		GameEventListResponse gameEventListResponse = GameEventListResponse.builder().events(new ArrayList<>()).build();
@@ -167,5 +189,4 @@ public class GameService {
 				.collect(Collectors.toList()))
 			.build();
 	}
-
 }

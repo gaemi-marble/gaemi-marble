@@ -46,6 +46,16 @@ public class Player {
 		this.order = order;
 	}
 
+	public void setLocation(Integer location) {
+		this.location = location;
+	}
+
+	public void setAsset(int cashAsset, int stockAsset) {
+		this.cashAsset += cashAsset;
+		this.stockAsset += stockAsset;
+		this.totalAsset = this.cashAsset + this.stockAsset;
+	}
+
 	public GameEnterResponse toDto() {
 		return new GameEnterResponse(this.getOrder(), this.getPlayerId());
 	}

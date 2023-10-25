@@ -20,6 +20,7 @@ import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
+import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
@@ -105,6 +106,8 @@ public class GameController {
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameRollDiceRequest)));
+		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
+			gameService.arriveAtCell(gameRollDiceRequest)));
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
