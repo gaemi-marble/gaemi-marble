@@ -1,7 +1,9 @@
 package codesquad.gaemimarble.game.dto.response;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class GameEventResponse {
 	private final String title;
 	private final String content;

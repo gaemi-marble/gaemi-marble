@@ -10,25 +10,33 @@ public class CurrentPlayerInfo {
 	private String playerId;
 	private Integer order;
 	private Integer countDouble;
+	private Boolean rolledDouble;
 
 	@Builder
-	private CurrentPlayerInfo(String playerId, Integer order, Integer countDouble) {
+	private CurrentPlayerInfo(String playerId, Integer order) {
 		this.playerId = playerId;
 		this.order = order;
-		this.countDouble = countDouble;
+		this.countDouble = 0;
+		this.rolledDouble = false;
 	}
 
 	public int increaseCountDouble() {
+		rolledDouble = true;
 		return this.countDouble += 1;
 	}
 
 	public void update(Player player) {
 		this.playerId = player.getPlayerId();
-		//this.order = player;
+		this.order = player.getOrder();
 		this.countDouble = 0;
+		this.rolledDouble = false;
 	}
 
 	public void resetCountDouble() {
 		this.countDouble = 0;
+	}
+
+	public void initRolledDouble() {
+		rolledDouble = false;
 	}
 }

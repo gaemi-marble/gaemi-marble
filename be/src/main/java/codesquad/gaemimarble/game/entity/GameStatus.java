@@ -26,17 +26,16 @@ public class GameStatus {
 	}
 
 	public void setOrder(Integer firstOrder) {
-		for (Player player : players) {
-			player.setOrder(((player.getOrder() + (players.size() - firstOrder)) % players.size()) + 1);
+		for (int i=0; i<players.size(); i++) {
+			players.get(i).setOrder(((firstOrder + i - 1) % players.size()) + 1);
 		}
 	}
 
-	public int increaseCountDouble() {
-		return this.currentPlayerInfo.increaseCountDouble();
-	}
-
-	public void updateCurrentPlayerInfo(Player player) {
-		this.currentPlayerInfo.update(player);
+	public void initCurrentPlayerInfo(Player player) {
+		this.currentPlayerInfo = CurrentPlayerInfo.builder()
+			.playerId(player.getPlayerId())
+			.order(player.getOrder())
+			.build();
 	}
 
 	public Player getPlayer(String playerId) {
@@ -44,13 +43,5 @@ public class GameStatus {
 			.filter(player -> player.getPlayerId().equals(playerId))
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("해당하는 플레이어가 없습니다."));
-	}
-
-	public int getCountDouble() {
-		return this.currentPlayerInfo.getCountDouble();
-	}
-
-	public void resetCountDouble() {
-		this.currentPlayerInfo.resetCountDouble();
 	}
 }

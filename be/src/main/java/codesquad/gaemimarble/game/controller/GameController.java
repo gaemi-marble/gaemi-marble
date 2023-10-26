@@ -119,6 +119,8 @@ public class GameController {
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameRollDiceRequest)));
+		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
+			gameService.arriveAtCell(gameRollDiceRequest)));
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {

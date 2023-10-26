@@ -1,7 +1,9 @@
 package codesquad.gaemimarble.game.dto.response.generalStatusBoard;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class GameStockStatusResponse {
 	private final String theme;
 	private final String name;

@@ -20,8 +20,7 @@ public class Player {
 
 	@Builder
 	Player(String playerId, Integer order, Integer location, Map<String, Integer> myStocks, Integer stockAsset,
-		Integer cashAsset,
-		Integer totalAsset) {
+		Integer cashAsset, Integer totalAsset) {
 		this.playerId = playerId;
 		this.order = order;
 		this.location = location;
@@ -44,6 +43,16 @@ public class Player {
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public void setLocation(Integer location) {
+		this.location = location;
+	}
+
+	public void setAsset(int cashAsset, int stockAsset) {
+		this.cashAsset += cashAsset;
+		this.stockAsset += stockAsset;
+		this.totalAsset = this.cashAsset + this.stockAsset;
 	}
 
 	public GameEnterResponse toDto() {
