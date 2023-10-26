@@ -3,7 +3,9 @@ package codesquad.gaemimarble.game.dto.response.userStatusBoard;
 import java.util.List;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class GameUserStatusBoardResponse {
 	private final Integer cashAsset;
 	private final Integer stockAsset;

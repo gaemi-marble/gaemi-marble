@@ -24,5 +24,5 @@ public interface GameMapper {
 	@Mapping(target = "stockList", source = "stockList")
 	GameUserStatusBoardResponse toGameUserStatusBoardResponse(Player player, List<StockNameResponse> stockList);
 
-	StockNameResponse toStockNameResponse(Stock stock);
+	StockNameResponse toStockNameResponse(String name);
 }

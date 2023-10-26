@@ -20,8 +20,7 @@ public class Player {
 
 	@Builder
 	Player(String playerId, Integer order, Integer location, Map<String, Integer> myStocks, Integer stockAsset,
-		Integer cashAsset,
-		Integer totalAsset) {
+		Integer cashAsset, Integer totalAsset) {
 		this.playerId = playerId;
 		this.order = order;
 		this.location = location;

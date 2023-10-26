@@ -7,7 +7,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import codesquad.gaemimarble.game.GameMessage;
+import codesquad.gaemimarble.game.dto.request.GameMessage;
 import codesquad.gaemimarble.game.controller.GameController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

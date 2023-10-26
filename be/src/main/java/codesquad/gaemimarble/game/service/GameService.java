@@ -148,12 +148,12 @@ public class GameService {
 		Random random = new Random();
 		for (int i = 0; i < 6; i++) {
 			int randomIndex = random.nextInt(numbers.size());
-			selectedNumbers.add(randomIndex);
+			selectedNumbers.add(numbers.get(randomIndex));
 			numbers.remove(randomIndex);
 		}
 		int count = 1;
 		for (Events event : Events.values()) {
-			if (selectedNumbers.contains(count)) {
+			if (selectedNumbers.contains(count++)) {
 				gameEventListResponse.getEvents()
 					.add(GameEventResponse.builder()
 						.title(event.getTitle())
@@ -217,16 +217,15 @@ public class GameService {
 		}
 		player.buy(stock, gameStockBuyRequest.getQuantity());
 		stock.decrementQuantity(gameStockBuyRequest.getQuantity());
-		return createUserBoardResponse(player, gameStatus.getStocks());
+		return createUserBoardResponse(player);
 	}
 
-	private GameUserBoardResponse createUserBoardResponse(Player player, List<Stock> stocks) {
+	private GameUserBoardResponse createUserBoardResponse(Player player) {
 		return GameUserBoardResponse.builder()
 			.playerId(player.getPlayerId())
-			.userStatusBoard(GameMapper.INSTANCE.toGameUserStatusBoardResponse(player, stocks
-				.stream()
-				.map(GameMapper.INSTANCE::toStockNameResponse)
-				.collect(Collectors.toList())))
+			.userStatusBoard(GameMapper.INSTANCE.toGameUserStatusBoardResponse(
+					player, player.getMyStocks().keySet().stream().map(
+							GameMapper.INSTANCE::toStockNameResponse).toList()))
 			.build();
 	}
 
@@ -257,7 +256,7 @@ public class GameService {
 			}
 		}
 
-		return createUserBoardResponse(player, gameStatus.getStocks());
+		return createUserBoardResponse(player);
 
 	}
 
