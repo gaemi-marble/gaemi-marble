@@ -97,7 +97,7 @@ export const initialStock = [
     price: 0,
   },
   {
-    logo: 'hanhwa',
+    logo: 'hanwha',
     name: '한화디펜스',
     theme: 'military',
     quantity: 0,
