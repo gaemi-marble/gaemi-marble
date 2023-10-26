@@ -65,7 +65,7 @@ public class GameService {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		List<Player> players = gameStatus.getPlayers();
 		int randomIndex = (int)(Math.random() * players.size()) + 1;
-		Player player = players.get(randomIndex-1);
+		Player player = players.get(randomIndex - 1);
 
 		gameStatus.initCurrentPlayerInfo(player);
 		gameStatus.setOrder(player.getOrder());
@@ -104,7 +104,8 @@ public class GameService {
 		int dice2 = (int)(Math.random() * 6) + 1;
 
 		if (dice1 == dice2) {
-			int countDouble = gameStatus.increaseCountDouble();
+			int countDouble = gameStatus.getCurrentPlayerInfo().increaseCountDouble();
+
 			if (countDouble == 3) {
 				player.goToPrison();
 				return new GameDiceResult(startLocation, dice1, dice2);
@@ -122,7 +123,7 @@ public class GameService {
 		int salary = 0;
 		if (location > 23) {
 			salary = 5_000_000;
-			player.setLocation(location%24);
+			player.setLocation(location % 24);
 		}
 		int dividend = (int)((player.getStockAsset() * 5) / 100);
 		player.setAsset(salary, dividend);
@@ -263,7 +264,14 @@ public class GameService {
 	public GameEndTurnResponse endTurn(GameEndTurnRequest gameEndTurnRequest) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameEndTurnRequest.getGameId());
 		CurrentPlayerInfo currentPlayerInfo = gameStatus.getCurrentPlayerInfo();
-		// TODO: 전에 더블을 굴렸으면 한번 더해야하는 로직 추가해야함
+
+		if (currentPlayerInfo.getRolledDouble()) {
+			currentPlayerInfo.initRolledDouble();
+			return GameEndTurnResponse.builder()
+				.nextPlayerId(currentPlayerInfo.getPlayerId())
+				.build();
+		}
+
 		if (currentPlayerInfo.getOrder() != gameStatus.getPlayers().size()) {
 			for (Player player : gameStatus.getPlayers()) {
 				if (player.getOrder() == currentPlayerInfo.getOrder() + 1) {
