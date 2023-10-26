@@ -26,8 +26,8 @@ public class GameStatus {
 	}
 
 	public void setOrder(Integer firstOrder) {
-		for (Player player : players) {
-			player.setOrder(((player.getOrder() + (players.size() - firstOrder)) % players.size()) + 1);
+		for (int i=0; i<players.size(); i++) {
+			players.get(i).setOrder(((firstOrder + i - 1) % players.size()) + 1);
 		}
 	}
 
