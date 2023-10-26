@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameEventResultRequest {
+public class GameEndTurnRequest {
 	private Long gameId;
-	private String eventName;
+	private String playerId;
 
 	@Builder
-	private GameEventResultRequest(Long gameId, String eventName) {
+	private GameEndTurnRequest(Long gameId, String playerId) {
 		this.gameId = gameId;
-		this.eventName = eventName;
+		this.playerId = playerId;
 	}
 }

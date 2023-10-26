@@ -1,4 +1,4 @@
-package codesquad.gaemimarble.game.dto.response;
+package codesquad.gaemimarble.game.dto.response.generalStatusBoard;
 
 import java.util.List;
 

@@ -13,16 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
 
 import codesquad.gaemimarble.game.dto.ResponseDTO;
+import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
+import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
-import codesquad.gaemimarble.game.dto.response.GameCellResponse;
-import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
-import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
@@ -40,11 +39,13 @@ public class GameController {
 		this.socketDataSender = socketDataSender;
 		this.typeMap = new HashMap<>();
 		typeMap.put(TypeConstants.READY, GameReadyRequest.class);
-		typeMap.put("buy", GameStockBuyRequest.class);
 		typeMap.put(TypeConstants.START, GameStartRequest.class);
 		typeMap.put(TypeConstants.DICE, GameRollDiceRequest.class);
 		typeMap.put(TypeConstants.EVENTS, GameEventRequest.class);
 		typeMap.put(TypeConstants.EVENTS_RESULT, GameEventResultRequest.class);
+		typeMap.put(TypeConstants.BUY, GameStockBuyRequest.class);
+		typeMap.put(TypeConstants.SELL, GameSellStockRequest.class);
+		typeMap.put(TypeConstants.END_TURN, GameEndTurnRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -52,11 +53,23 @@ public class GameController {
 		handlers.put(GameRollDiceRequest.class, req -> sendDiceResult((GameRollDiceRequest)req));
 		handlers.put(GameEventRequest.class, req -> sendRandomEvents((GameEventRequest)req));
 		handlers.put(GameEventResultRequest.class, req -> sendEventResult((GameEventResultRequest)req));
-		handlers.put(GameStockBuyRequest.class, req -> handleRequest((GameStockBuyRequest)req));
+		handlers.put(GameStockBuyRequest.class, req -> sendBuyResult((GameStockBuyRequest)req));
+		handlers.put(GameSellStockRequest.class, req -> sendSellResult((GameSellStockRequest)req));
+		handlers.put(GameEndTurnRequest.class, req -> sendNextPlayer((GameEndTurnRequest)req));
+	}
+
+	private void sendNextPlayer(GameEndTurnRequest gameEndTurnRequest) {
+		socketDataSender.send(gameEndTurnRequest.getGameId(), new ResponseDTO<>(TypeConstants.END_TURN,
+			gameService.endTurn(gameEndTurnRequest)));
+	}
+
+	private void sendSellResult(GameSellStockRequest gameSellStockRequest) {
+		socketDataSender.send(gameSellStockRequest.getGameId(), new ResponseDTO<>(TypeConstants.SELL,
+			gameService.sellStock(gameSellStockRequest)));
 	}
 
 	private void sendEventResult(GameEventResultRequest gameEventResultRequest) {
-		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS_RESULT,
+		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 			gameService.proceedEvent(gameEventResultRequest)));
 	}
 
@@ -69,7 +82,7 @@ public class GameController {
 
 	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
 		socketDataSender.saveSocket(gameId, session);
-		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER,gameService.enterGame(gameId, playerId)));
+		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER, gameService.enterGame(gameId, playerId)));
 	}
 
 	@GetMapping("/api/games/{gameId}")
@@ -111,10 +124,12 @@ public class GameController {
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
-		GameEventListResponse gameEventListResponse = gameService.selectEvents(gameEventRequest);
+		socketDataSender.send(gameEventRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS,
+			gameService.selectEvents()));
 	}
 
-	private void handleRequest(GameStockBuyRequest gameStockBuyRequest) {
-		System.out.println(2);
+	private void sendBuyResult(GameStockBuyRequest gameStockBuyRequest) {
+		socketDataSender.send(gameStockBuyRequest.getGameId(), new ResponseDTO<>(TypeConstants.BUY,
+			gameService.buyStock(gameStockBuyRequest)));
 	}
 }

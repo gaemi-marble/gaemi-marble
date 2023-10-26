@@ -40,6 +40,14 @@ public class Stock {
 	}
 
 	public void changePrice(Integer percentage) {
-		this.currentPrice += (this.startPrice * percentage / 100);
+		this.currentPrice += ((this.startPrice * percentage) / 100);
+	}
+
+	public void decrementQuantity(Integer quantity) {
+		remainingStock -= quantity;
+	}
+
+	public void incrementQuantity(Integer quantity) {
+		remainingStock += quantity;
 	}
 }
