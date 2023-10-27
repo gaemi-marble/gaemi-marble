@@ -10,11 +10,11 @@ public class GameUserStatusBoardResponse {
 	private final Integer cashAsset;
 	private final Integer stockAsset;
 	private final Integer totalAsset;
-	List<StockNameResponse> stockList;
+	List<StockResponse> stockList;
 
 	@Builder
 	public GameUserStatusBoardResponse(Integer cashAsset, Integer stockAsset, Integer totalAsset,
-		List<StockNameResponse> stockList) {
+		List<StockResponse> stockList) {
 		this.cashAsset = cashAsset;
 		this.stockAsset = stockAsset;
 		this.totalAsset = totalAsset;

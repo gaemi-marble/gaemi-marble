@@ -16,11 +16,12 @@ public class Player {
 	private Integer stockAsset;
 	private Integer cashAsset;
 	private Integer totalAsset;
+	private Boolean isReady;
 	// 상태, 황금카드 보류
 
 	@Builder
 	Player(String playerId, Integer order, Integer location, Map<String, Integer> myStocks, Integer stockAsset,
-		Integer cashAsset, Integer totalAsset) {
+		Integer cashAsset, Integer totalAsset, Boolean isReady) {
 		this.playerId = playerId;
 		this.order = order;
 		this.location = location;
@@ -28,6 +29,7 @@ public class Player {
 		this.stockAsset = stockAsset;
 		this.cashAsset = cashAsset;
 		this.totalAsset = totalAsset;
+		this.isReady = isReady;
 	}
 
 	public static Player init(String playerId) {
@@ -38,6 +40,7 @@ public class Player {
 			.myStocks(new HashMap<>())
 			.stockAsset(0)
 			.totalAsset(200_000_000)
+			.isReady(false)
 			.build();
 	}
 
@@ -49,14 +52,14 @@ public class Player {
 		this.location = location;
 	}
 
-	public void setAsset(int cashAsset, int stockAsset) {
+	public void addAsset(int cashAsset, int stockAsset) {
 		this.cashAsset += cashAsset;
 		this.stockAsset += stockAsset;
 		this.totalAsset = this.cashAsset + this.stockAsset;
 	}
 
-	public GameEnterResponse toDto() {
-		return new GameEnterResponse(this.getOrder(), this.getPlayerId());
+	public void setReady(boolean isReady) {
+		this.isReady = isReady;
 	}
 
 	public void move(int i) {
@@ -77,5 +80,10 @@ public class Player {
 		myStocks.put(stock.getName(), myStocks.get(stock.getName()) - quantity);
 		cashAsset += quantity * stock.getCurrentPrice();
 		stockAsset -= quantity * stock.getCurrentPrice();
+	}
+
+	public void updateStockAsset(Stock stock) {
+		stockAsset = myStocks.get(stock.getName()) * stock.getCurrentPrice();
+		totalAsset = cashAsset + stockAsset;
 	}
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
+import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
@@ -22,7 +23,9 @@ import codesquad.gaemimarble.game.dto.response.GameDiceResult;
 import codesquad.gaemimarble.game.dto.response.GameEndTurnResponse;
 import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
+import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
+import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
@@ -57,8 +60,17 @@ public class GameService {
 		Player player = Player.init(playerId);
 		List<Player> players = gameRepository.enterGame(gameId, player);
 		return players.stream()
-			.map(p -> GameEnterResponse.of(p.getOrder(), p.getPlayerId()))
+			.map(p -> GameEnterResponse.of(p.getOrder(), p.getPlayerId(), p.getIsReady()))
 			.collect(Collectors.toList());
+	}
+
+	public GameReadyResponse readyGame(GameReadyRequest gameReadyRequest) {
+		Player player = gameRepository.getGameStatus(gameReadyRequest.getGameId()).getPlayer(gameReadyRequest.getPlayerId());
+		player.setReady(true);
+		return GameReadyResponse.builder()
+			.playerId(player.getPlayerId())
+			.isReady(player.getIsReady())
+			.build();
 	}
 
 	public String getFirstPlayer(Long gameId) {
@@ -126,7 +138,7 @@ public class GameService {
 			player.setLocation(location % 24);
 		}
 		int dividend = (int)((player.getStockAsset() * 5) / 100);
-		player.setAsset(salary, dividend);
+		player.addAsset(salary, dividend);
 
 		return GameCellResponse.builder()
 			.playerId(player.getPlayerId())
@@ -163,20 +175,26 @@ public class GameService {
 			}
 		}
 		return gameEventListResponse;
-
 	}
 
-	public GameStatusBoardResponse proceedEvent(GameEventResultRequest gameEventResultRequest) {
+	public GameEventNameResponse selectEvent(GameEventResultRequest gameEventResultRequest) {
+		int randomIndex = (int)(Math.random() * 6);
+		return GameEventNameResponse.builder()
+			.name(gameEventResultRequest.getEvents().get(randomIndex))
+			.build();
+	}
+
+	public GameStatusBoardResponse proceedEvent(String eventName, Long gameId) {
 		Events eventToProceed = null;
 		for (Events events : Events.values()) {
-			if (events.getTitle().equals(gameEventResultRequest.getEventName())) {
+			if (events.getTitle().equals(eventName)) {
 				eventToProceed = events;
 			}
 		}
 		if (eventToProceed == null) {
 			throw new RuntimeException("이벤트 이름이 맞지 않습니다");
 		}
-		GameStatus gameStatus = gameRepository.getGameStatus(gameEventResultRequest.getGameId());
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		Map<Theme, Integer> impactMap = eventToProceed.getImpact();
 		List<Stock> stockList = gameStatus.getStocks();
 		for (Stock stock : stockList) {
@@ -187,7 +205,19 @@ public class GameService {
 				stock.changePrice(random.nextBoolean() ? -10 : 10);
 			}
 		}
-		return createGameStatusBoardResponse(gameEventResultRequest.getGameId());
+		updatePlayersAsset(gameStatus.getPlayers(), stockList);
+
+		return createGameStatusBoardResponse(gameId);
+	}
+
+	private void updatePlayersAsset(List<Player> players, List<Stock> stockList) {
+		for(Player player : players){
+			for(Stock stock : stockList){
+				if(player.getMyStocks().containsKey(stock.getName())){
+					player.updateStockAsset(stock);
+				}
+			}
+		}
 	}
 
 	public GameStatusBoardResponse createGameStatusBoardResponse(Long gameId) {
@@ -225,7 +255,8 @@ public class GameService {
 			.playerId(player.getPlayerId())
 			.userStatusBoard(GameMapper.INSTANCE.toGameUserStatusBoardResponse(
 					player, player.getMyStocks().keySet().stream().map(
-							GameMapper.INSTANCE::toStockNameResponse).toList()))
+						k -> GameMapper.INSTANCE.toStockResponse(k, player.getMyStocks().get(k))
+				).toList()))
 			.build();
 	}
 
