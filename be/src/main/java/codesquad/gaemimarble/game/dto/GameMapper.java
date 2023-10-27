@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStockStatusResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserStatusBoardResponse;
-import codesquad.gaemimarble.game.dto.response.userStatusBoard.StockNameResponse;
+import codesquad.gaemimarble.game.dto.response.userStatusBoard.StockResponse;
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.Stock;
 
@@ -22,7 +22,7 @@ public interface GameMapper {
 	GameStockStatusResponse toGameStockStatusResponse(Stock stock, String themeName);
 
 	@Mapping(target = "stockList", source = "stockList")
-	GameUserStatusBoardResponse toGameUserStatusBoardResponse(Player player, List<StockNameResponse> stockList);
+	GameUserStatusBoardResponse toGameUserStatusBoardResponse(Player player, List<StockResponse> stockList);
 
-	StockNameResponse toStockNameResponse(String name);
+	StockResponse toStockResponse(String name, Integer quantity);
 }

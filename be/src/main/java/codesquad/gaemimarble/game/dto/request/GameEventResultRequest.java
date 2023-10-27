@@ -1,5 +1,7 @@
 package codesquad.gaemimarble.game.dto.request;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameEventResultRequest {
 	private Long gameId;
-	private String eventName;
+	private List<String> events;
 
 	@Builder
-	private GameEventResultRequest(Long gameId, String eventName) {
+	private GameEventResultRequest(Long gameId, List<String> events) {
 		this.gameId = gameId;
-		this.eventName = eventName;
+		this.events = events;
 	}
 }

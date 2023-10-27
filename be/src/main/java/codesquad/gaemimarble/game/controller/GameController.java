@@ -22,6 +22,7 @@ import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
+import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
@@ -69,8 +70,11 @@ public class GameController {
 	}
 
 	private void sendEventResult(GameEventResultRequest gameEventResultRequest) {
+		GameEventNameResponse gameEventNameResponse = gameService.selectEvent(gameEventResultRequest);
+		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS_RESULT,
+			gameEventNameResponse));
 		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
-			gameService.proceedEvent(gameEventResultRequest)));
+			gameService.proceedEvent(gameEventNameResponse.getName(), gameEventResultRequest.getGameId())));
 	}
 
 	@PostMapping("/api/games")
@@ -105,9 +109,7 @@ public class GameController {
 
 	private void sendReadyStatus(GameReadyRequest gameReadyRequest) {
 		socketDataSender.send(gameReadyRequest.getGameId(), new ResponseDTO<>(TypeConstants.READY,
-			GameReadyResponse.builder()
-				.isReady(gameReadyRequest.getIsReady())
-				.playerId(gameReadyRequest.getPlayerId()).build()));
+			gameService.readyGame(gameReadyRequest)));
 	}
 
 	private void sendFirstPlayer(GameStartRequest gameStartRequest) {

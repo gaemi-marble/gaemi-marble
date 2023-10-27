@@ -44,13 +44,13 @@ public class UserController {
 		return ResponseEntity.ok(Map.of(Constants.PLAYER_ID, userLoginRequest.getPlayerId()));
 	}
 
-	@GetMapping("/reissue-access-token")
+	@GetMapping("/api/reissue-access-token")
 	public Jwt reissueToken(@RequestBody JwtRefreshTokenRequest jwtRefreshTokenRequest, HttpServletRequest request) {
 		return jwtService.reissueAccessToken(
 			jwtRefreshTokenRequest.getRefreshToken(), (String)request.getAttribute(Constants.PLAYER_ID));
 	}
 
-	@PostMapping("/logout")
+	@PostMapping("/api/logout")
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 		String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION).substring(
 			Constants.TOKEN_PREFIX.length()).replace("\"", "");
