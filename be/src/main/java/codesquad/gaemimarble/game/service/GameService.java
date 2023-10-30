@@ -144,7 +144,7 @@ public class GameService {
 
 	public GameExpenseResponse payExpense(Long gameId, String playerId, int expense) {
 		Player player = gameRepository.getGameStatus(gameId).getPlayer(playerId);
-		player.addAsset(expense, 0);
+		player.addAsset(-expense, 0);
 		return GameExpenseResponse.builder()
 			.playerId(player.getPlayerId())
 			.amount(expense)
