@@ -23,10 +23,10 @@ import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
+import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
-import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
 import codesquad.gaemimarble.game.service.GameService;
@@ -52,6 +52,7 @@ public class GameController {
 		typeMap.put(TypeConstants.END_TURN, GameEndTurnRequest.class);
 		typeMap.put(TypeConstants.PRISON_DICE, GamePrisonDiceRequest.class);
 		typeMap.put(TypeConstants.BAIL, GameBailRequest.class);
+		typeMap.put(TypeConstants.TELEPORT, GameTeleportRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -64,6 +65,7 @@ public class GameController {
 		handlers.put(GameEndTurnRequest.class, req -> sendNextPlayer((GameEndTurnRequest)req));
 		handlers.put(GamePrisonDiceRequest.class, req -> sendPrisonDiceResult((GamePrisonDiceRequest)req));
 		handlers.put(GameBailRequest.class, req -> sendBailResult((GameBailRequest)req));
+		handlers.put(GameTeleportRequest.class, req -> sendTeleport((GameTeleportRequest)req));
 	}
 
 	private void sendNextPlayer(GameEndTurnRequest gameEndTurnRequest) {
@@ -131,10 +133,19 @@ public class GameController {
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId())));
-		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameRollDiceRequest);
-		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
+		sendCellArrival(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId());
+	}
+
+	private void sendCellArrival(Long gameId, String playerId) {
+		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameId, playerId);
+		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.CELL,
 			gameCellResponse));
-		actCell(gameRollDiceRequest.getGameId(), gameCellResponse);
+		actCell(gameId, gameCellResponse);
+	}
+
+	private void sendTeleport(GameTeleportRequest gameTeleportRequest) {
+		gameService.teleport(gameTeleportRequest);
+		sendCellArrival(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
@@ -162,13 +173,17 @@ public class GameController {
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
 		switch (gameCellResponse.getLocation()) {
 			// case 9: // 황금카드
-			// case 12: // 호재
+			case 12: // 호재
+				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+					gameService.increasePlayerStockPrice(gameId, gameCellResponse.getPlayerId())));
 			case 15: // 세금
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.EXPENSE,
 					gameService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
 				break;
 			//case 21: // 황금카드
-			// default: // 기업
+			default: // 기업
+				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+					gameService.increaseCompanyStock(gameId, gameCellResponse.getLocation())));
 		}
 	}
 }
