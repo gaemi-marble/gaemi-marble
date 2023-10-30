@@ -13,4 +13,5 @@ public final class TypeConstants {
 	public static final String SELL = "sell";
 	public static final String END_TURN = "endTurn";
 	public static final String EXPENSE = "expense";
+	public static final String PRISON_DICE = "prisonDice";
 }

@@ -17,11 +17,12 @@ public class Player {
 	private Integer cashAsset;
 	private Integer totalAsset;
 	private Boolean isReady;
+	private Integer prisonCount;
 	// 상태, 황금카드 보류
 
 	@Builder
 	Player(String playerId, Integer order, Integer location, Map<String, Integer> myStocks, Integer stockAsset,
-		Integer cashAsset, Integer totalAsset, Boolean isReady) {
+		Integer cashAsset, Integer totalAsset, Boolean isReady, Integer prisonCount) {
 		this.playerId = playerId;
 		this.order = order;
 		this.location = location;
@@ -30,6 +31,7 @@ public class Player {
 		this.cashAsset = cashAsset;
 		this.totalAsset = totalAsset;
 		this.isReady = isReady;
+		this.prisonCount = prisonCount;
 	}
 
 	public static Player init(String playerId) {
@@ -41,6 +43,7 @@ public class Player {
 			.stockAsset(0)
 			.totalAsset(200_000_000)
 			.isReady(false)
+			.prisonCount(0)
 			.build();
 	}
 
@@ -85,5 +88,14 @@ public class Player {
 	public void updateStockAsset(Stock stock) {
 		stockAsset = myStocks.get(stock.getName()) * stock.getCurrentPrice();
 		totalAsset = cashAsset + stockAsset;
+	}
+
+	public void escapePrison(int diceResult) {
+		this.prisonCount = 0;
+		this.location += diceResult;
+	}
+
+	public void increasePrisonCount() {
+		this.prisonCount += 1;
 	}
 }

@@ -16,6 +16,7 @@ import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
+import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
@@ -48,6 +49,7 @@ public class GameController {
 		typeMap.put(TypeConstants.BUY, GameStockBuyRequest.class);
 		typeMap.put(TypeConstants.SELL, GameSellStockRequest.class);
 		typeMap.put(TypeConstants.END_TURN, GameEndTurnRequest.class);
+		typeMap.put(TypeConstants.PRISON_DICE, GamePrisonDiceRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -58,6 +60,7 @@ public class GameController {
 		handlers.put(GameStockBuyRequest.class, req -> sendBuyResult((GameStockBuyRequest)req));
 		handlers.put(GameSellStockRequest.class, req -> sendSellResult((GameSellStockRequest)req));
 		handlers.put(GameEndTurnRequest.class, req -> sendNextPlayer((GameEndTurnRequest)req));
+		handlers.put(GamePrisonDiceRequest.class, req -> sendPrisonDiceResult((GamePrisonDiceRequest)req));
 	}
 
 	private void sendNextPlayer(GameEndTurnRequest gameEndTurnRequest) {
@@ -136,6 +139,11 @@ public class GameController {
 	private void sendBuyResult(GameStockBuyRequest gameStockBuyRequest) {
 		socketDataSender.send(gameStockBuyRequest.getGameId(), new ResponseDTO<>(TypeConstants.BUY,
 			gameService.buyStock(gameStockBuyRequest)));
+	}
+
+	public void sendPrisonDiceResult(GamePrisonDiceRequest gamePrisonDiceRequest) {
+		socketDataSender.send(gamePrisonDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
+			gameService.prisonDice(gamePrisonDiceRequest)));
 	}
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
