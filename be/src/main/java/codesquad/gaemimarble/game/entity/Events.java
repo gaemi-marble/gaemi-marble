@@ -43,7 +43,7 @@ public enum Events {
 		Map.of(Theme.FASHION, 30)),
 	KOREAN_AIR_STRIKE("대한항공, 하나투어 파업", "20일 동안 대규모 파업", "여행 - 20%",
 		Map.of(Theme.TRIP, -20)),
-	SUCCESSFUL_MCDONALDS_COLLAB("성공적인 맥도날드, 농심 콜라보", "신제품 버거 출시", "식품산업 + 30%",
+	SUCCESSFUL_MCDONALDS_COLLAB("맥도날드x농심 콜라보!", "신제품 버거 출시", "식품산업 + 30%",
 		Map.of(Theme.FOOD, 30));
 
 	private final String title;
