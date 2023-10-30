@@ -101,9 +101,9 @@ public class GameService {
 		return GameAccessibleResponse.builder().isPresent(isPresent).isFull(isFull).build();
 	}
 
-	public GameDiceResult rollDice(GameRollDiceRequest gameRollDiceRequest) {
-		GameStatus gameStatus = gameRepository.getGameStatus(gameRollDiceRequest.getGameId());
-		Player player = gameStatus.getPlayer(gameRollDiceRequest.getPlayerId());
+	public GameDiceResult rollDice(Long gameId, String playerId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		Player player = gameStatus.getPlayer(playerId);
 		int startLocation = player.getLocation();
 
 		int dice1 = (int)(Math.random() * 6) + 1;

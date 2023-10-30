@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
 
 import codesquad.gaemimarble.game.dto.ResponseDTO;
+import codesquad.gaemimarble.game.dto.request.GameBailRequest;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -50,6 +51,7 @@ public class GameController {
 		typeMap.put(TypeConstants.SELL, GameSellStockRequest.class);
 		typeMap.put(TypeConstants.END_TURN, GameEndTurnRequest.class);
 		typeMap.put(TypeConstants.PRISON_DICE, GamePrisonDiceRequest.class);
+		typeMap.put(TypeConstants.BAIL, GameBailRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -61,6 +63,7 @@ public class GameController {
 		handlers.put(GameSellStockRequest.class, req -> sendSellResult((GameSellStockRequest)req));
 		handlers.put(GameEndTurnRequest.class, req -> sendNextPlayer((GameEndTurnRequest)req));
 		handlers.put(GamePrisonDiceRequest.class, req -> sendPrisonDiceResult((GamePrisonDiceRequest)req));
+		handlers.put(GameBailRequest.class, req -> sendBailResult((GameBailRequest)req));
 	}
 
 	private void sendNextPlayer(GameEndTurnRequest gameEndTurnRequest) {
@@ -124,7 +127,7 @@ public class GameController {
 
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
-			gameService.rollDice(gameRollDiceRequest)));
+			gameService.rollDice(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId())));
 		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameRollDiceRequest);
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
 			gameCellResponse));
@@ -144,6 +147,13 @@ public class GameController {
 	public void sendPrisonDiceResult(GamePrisonDiceRequest gamePrisonDiceRequest) {
 		socketDataSender.send(gamePrisonDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
 			gameService.prisonDice(gamePrisonDiceRequest)));
+	}
+
+	public void sendBailResult(GameBailRequest gameBailRequest) {
+		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.EXPENSE,
+			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), 5_000_000)));
+		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
+			gameService.rollDice(gameBailRequest.getGameId(), gameBailRequest.getPlayerId())));
 	}
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
