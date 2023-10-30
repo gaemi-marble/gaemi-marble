@@ -22,7 +22,9 @@ import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
+import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
+import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
@@ -121,8 +123,10 @@ public class GameController {
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameRollDiceRequest)));
+		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameRollDiceRequest);
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
-			gameService.arriveAtCell(gameRollDiceRequest)));
+			gameCellResponse));
+		actCell(gameRollDiceRequest.getGameId(), gameCellResponse);
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
@@ -133,5 +137,21 @@ public class GameController {
 	private void sendBuyResult(GameStockBuyRequest gameStockBuyRequest) {
 		socketDataSender.send(gameStockBuyRequest.getGameId(), new ResponseDTO<>(TypeConstants.BUY,
 			gameService.buyStock(gameStockBuyRequest)));
+	}
+
+	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
+		switch (gameCellResponse.getLocation()) {
+			// case 9: // 황금카드
+			// case 12: // 호재
+			case 15: // 세금
+				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.EXPENSE,
+					GameExpenseResponse.builder()
+					.playerId(gameCellResponse.getPlayerId())
+					.amount(5000000)
+					.build()));
+				break;
+			//case 21: // 황금카드
+			// default: // 기업
+		}
 	}
 }
