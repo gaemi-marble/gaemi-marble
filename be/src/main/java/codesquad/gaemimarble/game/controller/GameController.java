@@ -119,10 +119,13 @@ public class GameController {
 			gameService.readyGame(gameReadyRequest)));
 	}
 
+	// 게임 시작
 	private void sendFirstPlayer(GameStartRequest gameStartRequest) {
 		String playerId = gameService.getFirstPlayer(gameStartRequest.getGameId());
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.START,
 			Map.of("playerId", playerId)));
+		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+			gameService.createGameStatusBoardResponse(gameStartRequest.getGameId())));
 	}
 
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
