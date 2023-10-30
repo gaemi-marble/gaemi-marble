@@ -25,7 +25,6 @@ import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
-import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
 import codesquad.gaemimarble.game.service.GameService;
@@ -145,10 +144,7 @@ public class GameController {
 			// case 12: // 호재
 			case 15: // 세금
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.EXPENSE,
-					GameExpenseResponse.builder()
-					.playerId(gameCellResponse.getPlayerId())
-					.amount(5000000)
-					.build()));
+					gameService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
 				break;
 			//case 21: // 황금카드
 			// default: // 기업

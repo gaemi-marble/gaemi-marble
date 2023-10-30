@@ -25,6 +25,7 @@ import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
+import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
@@ -136,6 +137,15 @@ public class GameService {
 			.location(player.getLocation())
 			.salary(salary)
 			.dividend(dividend)
+			.build();
+	}
+
+	public GameExpenseResponse payExpense(Long gameId, String playerId, int expense) {
+		Player player = gameRepository.getGameStatus(gameId).getPlayer(playerId);
+		player.addAsset(expense, 0);
+		return GameExpenseResponse.builder()
+			.playerId(player.getPlayerId())
+			.amount(expense)
 			.build();
 	}
 
