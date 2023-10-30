@@ -26,8 +26,18 @@ public class SocketDataSender {
 		gameSocketMap.put(gameRoomId, new HashSet<>());
 	}
 
-	public void saveSocket(Long gameId, WebSocketSession session) {
-		gameSocketMap.get(gameId).add(session);
+	public void saveSocket(Long gameId, String playerId, WebSocketSession session) {
+		Set<WebSocketSession> sessions = gameSocketMap.computeIfAbsent(gameId, key -> ConcurrentHashMap.newKeySet());
+
+		boolean isDuplicate = sessions.stream()
+			.anyMatch(s -> s.getAttributes().get("playerId").equals(playerId));
+
+		if (!isDuplicate) {
+			session.getAttributes().put("playerId", playerId);
+			sessions.add(session);
+		} else {
+			throw new RuntimeException("이미 입장한 유저입니다.");
+		}
 	}
 
 	public <T> void send(Long gameId, T object) {
