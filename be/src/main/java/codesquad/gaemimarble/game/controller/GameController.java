@@ -74,7 +74,7 @@ public class GameController {
 	}
 
 	private void sendSellResult(GameSellStockRequest gameSellStockRequest) {
-		socketDataSender.send(gameSellStockRequest.getGameId(), new ResponseDTO<>(TypeConstants.SELL,
+		socketDataSender.send(gameSellStockRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 			gameService.sellStock(gameSellStockRequest)));
 	}
 
@@ -154,13 +154,14 @@ public class GameController {
 	}
 
 	private void sendBuyResult(GameStockBuyRequest gameStockBuyRequest) {
-		socketDataSender.send(gameStockBuyRequest.getGameId(), new ResponseDTO<>(TypeConstants.BUY,
+		socketDataSender.send(gameStockBuyRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 			gameService.buyStock(gameStockBuyRequest)));
 	}
 
 	public void sendPrisonDiceResult(GamePrisonDiceRequest gamePrisonDiceRequest) {
 		socketDataSender.send(gamePrisonDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
 			gameService.prisonDice(gamePrisonDiceRequest)));
+		sendCellArrival(gamePrisonDiceRequest.getGameId(), gamePrisonDiceRequest.getPlayerId());
 	}
 
 	public void sendBailResult(GameBailRequest gameBailRequest) {
@@ -168,22 +169,25 @@ public class GameController {
 			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), 5_000_000)));
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameBailRequest.getGameId(), gameBailRequest.getPlayerId())));
+		sendCellArrival(gameBailRequest.getGameId(), gameBailRequest.getPlayerId());
 	}
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
 		switch (gameCellResponse.getLocation()) {
-			// case 9: // 황금카드
+			case 0, 6, 18, 9, 21: // 시작, 감옥, 순간이동, 황금카드, 황금카드
+				break;
 			case 12: // 호재
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 					gameService.increasePlayerStockPrice(gameId, gameCellResponse.getPlayerId())));
+				break;
 			case 15: // 세금
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.EXPENSE,
 					gameService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
 				break;
-			//case 21: // 황금카드
 			default: // 기업
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 					gameService.increaseCompanyStock(gameId, gameCellResponse.getLocation())));
+				break;
 		}
 	}
 }

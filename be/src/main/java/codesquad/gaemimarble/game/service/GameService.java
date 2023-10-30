@@ -14,7 +14,6 @@ import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
-import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
@@ -323,7 +322,10 @@ public class GameService {
 
 	public GameStatusBoardResponse increaseCompanyStock(Long gameId, Integer location) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
-		Stock stock = gameStatus.getStocks().get(location);
+		String shareName = gameStatus.getBoard().getBoard().get(location);
+		Stock stock = gameStatus.getStocks().stream()
+			.filter(s-> s.getName().equals(shareName)).findFirst()
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식입니다."));
 		boolean raisePrice = false;
 		for (Player player : gameStatus.getPlayers()) {
 			if (player.getMyStocks().containsKey(stock.getName())) {
