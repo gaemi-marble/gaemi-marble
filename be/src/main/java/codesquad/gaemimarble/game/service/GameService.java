@@ -67,7 +67,7 @@ public class GameService {
 
 	public GameReadyResponse readyGame(GameReadyRequest gameReadyRequest) {
 		Player player = gameRepository.getGameStatus(gameReadyRequest.getGameId()).getPlayer(gameReadyRequest.getPlayerId());
-		player.setReady(true);
+		player.setReady(gameReadyRequest.getIsReady());
 		return GameReadyResponse.builder()
 			.playerId(player.getPlayerId())
 			.isReady(player.getIsReady())
