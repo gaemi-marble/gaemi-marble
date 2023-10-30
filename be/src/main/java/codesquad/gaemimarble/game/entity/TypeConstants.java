@@ -13,6 +13,8 @@ public final class TypeConstants {
 	public static final String SELL = "sell";
 	public static final String END_TURN = "endTurn";
 	public static final String EXPENSE = "expense";
+	public static final String TELEPORT = "teleport";
 	public static final String PRISON_DICE = "prisonDice";
 	public static final String BAIL = "bail";
+	public static final String USER_STATUS_BOARD = "userStatusBoard";
 }

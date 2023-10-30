@@ -35,4 +35,12 @@ public class GameRepository {
 	public GameStatus getGameStatus(Long gameId) {
 		return gameStatusMap.get(gameId);
 	}
+
+	public Player getPlayer(Long gameId, String playerId) {
+		return getAllPlayer(gameId)
+			.stream()
+			.filter(p -> p.getPlayerId().equals(playerId))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("해당 플레이어가 존재하지 않습니다"));
+	}
 }

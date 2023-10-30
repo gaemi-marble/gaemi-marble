@@ -3,50 +3,37 @@ package codesquad.gaemimarble.game.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import codesquad.gaemimarble.game.entity.ground.Cell;
-import codesquad.gaemimarble.game.entity.ground.Company;
-import codesquad.gaemimarble.game.entity.ground.GoldCard;
-import codesquad.gaemimarble.game.entity.ground.GoodNews;
-import codesquad.gaemimarble.game.entity.ground.Prison;
-import codesquad.gaemimarble.game.entity.ground.Start;
-import codesquad.gaemimarble.game.entity.ground.Tax;
-import codesquad.gaemimarble.game.entity.ground.Teleport;
+import lombok.Getter;
 
+@Getter
 public class Board {
-	private final List<Cell> board;
+	private final List<String> board;
 
 	public Board() {
 		board = new ArrayList<>();
-		Start start = Start.builder().build();
-		Company company = Company.builder().build();
-		GoldCard goldCard = GoldCard.builder().build();
-		Tax tax = Tax.builder().build();
-		Teleport teleport = Teleport.builder().build();
-		Prison prison = Prison.builder().build();
-		GoodNews goodNews = GoodNews.builder().build();
-		board.add(start);
-		board.add(company);
-		board.add(company);
-		board.add(company);
-		board.add(company);
-		board.add(company);
-		board.add(prison);
-		board.add(company);
-		board.add(company);
-		board.add(goldCard);
-		board.add(company);
-		board.add(company);
-		board.add(goodNews);
-		board.add(company);
-		board.add(company);
-		board.add(tax);
-		board.add(company);
-		board.add(company);
-		board.add(teleport);
-		board.add(company);
-		board.add(company);
-		board.add(goldCard);
-		board.add(company);
-		board.add(company);
+		board.add("start");
+		board.add(Share.CODE_SQUAD.getName());
+		board.add(Share.MUSINSA.getName());
+		board.add(Share.HANA_TOUR.getName());
+		board.add(Share.GS.getName());
+		board.add(Share.NONGSHIM.getName());
+		board.add("prison");
+		board.add(Share.HYUNDAI.getName());
+		board.add(Share.HANWHA_DEFENSE.getName());
+		board.add("goldCard");
+		board.add(Share.KOREAN_AIR.getName());
+		board.add(Share.TWITTER.getName());
+		board.add("goodNews");
+		board.add(Share.SAMSUNG_BIO.getName());
+		board.add(Share.GOOGLE.getName());
+		board.add("tax");
+		board.add(Share.HERMES.getName());
+		board.add(Share.MCDONALDS.getName());
+		board.add("teleport");
+		board.add(Share.TESLA.getName());
+		board.add(Share.PFIZER.getName());
+		board.add("goldCard");
+		board.add(Share.STARK_INDUSTRY.getName());
+		board.add(Share.APPLE.getName());
 	}
 }
