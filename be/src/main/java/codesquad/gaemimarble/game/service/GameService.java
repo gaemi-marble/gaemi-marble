@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
+import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
@@ -25,6 +26,8 @@ import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
+import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
+import codesquad.gaemimarble.game.dto.response.GamePrisonDiceResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
@@ -66,7 +69,7 @@ public class GameService {
 
 	public GameReadyResponse readyGame(GameReadyRequest gameReadyRequest) {
 		Player player = gameRepository.getGameStatus(gameReadyRequest.getGameId()).getPlayer(gameReadyRequest.getPlayerId());
-		player.setReady(true);
+		player.setReady(gameReadyRequest.getIsReady());
 		return GameReadyResponse.builder()
 			.playerId(player.getPlayerId())
 			.isReady(player.getIsReady())
@@ -98,19 +101,10 @@ public class GameService {
 		return GameAccessibleResponse.builder().isPresent(isPresent).isFull(isFull).build();
 	}
 
-	public GameDiceResult rollDice(GameRollDiceRequest gameRollDiceRequest) {
-		GameStatus gameStatus = gameRepository.getGameStatus(gameRollDiceRequest.getGameId());
-		Player player = gameStatus.getPlayer(gameRollDiceRequest.getPlayerId());
+	public GameDiceResult rollDice(Long gameId, String playerId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		Player player = gameStatus.getPlayer(playerId);
 		int startLocation = player.getLocation();
-
-//		if (startLocation == 6) {
-//			// 탈출 시도 or 보석금
-//			return null;
-//		}
-//		if (startLocation == 18) {
-//			// 순간 이동 진행
-//			return null;
-//		}
 
 		int dice1 = (int)(Math.random() * 6) + 1;
 		int dice2 = (int)(Math.random() * 6) + 1;
@@ -145,6 +139,15 @@ public class GameService {
 			.location(player.getLocation())
 			.salary(salary)
 			.dividend(dividend)
+			.build();
+	}
+
+	public GameExpenseResponse payExpense(Long gameId, String playerId, int expense) {
+		Player player = gameRepository.getGameStatus(gameId).getPlayer(playerId);
+		player.addAsset(-expense, 0);
+		return GameExpenseResponse.builder()
+			.playerId(player.getPlayerId())
+			.amount(expense)
 			.build();
 	}
 
@@ -319,6 +322,29 @@ public class GameService {
 		}
 		return GameEndTurnResponse.builder()
 			.nextPlayerId(null)
+			.build();
+	}
+
+	public GamePrisonDiceResponse prisonDice(GamePrisonDiceRequest gamePrisonDiceRequest) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gamePrisonDiceRequest.getGameId());
+		Player player = gameStatus.getPlayer(gamePrisonDiceRequest.getPlayerId());
+
+		int dice1 = (int)(Math.random() * 6) + 1;
+		int dice2 = (int)(Math.random() * 6) + 1;
+
+		if (dice1 == dice2) {
+			player.escapePrison(dice1 + dice2);
+		} else {
+			player.increasePrisonCount();
+			if (player.getPrisonCount() == 3) {
+				player.escapePrison(dice1 + dice2);
+			}
+		}
+
+		return GamePrisonDiceResponse.builder()
+			.dice1(dice1)
+			.dice2(dice2)
+			.hasEscaped(player.getPrisonCount() == 0)
 			.build();
 	}
 }
