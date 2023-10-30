@@ -1,6 +1,7 @@
 import PlayerTestModal from '@components/Modal/PlayerTestModal';
 import StatusBoardModal from '@components/Modal/StatusBoardModal/StatusBoardModal';
 import { Icon } from '@components/icon/Icon';
+import useSound from '@hooks/useSound';
 import { ROUTE_PATH } from '@router/constants';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +11,13 @@ export default function GameHeader() {
   const navigate = useNavigate();
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
   const [isStatusBoardModalOpen, setIsStatusBoardModalOpen] = useState(false);
+  const {
+    isSoundPlaying,
+    togglePlayingSound,
+    sound: GameBgm,
+  } = useSound({
+    src: '/bgm/game.mp3',
+  });
 
   const handleExit = () => {
     navigate(ROUTE_PATH.HOME);
@@ -36,6 +44,14 @@ export default function GameHeader() {
       <Header>
         <Logo>Gaemi Marble</Logo>
         <Temp>
+          <IconContainer>
+            <Icon
+              name={isSoundPlaying ? 'soundPlaying' : 'soundMute'}
+              size="3rem"
+              color="neutralText"
+              onClick={togglePlayingSound}
+            />
+          </IconContainer>
           <IconContainer>
             <Icon
               name="statusBoard"
@@ -68,11 +84,15 @@ export default function GameHeader() {
       {isStatusBoardModalOpen && (
         <StatusBoardModal handleClose={handleCloseStatusBoardModal} />
       )}
+      {GameBgm}
     </>
   );
 }
 
 const Header = styled.div`
+  #sound {
+    display: none;
+  }
   width: 100%;
   display: flex;
   position: fixed;

@@ -1,5 +1,6 @@
 import { postLogout } from '@api/index';
 import useHover from '@hooks/useHover';
+import useSound from '@hooks/useSound';
 import { ROUTE_PATH } from '@router/constants';
 import {
   useSetAccessToken,
@@ -17,6 +18,13 @@ export default function HomeHeader() {
   const setPlayer = useSetPlayer();
   const setAccessToken = useSetAccessToken();
   const setRefreshToken = useSetRefreshToken();
+  const {
+    isSoundPlaying,
+    togglePlayingSound,
+    sound: HomeBgm,
+  } = useSound({
+    src: '/bgm/home.mp3',
+  });
 
   const handleLogout = async () => {
     const res = await postLogout();
@@ -33,16 +41,29 @@ export default function HomeHeader() {
   };
 
   return (
-    <StyledHeader>
-      <Logo>Gaemi Marble</Logo>
-      <User ref={hoverRef}>
-        {isHover ? (
-          <Icon name="exit" size="3rem" onClick={handleLogout} />
-        ) : (
-          <Icon name="sample" size="3rem" />
-        )}
-      </User>
-    </StyledHeader>
+    <>
+      <StyledHeader>
+        <Logo>Gaemi Marble</Logo>
+        <IconWrapper>
+          <IconContainer>
+            <Icon
+              name={isSoundPlaying ? 'soundPlaying' : 'soundMute'}
+              size="3rem"
+              color="neutralText"
+              onClick={togglePlayingSound}
+            />
+          </IconContainer>
+          <User ref={hoverRef}>
+            {isHover ? (
+              <Icon name="exit" size="3rem" onClick={handleLogout} />
+            ) : (
+              <Icon name="sample" size="3rem" />
+            )}
+          </User>
+        </IconWrapper>
+      </StyledHeader>
+      {HomeBgm}
+    </>
   );
 }
 
@@ -61,6 +82,28 @@ const Logo = styled.h1`
   display: block;
   color: ${({ theme: { color } }) => color.accentText};
   cursor: pointer;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const IconContainer = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border-radius: ${({ theme: { radius } }) => radius.half};
+  background-color: ${({ theme: { color } }) => color.neutralBackground};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme: { color } }) => color.accentSecondary};
+
+    svg path {
+      fill: ${({ theme: { color } }) => color.accentText};
+      stroke: ${({ theme: { color } }) => color.accentText};
+    }
+  }
 `;
 
 const User = styled.div`
