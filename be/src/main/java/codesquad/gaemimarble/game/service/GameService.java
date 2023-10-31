@@ -374,4 +374,12 @@ public class GameService {
 			.hasEscaped(player.getPrisonCount() == 0)
 			.build();
 	}
+
+	public List<GameUserBoardResponse> createUserStatusBoardResponse(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		return gameStatus.getPlayers()
+			.stream()
+			.map(this::createUserBoardResponse)
+			.toList();
+	}
 }
