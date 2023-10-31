@@ -1,6 +1,7 @@
 package codesquad.gaemimarble.game.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -28,6 +29,7 @@ import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
 import codesquad.gaemimarble.game.service.GameService;
 
@@ -128,6 +130,11 @@ public class GameController {
 			Map.of("playerId", playerId)));
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 			gameService.createGameStatusBoardResponse(gameStartRequest.getGameId())));
+		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(gameStartRequest.getGameId());
+		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
+			socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameUserBoardResponse));
+		}
 	}
 
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
