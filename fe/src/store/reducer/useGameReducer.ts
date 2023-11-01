@@ -6,7 +6,9 @@ import {
   EnterPayloadType,
   EventResultPayloadType,
   EventsPayloadType,
+  ExpensePayloadType,
   GameActionType,
+  PrisonDicePayloadType,
   ReadyPayloadType,
   StartPayloadType,
   StatusBoardPayloadType,
@@ -188,6 +190,74 @@ export default function useGameReducer() {
               ...prev.game,
               eventResult: payload.name,
             },
+          };
+        }
+
+        case 'expense': {
+          const payload = action.payload as ExpensePayloadType;
+
+          return {
+            ...prev,
+            players: prev.players.map((player) => {
+              if (player.playerId !== payload.playerId) {
+                return player;
+              }
+
+              return {
+                ...player,
+                userStatusBoard: {
+                  ...player.userStatusBoard,
+                  cashAsset: player.userStatusBoard.cashAsset - payload.amount,
+                },
+              };
+            }),
+          };
+        }
+
+        case 'prisonDice': {
+          const payload = action.payload as PrisonDicePayloadType;
+          const { dice1, dice2 } = payload;
+
+          if (!payload.hasEscaped) {
+            return {
+              ...prev,
+              game: {
+                ...prev.game,
+                dice: [dice1, dice2],
+              },
+              players: prev.players.map((player) => {
+                if (player.playerId !== payload.playerId) {
+                  return player;
+                }
+                return {
+                  ...player,
+                  gameboard: {
+                    ...player.gameboard,
+                    hasEscaped: false,
+                  },
+                };
+              }),
+            };
+          }
+
+          return {
+            ...prev,
+            game: {
+              ...prev.game,
+              dice: [dice1, dice2],
+            },
+            players: prev.players.map((player) => {
+              if (player.playerId !== payload.playerId) {
+                return player;
+              }
+              return {
+                ...player,
+                gameboard: {
+                  ...player.gameboard,
+                  hasEscaped: true,
+                },
+              };
+            }),
           };
         }
 

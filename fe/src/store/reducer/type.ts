@@ -1,4 +1,4 @@
-import { ForwardedRef } from 'react';
+import { MutableRefObject } from 'react';
 
 export type GameType = {
   game: GameInfoType;
@@ -17,6 +17,8 @@ export type GameActionType = {
   statusBoard: StatusBoardPayloadType;
   events: EventsPayloadType;
   eventResult: EventResultPayloadType;
+  expense: ExpensePayloadType;
+  prisonDice: PrisonDicePayloadType;
 };
 
 export type GameInfoType = {
@@ -53,13 +55,21 @@ export type PlayerType = {
   order: number;
   isReady: boolean;
   location: number;
-  tokenRef: ForwardedRef<HTMLDivElement> | null;
   userStatusBoard: UserStatusType;
+  gameboard: GameBoardType;
 };
 
 type UserStatusType = {
   cashAsset: number;
   stockList: Pick<StockType, 'name' | 'quantity'>[];
+};
+
+export type GameBoardType = {
+  ref: MutableRefObject<HTMLDivElement | null> | null;
+  location: number;
+  direction: DirectionType;
+  coordinates: { x: number; y: number };
+  hasEscaped: boolean;
 };
 
 export type PlayerActionType = {
@@ -121,4 +131,24 @@ export type RouletteEvent = {
   title: string;
   content: string;
   impact: string;
+};
+
+export type DirectionType = 'top' | 'right' | 'bottom' | 'left';
+
+export type PlayerTokenAtom = {
+  location: number;
+  direction: DirectionType;
+  coordinates: { x: number; y: number };
+};
+
+export type ExpensePayloadType = {
+  playerId: string;
+  amount: number;
+};
+
+export type PrisonDicePayloadType = {
+  playerId: string;
+  dice1: number;
+  dice2: number;
+  hasEscaped: boolean;
 };

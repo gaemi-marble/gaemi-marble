@@ -1,13 +1,21 @@
+import { DirectionType } from './type';
+
 export const initialPlayer = [
   {
     playerId: '',
     order: 1,
     isReady: false,
     location: 0,
-    tokenRef: null,
     userStatusBoard: {
       cashAsset: 0,
       stockList: [],
+    },
+    gameboard: {
+      ref: null,
+      location: 0,
+      direction: 'top' as DirectionType,
+      coordinates: { x: 0, y: 0 },
+      hasEscaped: true,
     },
   },
   {
@@ -15,10 +23,16 @@ export const initialPlayer = [
     order: 2,
     isReady: false,
     location: 0,
-    tokenRef: null,
     userStatusBoard: {
       cashAsset: 0,
       stockList: [],
+    },
+    gameboard: {
+      ref: null,
+      location: 0,
+      direction: 'top' as DirectionType,
+      coordinates: { x: 0, y: 0 },
+      hasEscaped: true,
     },
   },
   {
@@ -26,10 +40,17 @@ export const initialPlayer = [
     order: 3,
     isReady: false,
     location: 0,
-    tokenRef: null,
     userStatusBoard: {
       cashAsset: 0,
       stockList: [],
+      hasEscaped: true,
+    },
+    gameboard: {
+      ref: null,
+      location: 0,
+      direction: 'top' as DirectionType,
+      coordinates: { x: 0, y: 0 },
+      hasEscaped: true,
     },
   },
   {
@@ -37,10 +58,16 @@ export const initialPlayer = [
     order: 4,
     isReady: false,
     location: 0,
-    tokenRef: null,
     userStatusBoard: {
       cashAsset: 0,
       stockList: [],
+    },
+    gameboard: {
+      ref: null,
+      location: 0,
+      direction: 'top' as DirectionType,
+      coordinates: { x: 0, y: 0 },
+      hasEscaped: true,
     },
   },
 ];

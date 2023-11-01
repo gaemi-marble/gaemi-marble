@@ -1,5 +1,9 @@
-import { useGameInfoValue, usePlayersValue } from '@store/reducer';
-import { useRef } from 'react';
+import {
+  playerAtomsAtom,
+  useGameInfoValue,
+  useStocksValue,
+} from '@store/reducer';
+import { useAtom } from 'jotai';
 import { css, styled } from 'styled-components';
 import Cell from './Cell';
 import CenterArea from './CenterArea';
@@ -7,56 +11,34 @@ import PlayerToken from './PlayerToken';
 import { initialBoard } from './constants';
 
 export default function GameBoard() {
-  const tokenRef1 = useRef<HTMLDivElement | null>(null);
-  const tokenRef2 = useRef<HTMLDivElement | null>(null);
-  const tokenRef3 = useRef<HTMLDivElement | null>(null);
-  const tokenRef4 = useRef<HTMLDivElement | null>(null);
-
   const gameInfo = useGameInfoValue();
-  const players = usePlayersValue();
-
-  const findTokenRef = (order: number) => {
-    switch (order) {
-      case 1:
-        return tokenRef1;
-      case 2:
-        return tokenRef2;
-      case 3:
-        return tokenRef3;
-      case 4:
-        return tokenRef4;
-      default:
-        return null;
-    }
-  };
+  const stockList = useStocksValue();
+  const [playerAtoms] = useAtom(playerAtomsAtom);
 
   return (
     <>
       <Board>
         {initialBoard.map((line, index) => (
           <Line key={index} $lineNum={index + 1}>
-            {line.map((cell) => (
-              <Cell
-                key={cell.name}
-                theme={cell.theme}
-                logo={cell.logo}
-                name={cell.name}
-                price={cell.price}
-              />
-            ))}
+            {line.map((cell) => {
+              const stockPrice = stockList.find(
+                (stock) => stock.logo === cell.logo
+              )?.price;
+              return (
+                <Cell
+                  key={cell.name}
+                  theme={cell.theme}
+                  logo={cell.logo}
+                  name={cell.name}
+                  price={stockPrice}
+                />
+              );
+            })}
           </Line>
         ))}
         {gameInfo.isPlaying && <CenterArea />}
-        {players.map((player) => {
-          if (player.playerId === '') return;
-          const tokenRef = findTokenRef(player.order);
-          return (
-            <PlayerToken
-              key={player.playerId}
-              ref={tokenRef}
-              order={player.order}
-            />
-          );
+        {playerAtoms.map((playerAtom) => {
+          return <PlayerToken key={`${playerAtom}`} playerAtom={playerAtom} />;
         })}
       </Board>
     </>
