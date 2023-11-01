@@ -24,7 +24,7 @@ public enum Events {
 		Map.of(Theme.TRIP, 30, Theme.FASHION, 20)),
 	INNOVATIVE_PRODUCT("혁신적인 신제품 발표", "IT 대기업들에서 신제품 발표가 성공적으로 이루어졌다.", "IT 관련주 + 20%"
 		, Map.of(Theme.IT, 20)),
-	NEW_DRUG_SUCCESS("신약개발 성공/부작용 발생", "탈모 치료제가 나왔다고?", "제약/바이오 관련주 +50%",
+	NEW_DRUG_SUCCESS("신약개발 성공", "탈모 치료제가 나왔다고?", "제약/바이오 관련주 +50%",
 		Map.of(Theme.PHARMACEUTICAL, 50)),
 	INTEREST_RATE_HIKE("금리 인상", "대출 비용 증가, 소비 부담 증가", "모든 주식 - 10%",
 		Map.of(Theme.PHARMACEUTICAL, -10, Theme.IT, -10, Theme.FOOD, -10,

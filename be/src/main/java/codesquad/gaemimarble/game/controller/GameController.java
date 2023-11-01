@@ -20,6 +20,7 @@ import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
+import codesquad.gaemimarble.game.dto.request.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
@@ -30,6 +31,7 @@ import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
+import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.TypeConstants;
 import codesquad.gaemimarble.game.service.GameService;
 
@@ -55,6 +57,7 @@ public class GameController {
 		typeMap.put(TypeConstants.PRISON_DICE, GamePrisonDiceRequest.class);
 		typeMap.put(TypeConstants.BAIL, GameBailRequest.class);
 		typeMap.put(TypeConstants.TELEPORT, GameTeleportRequest.class);
+		typeMap.put(TypeConstants.ROB, GameRobRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -68,6 +71,14 @@ public class GameController {
 		handlers.put(GamePrisonDiceRequest.class, req -> sendPrisonDiceResult((GamePrisonDiceRequest)req));
 		handlers.put(GameBailRequest.class, req -> sendBailResult((GameBailRequest)req));
 		handlers.put(GameTeleportRequest.class, req -> sendTeleport((GameTeleportRequest)req));
+		handlers.put(GameRobRequest.class, req -> sendRobResult((GameRobRequest)req));
+	}
+
+	private void sendRobResult(GameRobRequest gameRobRequest) {
+		List<Player> players = gameService.rob(gameRobRequest);
+		players.forEach(
+			p -> socketDataSender.send(gameRobRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameService.createUserBoardResponse(p))));
 	}
 
 	private void sendNextPlayer(GameEndTurnRequest gameEndTurnRequest) {
@@ -130,7 +141,8 @@ public class GameController {
 			Map.of("playerId", playerId)));
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 			gameService.createGameStatusBoardResponse(gameStartRequest.getGameId())));
-		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(gameStartRequest.getGameId());
+		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+			gameStartRequest.getGameId());
 		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
 			socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 				gameUserBoardResponse));
