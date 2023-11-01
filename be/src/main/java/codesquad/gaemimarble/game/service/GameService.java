@@ -28,6 +28,7 @@ import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
+import codesquad.gaemimarble.game.dto.response.GameGoldCardResponse;
 import codesquad.gaemimarble.game.dto.response.GamePrisonDiceResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
@@ -37,6 +38,7 @@ import codesquad.gaemimarble.game.entity.Board;
 import codesquad.gaemimarble.game.entity.CurrentPlayerInfo;
 import codesquad.gaemimarble.game.entity.Events;
 import codesquad.gaemimarble.game.entity.GameStatus;
+import codesquad.gaemimarble.game.entity.GoldCard;
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.Stock;
 import codesquad.gaemimarble.game.entity.Theme;
@@ -385,10 +387,18 @@ public class GameService {
 			.toList();
 	}
 
+	public GameGoldCardResponse selectGoldCard(Long gameId, String playerId) {
+		GoldCard goldCard = GoldCard.getRandomGoldCard();
+		return GameGoldCardResponse.builder()
+			.title(goldCard.getTitle())
+			.description(goldCard.getDescription())
+			.build();
+	}
+
 	public List<Player> rob(GameRobRequest gameRobRequest) {
 		Player taker = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getPlayerId());
 		taker.addCashAsset(10_000_000);
-		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getPlayerId());
+		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getTargetId());
 		target.addCashAsset(-10_000_000);
 		return List.of(taker, target);
 	}
