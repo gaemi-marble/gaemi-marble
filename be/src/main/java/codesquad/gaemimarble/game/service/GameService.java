@@ -398,7 +398,7 @@ public class GameService {
 	public List<Player> rob(GameRobRequest gameRobRequest) {
 		Player taker = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getPlayerId());
 		taker.addCashAsset(10_000_000);
-		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getPlayerId());
+		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getTargetId());
 		target.addCashAsset(-10_000_000);
 		return List.of(taker, target);
 	}
