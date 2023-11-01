@@ -19,4 +19,5 @@ public final class TypeConstants {
 	public static final String USER_STATUS_BOARD = "userStatusBoard";
 	public static final String GOLD_CARD = "goldCard";
 	public static final String ERROR = "error";
+	public static final String ROB = "rob";
 }

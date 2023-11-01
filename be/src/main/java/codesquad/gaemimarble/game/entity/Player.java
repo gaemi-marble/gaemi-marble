@@ -3,7 +3,6 @@ package codesquad.gaemimarble.game.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -57,7 +56,7 @@ public class Player {
 
 	public void addCashAsset(int cashAsset) {
 		this.cashAsset += cashAsset;
-		this.totalAsset = this.cashAsset;
+		this.totalAsset += cashAsset;
 	}
 
 	public void setReady(boolean isReady) {

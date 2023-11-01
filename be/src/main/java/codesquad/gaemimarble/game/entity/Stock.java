@@ -13,6 +13,7 @@ public class Stock {
 	private Integer startPrice;
 	private Integer currentPrice;
 	private Integer remainingStock;
+	private Boolean wasBought = false;
 
 	@Builder
 	private Stock(Theme theme, String name, Integer startPrice, Integer currentPrice, Integer remainingStock) {
@@ -44,6 +45,7 @@ public class Stock {
 	}
 
 	public void decrementQuantity(Integer quantity) {
+		wasBought = true;
 		remainingStock -= quantity;
 	}
 

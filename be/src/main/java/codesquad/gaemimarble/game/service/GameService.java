@@ -14,6 +14,7 @@ import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
+import codesquad.gaemimarble.game.dto.request.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
@@ -70,7 +71,8 @@ public class GameService {
 	}
 
 	public GameReadyResponse readyGame(GameReadyRequest gameReadyRequest) {
-		Player player = gameRepository.getGameStatus(gameReadyRequest.getGameId()).getPlayer(gameReadyRequest.getPlayerId());
+		Player player = gameRepository.getGameStatus(gameReadyRequest.getGameId())
+			.getPlayer(gameReadyRequest.getPlayerId());
 		player.setReady(gameReadyRequest.getIsReady());
 		return GameReadyResponse.builder()
 			.playerId(player.getPlayerId())
@@ -135,7 +137,7 @@ public class GameService {
 		}
 		int dividend = (int)((player.getStockAsset() * 5) / 100);
 		dividend = (dividend / 100_000) * 100_000;
-		player.addCashAsset(salary+dividend);
+		player.addCashAsset(salary + dividend);
 
 		return GameCellResponse.builder()
 			.playerId(player.getPlayerId())
@@ -250,7 +252,12 @@ public class GameService {
 		return createUserBoardResponse(player);
 	}
 
-	private GameUserBoardResponse createUserBoardResponse(Player player) {
+	public GameUserBoardResponse createUserBoardResponse(Player player) {
+		for (String key : player.getMyStocks().keySet()) {
+			if (player.getMyStocks().get(key) == 0) {
+				player.getMyStocks().remove(key);
+			}
+		}
 		return GameUserBoardResponse.builder()
 			.playerId(player.getPlayerId())
 			.userStatusBoard(GameMapper.INSTANCE.toGameUserStatusBoardResponse(player, player.getMyStocks()
@@ -327,16 +334,9 @@ public class GameService {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		String shareName = gameStatus.getBoard().getBoard().get(location);
 		Stock stock = gameStatus.getStocks().stream()
-			.filter(s-> s.getName().equals(shareName)).findFirst()
+			.filter(s -> s.getName().equals(shareName)).findFirst()
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식입니다."));
-		boolean raisePrice = false;
-		for (Player player : gameStatus.getPlayers()) {
-			if (player.getMyStocks().containsKey(stock.getName())) {
-				raisePrice = true;
-				break;
-			}
-		}
-		if (raisePrice) {
+		if (stock.getWasBought()) {
 			stock.changePrice(10);
 		}
 		return createGameStatusBoardResponse(gameId);
@@ -393,5 +393,13 @@ public class GameService {
 			.title(goldCard.getTitle())
 			.description(goldCard.getDescription())
 			.build();
+	}
+
+	public List<Player> rob(GameRobRequest gameRobRequest) {
+		Player taker = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getPlayerId());
+		taker.addCashAsset(10_000_000);
+		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getPlayerId());
+		target.addCashAsset(-10_000_000);
+		return List.of(taker, target);
 	}
 }
