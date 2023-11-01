@@ -181,7 +181,11 @@ public class GameController {
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
 		switch (gameCellResponse.getLocation()) {
-			case 0, 6, 18, 9, 21: // 시작, 감옥, 순간이동, 황금카드, 황금카드
+			case 0, 6, 18: // 시작, 감옥, 순간이동
+				break;
+			case 9, 21: // 황금카드
+				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.GOLD_CARD,
+					gameService.selectGoldCard(gameId, gameCellResponse.getPlayerId())));
 				break;
 			case 12: // 호재
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,

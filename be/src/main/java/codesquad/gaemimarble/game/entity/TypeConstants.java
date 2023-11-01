@@ -17,4 +17,5 @@ public final class TypeConstants {
 	public static final String PRISON_DICE = "prisonDice";
 	public static final String BAIL = "bail";
 	public static final String USER_STATUS_BOARD = "userStatusBoard";
+	public static final String GOLD_CARD = "goldCard";
 }
