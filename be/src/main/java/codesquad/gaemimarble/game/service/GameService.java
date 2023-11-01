@@ -132,7 +132,8 @@ public class GameService {
 			player.setLocation(location % 24);
 		}
 		int dividend = (int)((player.getStockAsset() * 5) / 100);
-		player.addAsset(salary, dividend);
+		dividend = (dividend / 100_000) * 100_000;
+		player.addCashAsset(salary+dividend);
 
 		return GameCellResponse.builder()
 			.playerId(player.getPlayerId())
@@ -144,7 +145,7 @@ public class GameService {
 
 	public GameExpenseResponse payExpense(Long gameId, String playerId, int expense) {
 		Player player = gameRepository.getGameStatus(gameId).getPlayer(playerId);
-		player.addAsset(-expense, 0);
+		player.addCashAsset(-expense);
 		return GameExpenseResponse.builder()
 			.playerId(player.getPlayerId())
 			.amount(expense)

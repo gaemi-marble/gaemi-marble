@@ -55,10 +55,9 @@ public class Player {
 		this.location = location;
 	}
 
-	public void addAsset(int cashAsset, int stockAsset) {
+	public void addCashAsset(int cashAsset) {
 		this.cashAsset += cashAsset;
-		this.stockAsset += stockAsset;
-		this.totalAsset = this.cashAsset + this.stockAsset;
+		this.totalAsset = this.cashAsset;
 	}
 
 	public void setReady(boolean isReady) {
