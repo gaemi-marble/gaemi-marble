@@ -370,6 +370,7 @@ public class GameService {
 		}
 
 		return GamePrisonDiceResponse.builder()
+			.playerId(player.getPlayerId())
 			.dice1(dice1)
 			.dice2(dice2)
 			.hasEscaped(player.getPrisonCount() == 0)
