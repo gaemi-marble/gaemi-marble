@@ -96,8 +96,10 @@ public class GameController {
 	}
 
 	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
-		socketDataSender.saveSocket(gameId, playerId, session);
-		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER, gameService.enterGame(gameId, playerId)));
+		if (socketDataSender.saveSocket(gameId, playerId, session)) {
+			socketDataSender.send(gameId,
+				new ResponseDTO<>(TypeConstants.ENTER, gameService.enterGame(gameId, playerId)));
+		}
 	}
 
 	@GetMapping("/api/games/{gameId}")
