@@ -361,10 +361,8 @@ public class GameService {
 		GameStatus gameStatus = gameRepository.getGameStatus(gamePrisonDiceRequest.getGameId());
 		Player player = gameStatus.getPlayer(gamePrisonDiceRequest.getPlayerId());
 
-		// int dice1 = (int)(Math.random() * 6) + 1;
-		// int dice2 = (int)(Math.random() * 6) + 1;
-		int dice1 = 6;
-		int dice2 = 3;
+		int dice1 = (int)(Math.random() * 6) + 1;
+		int dice2 = (int)(Math.random() * 6) + 1;
 
 		if (dice1 == dice2) {
 			player.escapePrison(dice1 + dice2);

@@ -1,7 +1,7 @@
 package codesquad.gaemimarble.game.entity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ public class Player {
 	private String playerId;
 	private Integer order;
 	private Integer location;
-	private Map<String, Integer> myStocks;
+	private ConcurrentMap<String, Integer> myStocks;
 	private Integer stockAsset;
 	private Integer cashAsset;
 	private Integer totalAsset;
@@ -20,7 +20,8 @@ public class Player {
 	// 상태, 황금카드 보류
 
 	@Builder
-	Player(String playerId, Integer order, Integer location, Map<String, Integer> myStocks, Integer stockAsset,
+	Player(String playerId, Integer order, Integer location, ConcurrentMap<String, Integer> myStocks,
+		Integer stockAsset,
 		Integer cashAsset, Integer totalAsset, Boolean isReady, Integer prisonCount) {
 		this.playerId = playerId;
 		this.order = order;
@@ -38,7 +39,7 @@ public class Player {
 			.playerId(playerId)
 			.cashAsset(200_000_000)
 			.location(0)
-			.myStocks(new HashMap<>())
+			.myStocks(new ConcurrentHashMap<>())
 			.stockAsset(0)
 			.totalAsset(200_000_000)
 			.isReady(false)
