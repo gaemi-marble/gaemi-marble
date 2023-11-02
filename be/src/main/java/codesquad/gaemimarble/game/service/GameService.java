@@ -110,10 +110,8 @@ public class GameService {
 		Player player = gameStatus.getPlayer(playerId);
 		int startLocation = player.getLocation();
 
-		// int dice1 = (int)(Math.random() * 6) + 1;
-		// int dice2 = (int)(Math.random() * 6) + 1;
-		int dice1 = 4;
-		int dice2 = 2;
+		int dice1 = (int)(Math.random() * 6) + 1;
+		int dice2 = (int)(Math.random() * 6) + 1;
 
 		if (dice1 == dice2) {
 			int countDouble = gameStatus.getCurrentPlayerInfo().increaseCountDouble();
