@@ -301,7 +301,10 @@ public class GameService {
 
 		if (currentPlayerInfo.getRolledDouble()) {
 			currentPlayerInfo.initRolledDouble();
-			return GameEndTurnResponse.builder().nextPlayerId(currentPlayerInfo.getPlayerId()).build();
+			Integer location = gameStatus.getPlayer(currentPlayerInfo.getPlayerId()).getLocation();
+			if (!(location == 18 || location == 6)) {
+				return GameEndTurnResponse.builder().nextPlayerId(currentPlayerInfo.getPlayerId()).build();
+			}
 		}
 
 		if (currentPlayerInfo.getOrder() != gameStatus.getPlayers().size()) {
