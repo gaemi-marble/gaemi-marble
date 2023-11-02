@@ -30,6 +30,7 @@ import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.TypeConstants;
@@ -167,6 +168,8 @@ public class GameController {
 	private void sendTeleport(GameTeleportRequest gameTeleportRequest) {
 		gameService.teleport(gameTeleportRequest);
 		sendCellArrival(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
+		socketDataSender.send(gameTeleportRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
+			GameTeleportResponse.builder().location(gameTeleportRequest.getLocation()).build()));
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
