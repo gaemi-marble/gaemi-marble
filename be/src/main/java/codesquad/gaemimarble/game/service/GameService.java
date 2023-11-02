@@ -118,11 +118,11 @@ public class GameService {
 
 			if (countDouble == 3) {
 				player.goToPrison();
-				return new GameDiceResult(startLocation, dice1, dice2);
+				return new GameDiceResult(true, dice1, dice2);
 			}
 		}
 		player.move(dice1 + dice2);
-		return new GameDiceResult(startLocation, dice1, dice2);
+		return new GameDiceResult(false, dice1, dice2);
 	}
 
 	public GameCellResponse arriveAtCell(Long gameId, String playerId) {

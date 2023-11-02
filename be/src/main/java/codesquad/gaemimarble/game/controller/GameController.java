@@ -28,6 +28,7 @@ import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
+import codesquad.gaemimarble.game.dto.response.GameDiceResult;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
@@ -153,8 +154,14 @@ public class GameController {
 	}
 
 	private void sendDiceResult(GameRollDiceRequest gameRollDiceRequest) {
+		GameDiceResult gameDiceResult = gameService.rollDice(gameRollDiceRequest.getGameId(),
+			gameRollDiceRequest.getPlayerId());
 		socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
-			gameService.rollDice(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId())));
+			gameDiceResult));
+		if (gameDiceResult.getTripleDouble()) {
+			socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
+				GameTeleportResponse.builder().location(6).build()));
+		}
 		sendCellArrival(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId());
 	}
 
