@@ -1,4 +1,4 @@
-import { DirectionType } from './type';
+import { DirectionType, PlayerStatusType } from './type';
 
 export const initialPlayer = [
   {
@@ -12,6 +12,7 @@ export const initialPlayer = [
     },
     gameboard: {
       ref: null,
+      status: 'default' as PlayerStatusType,
       location: 0,
       direction: 'top' as DirectionType,
       coordinates: { x: 0, y: 0 },
@@ -29,6 +30,7 @@ export const initialPlayer = [
     },
     gameboard: {
       ref: null,
+      status: 'default' as PlayerStatusType,
       location: 0,
       direction: 'top' as DirectionType,
       coordinates: { x: 0, y: 0 },
@@ -47,6 +49,7 @@ export const initialPlayer = [
     },
     gameboard: {
       ref: null,
+      status: 'default' as PlayerStatusType,
       location: 0,
       direction: 'top' as DirectionType,
       coordinates: { x: 0, y: 0 },
@@ -64,6 +67,7 @@ export const initialPlayer = [
     },
     gameboard: {
       ref: null,
+      status: 'default' as PlayerStatusType,
       location: 0,
       direction: 'top' as DirectionType,
       coordinates: { x: 0, y: 0 },
@@ -215,9 +219,10 @@ export const initialGame = {
   isPlaying: false,
   firstPlayerId: '',
   currentPlayerId: '',
-  currentPlayerStatus: { type: 'default' },
   dice: [0, 0],
   eventList: [],
   eventResult: '',
   isSpin: false,
+  isMoveFinished: false,
+  teleportLocation: null,
 };

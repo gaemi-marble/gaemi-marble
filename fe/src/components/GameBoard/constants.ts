@@ -2,61 +2,61 @@ import { DirectionType } from '@store/reducer/type';
 
 export const initialBoard = [
   [
-    { logo: 'start', name: '시작' },
-    { theme: 'it', logo: 'codesquad', name: '코드스쿼드', price: 400000 },
-    { theme: 'fashion', logo: 'musinsa', name: '무신사', price: 500000 },
-    { theme: 'trip', logo: 'hanatour', name: '하나투어', price: 600000 },
-    { theme: 'construction', logo: 'gs', name: 'GS건설', price: 700000 },
-    { theme: 'food', logo: 'nongshim', name: '농심', price: 800000 },
+    { logo: 'start', name: '시작', location: 0 },
+    { theme: 'it', logo: 'codesquad', name: '코드스쿼드', location: 1 },
+    { theme: 'fashion', logo: 'musinsa', name: '무신사', location: 2 },
+    { theme: 'trip', logo: 'hanatour', name: '하나투어', location: 3 },
+    { theme: 'construction', logo: 'gs', name: 'GS건설', location: 4 },
+    { theme: 'food', logo: 'nongshim', name: '농심', location: 5 },
   ],
   [
-    { logo: 'jail', name: '유치장' },
+    { logo: 'jail', name: '유치장', location: 6 },
     {
       theme: 'construction',
       logo: 'hyundai',
       name: '현대건설',
-      price: 900000,
+      location: 7,
     },
     {
       theme: 'military',
       logo: 'hanwha',
       name: '한화디펜스',
-      price: 1000000,
+      location: 8,
     },
-    { logo: 'goldcard', name: '황금카드' },
-    { theme: 'trip', logo: 'koreanair', name: '대한항공', price: 1100000 },
-    { theme: 'elonmusk', logo: 'twitter', name: '트위터', price: 1200000 },
+    { logo: 'goldcard', name: '황금카드', location: 9 },
+    { theme: 'trip', logo: 'koreanair', name: '대한항공', location: 10 },
+    { theme: 'elonmusk', logo: 'twitter', name: '트위터', location: 11 },
   ],
   [
-    { logo: 'goodnews', name: '호재' },
+    { logo: 'goodnews', name: '호재', location: 12 },
     {
       theme: 'pharmaceutical',
       logo: 'samsungbio',
       name: '삼성바이오로직스',
-      price: 1300000,
+      location: 13,
     },
-    { theme: 'it', logo: 'google', name: '구글', price: 1400000 },
-    { logo: 'tax', name: '세금' },
-    { theme: 'fashion', logo: 'hermes', name: '에르메스', price: 1500000 },
-    { theme: 'food', logo: 'mcdonalds', name: '맥도날드', price: 1600000 },
+    { theme: 'it', logo: 'google', name: '구글', location: 14 },
+    { logo: 'tax', name: '세금', location: 15 },
+    { theme: 'fashion', logo: 'hermes', name: '에르메스', location: 16 },
+    { theme: 'food', logo: 'mcdonalds', name: '맥도날드', location: 17 },
   ],
   [
-    { logo: 'rocket', name: '순간이동' },
-    { theme: 'elonmusk', logo: 'tesla', name: '테슬라', price: 1700000 },
+    { logo: 'rocket', name: '순간이동', location: 18 },
+    { theme: 'elonmusk', logo: 'tesla', name: '테슬라', location: 19 },
     {
       theme: 'pharmaceutical',
       logo: 'pfizer',
       name: '화이자',
-      price: 1800000,
+      location: 20,
     },
-    { logo: 'goldcard', name: '황금카드' },
+    { logo: 'goldcard', name: '황금카드', location: 21 },
     {
       theme: 'military',
       logo: 'starkindustry',
       name: '스타크산업',
-      price: 1900000,
+      location: 22,
     },
-    { theme: 'it', logo: 'apple', name: '애플', price: 2000000 },
+    { theme: 'it', logo: 'apple', name: '애플', location: 23 },
   ],
 ];
 
@@ -74,7 +74,8 @@ export const directions = {
   left: { x: -CELL.HEIGHT, y: 0 },
 };
 
-export const TOKEN_TRANSITION_DELAY = 200;
+export const DICE_MOVE_DELAY = 200;
+export const TELEPORT_MOVE_DELAY = 100;
 
 export const changeDirection = (direction: DirectionType) => {
   switch (direction) {

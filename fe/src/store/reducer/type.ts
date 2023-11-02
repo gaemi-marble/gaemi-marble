@@ -19,6 +19,7 @@ export type GameActionType = {
   eventResult: EventResultPayloadType;
   expense: ExpensePayloadType;
   prisonDice: PrisonDicePayloadType;
+  teleport: TeleportPayloadType;
 };
 
 export type GameInfoType = {
@@ -28,12 +29,12 @@ export type GameInfoType = {
   firstPlayerId: string;
   // Memo: 현재 턴이 누군지
   currentPlayerId: string | null;
-  // Memo: 턴인 사람의 상태 (default, prison, teleport ...)
-  currentPlayerStatus: { type: string; count?: number };
   dice: number[];
   eventList: RouletteEvent[];
   eventResult: string;
   isSpin: boolean;
+  isMoveFinished: boolean;
+  teleportLocation: number | null;
 };
 
 export type StartPayloadType = {
@@ -66,6 +67,7 @@ type UserStatusType = {
 
 export type GameBoardType = {
   ref: MutableRefObject<HTMLDivElement | null> | null;
+  status: PlayerStatusType;
   location: number;
   direction: DirectionType;
   coordinates: { x: number; y: number };
@@ -133,6 +135,8 @@ export type RouletteEvent = {
   impact: string;
 };
 
+export type PlayerStatusType = 'default' | 'prison' | 'teleport' | 'event';
+
 export type DirectionType = 'top' | 'right' | 'bottom' | 'left';
 
 export type PlayerTokenAtom = {
@@ -151,4 +155,8 @@ export type PrisonDicePayloadType = {
   dice1: number;
   dice2: number;
   hasEscaped: boolean;
+};
+
+export type TeleportPayloadType = {
+  location: number;
 };

@@ -1,41 +1,73 @@
 import { cellImageMap } from '@assets/images';
+import { PlayerStatusType } from '@store/reducer/type';
+import { addCommasToNumber } from '@utils/index';
 import { styled } from 'styled-components';
 
-type Cellprops = {
+type CellType = {
   theme?: string;
   name: string;
   logo: string;
-  price?: number;
+  location: number;
 };
 
-export default function Cell({ theme, name, logo, price }: Cellprops) {
-  const addCommasToNumber = (number: number): string => {
-    return `${number.toLocaleString('ko')}`;
-  };
+type Cellprops = {
+  cell: CellType;
+  price?: number;
+  playerStatus: PlayerStatusType;
+  targetLocation: number | null;
+  selectTargetLocation: (location: number) => void;
+};
+
+export default function Cell({
+  cell,
+  price,
+  playerStatus,
+  targetLocation,
+  selectTargetLocation,
+}: Cellprops) {
+  const isSelected = targetLocation === cell.location;
 
   return (
-    <Container>
-      {theme && (
+    <Container
+      $status={playerStatus}
+      $isSelected={isSelected}
+      onClick={() => {
+        if (playerStatus !== 'teleport') return;
+        if (cell.location === 18) {
+          alert('이동할 수 없는 위치입니다.');
+          return;
+        }
+        selectTargetLocation(cell.location);
+        return;
+      }}
+    >
+      {cell.theme && (
         <Header>
-          <Logo src={cellImageMap[logo]} />
-          <Name>{name}</Name>
+          <Logo src={cellImageMap[cell.logo]} />
+          <Name>{cell.name}</Name>
         </Header>
       )}
       <Content>
-        {!theme && <CellImg src={cellImageMap[logo]} />}
+        {!cell.theme && <CellImg src={cellImageMap[cell.logo]} />}
         {price && <span>{addCommasToNumber(price)}</span>}
       </Content>
     </Container>
   );
 }
 
-const Container = styled.div`
+const Container = styled.div<{
+  $status: PlayerStatusType;
+  $isSelected: boolean;
+}>`
   width: 6rem;
   height: 6rem;
   display: flex;
   flex-direction: column;
-  border: 1px solid;
-  border-color: ${({ theme: { color } }) => color.accentText};
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${({ theme }) => theme.color.accentText};
+  background-color: ${({ theme, $isSelected }) =>
+    $isSelected ? theme.color.accentTertiary : theme.color.accentPrimary};
 `;
 
 const Header = styled.div`

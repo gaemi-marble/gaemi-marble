@@ -8,10 +8,12 @@ import {
   EventsPayloadType,
   ExpensePayloadType,
   GameActionType,
+  PlayerStatusType,
   PrisonDicePayloadType,
   ReadyPayloadType,
   StartPayloadType,
   StatusBoardPayloadType,
+  TeleportPayloadType,
   UserStatusPayloadType,
 } from './type';
 import { gameAtom } from '.';
@@ -49,7 +51,7 @@ export default function useGameReducer() {
             game: {
               ...prev.game,
               currentPlayerId: payload.nextPlayerId,
-              currentPlayerStatus: payload.nextPlayerStatus,
+              isMoveFinished: false,
             },
           };
         }
@@ -123,10 +125,21 @@ export default function useGameReducer() {
         }
 
         case 'cell': {
+          const payload = action.payload as CellPayloadType;
+          const playerStatus =
+            payload.location === 6
+              ? 'prison'
+              : payload.location === 18
+              ? 'teleport'
+              : 'default';
+
           return {
             ...prev,
+            game: {
+              ...prev.game,
+              isMoveFinished: true,
+            },
             players: prev.players.map((player) => {
-              const payload = action.payload as CellPayloadType;
               const { salary, dividend } = payload;
               const bonus = salary + dividend;
 
@@ -140,6 +153,10 @@ export default function useGameReducer() {
                 userStatusBoard: {
                   ...player.userStatusBoard,
                   cashAsset: player.userStatusBoard.cashAsset + bonus,
+                },
+                gameboard: {
+                  ...player.gameboard,
+                  status: playerStatus as PlayerStatusType,
                 },
               };
             }),
@@ -209,6 +226,10 @@ export default function useGameReducer() {
                   ...player.userStatusBoard,
                   cashAsset: player.userStatusBoard.cashAsset - payload.amount,
                 },
+                gameboard: {
+                  ...player.gameboard,
+                  hasEscaped: true,
+                },
               };
             }),
           };
@@ -258,6 +279,18 @@ export default function useGameReducer() {
                 },
               };
             }),
+          };
+        }
+
+        case 'teleport': {
+          const payload = action.payload as TeleportPayloadType;
+
+          return {
+            ...prev,
+            game: {
+              ...prev.game,
+              teleportLocation: payload.location,
+            },
           };
         }
 
