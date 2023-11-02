@@ -41,6 +41,11 @@ public class Stock {
 	}
 
 	public void changePrice(Integer percentage) {
+		Integer changingPrice = this.currentPrice + ((this.startPrice * percentage) / 100);
+		if (changingPrice <= 0) {
+			currentPrice = 0;
+			return;
+		}
 		this.currentPrice += ((this.startPrice * percentage) / 100);
 	}
 
