@@ -17,23 +17,26 @@ export type GameActionType = {
   statusBoard: StatusBoardPayloadType;
   events: EventsPayloadType;
   eventResult: EventResultPayloadType;
+  goldCard: GoldCardPayloadType;
   expense: ExpensePayloadType;
   prisonDice: PrisonDicePayloadType;
   teleport: TeleportPayloadType;
 };
 
 export type GameInfoType = {
-  // Memo: 현재 게임이 진행중인지
   isPlaying: boolean;
-  // Memo: 선턴인 사람의 id
   firstPlayerId: string;
-  // Memo: 현재 턴이 누군지
   currentPlayerId: string | null;
   dice: number[];
   eventList: RouletteEvent[];
   eventResult: string;
   isMoveFinished: boolean;
   teleportLocation: number | null;
+  goldCardInfo: {
+    title: string;
+    description: string;
+  };
+  isArrived: boolean;
 };
 
 export type StartPayloadType = {
@@ -135,6 +138,11 @@ export type RouletteEvent = {
 };
 
 export type PlayerStatusType = 'default' | 'prison' | 'teleport' | 'event';
+
+export type GoldCardPayloadType = {
+  title: string;
+  description: string;
+};
 
 export type DirectionType = 'top' | 'right' | 'bottom' | 'left';
 

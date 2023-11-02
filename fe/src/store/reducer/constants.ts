@@ -224,4 +224,6 @@ export const initialGame = {
   eventResult: '',
   isMoveFinished: false,
   teleportLocation: null,
+  goldCardInfo: { title: '', description: '' },
+  isArrived: false,
 };
