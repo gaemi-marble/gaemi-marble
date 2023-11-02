@@ -112,8 +112,8 @@ public class GameService {
 
 		// int dice1 = (int)(Math.random() * 6) + 1;
 		// int dice2 = (int)(Math.random() * 6) + 1;
-		int dice1 = 4;
-		int dice2 = 2;
+		int dice1 = 6;
+		int dice2 = 3;
 
 		if (dice1 == dice2) {
 			int countDouble = gameStatus.getCurrentPlayerInfo().increaseCountDouble();
