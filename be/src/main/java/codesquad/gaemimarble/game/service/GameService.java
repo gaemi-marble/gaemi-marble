@@ -88,6 +88,7 @@ public class GameService {
 		int randomIndex = (int)(Math.random() * players.size()) + 1;
 		Player player = players.get(randomIndex - 1);
 
+		log.info("first order" + player.getOrder());
 		gameStatus.setOrder(player.getOrder());
 		gameStatus.initCurrentPlayerInfo(player);
 		return player.getPlayerId();
