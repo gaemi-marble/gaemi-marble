@@ -29,7 +29,11 @@ public class GameStatus {
 
 	public void setOrder(Integer firstOrder) {
 		for (int i = 0; i < players.size(); i++) {
-			players.get(i).setOrder(((firstOrder + i - 1) % players.size()) + 1);
+			if (firstOrder + i != players.size()) {
+				players.get(i).setOrder(((firstOrder + i) % players.size()));
+			} else {
+				players.get(i).setOrder(players.size());
+			}
 			log.info("설정된 오더 (아이디 + 오더)" + players.get(i).getPlayerId() + "/" + players.get(i).getOrder());
 		}
 	}
