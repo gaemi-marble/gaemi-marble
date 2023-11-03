@@ -33,11 +33,6 @@ public class GameStatus {
 			log.info("설정된 오더 (아이디 + 오더)" + players.get(i).getPlayerId() + "/" + players.get(i).getOrder());
 		}
 	}
-	// players.get(firstOrder-1).setOrder(1);
-	// 	for (int i = firstOrder; i < players.size() + firstOrder; i++) {
-	// 	players.get(i).setOrder(players.get(i-1).getOrder() + 1);
-	// 	log.info("설정된 오더 (아이디 + 오더)" + players.get(i).getPlayerId() + "/" + players.get(i).getOrder());
-	// }
 
 	public void initCurrentPlayerInfo(Player player) {
 		this.currentPlayerInfo = CurrentPlayerInfo.builder()
