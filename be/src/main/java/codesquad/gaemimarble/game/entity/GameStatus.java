@@ -28,16 +28,16 @@ public class GameStatus {
 	}
 
 	public void setOrder(Integer firstOrder) {
-		firstOrder--;
 		for (int i = 0; i < players.size(); i++) {
-			players.get(0).setOrder((firstOrder + players.size() + 1 + i) % players.size());
-			if (players.get(i).getOrder() == 0) {
-				players.get(i).setOrder(players.size());
-			}
+			players.get(i).setOrder(((i + players.size() - firstOrder + 1) % players.size()) + 1);
 			log.info("설정된 오더 (아이디 + 오더)" + players.get(i).getPlayerId() + "/" + players.get(i).getOrder());
 		}
-
 	}
+	// players.get(firstOrder-1).setOrder(1);
+	// 	for (int i = firstOrder; i < players.size() + firstOrder; i++) {
+	// 	players.get(i).setOrder(players.get(i-1).getOrder() + 1);
+	// 	log.info("설정된 오더 (아이디 + 오더)" + players.get(i).getPlayerId() + "/" + players.get(i).getOrder());
+	// }
 
 	public void initCurrentPlayerInfo(Player player) {
 		this.currentPlayerInfo = CurrentPlayerInfo.builder()
