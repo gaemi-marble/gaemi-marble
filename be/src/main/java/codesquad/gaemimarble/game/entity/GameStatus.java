@@ -4,8 +4,10 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Slf4j
 public class GameStatus {
 	private final Boolean isStarted;
 	private final List<Player> players;
@@ -26,8 +28,9 @@ public class GameStatus {
 	}
 
 	public void setOrder(Integer firstOrder) {
-		for (int i=0; i<players.size(); i++) {
+		for (int i = 0; i < players.size(); i++) {
 			players.get(i).setOrder(((firstOrder + i - 1) % players.size()) + 1);
+			log.info("설정된 오더 (아이디 + 오더)" + players.get(i).getPlayerId() + "/" + players.get(i).getOrder());
 		}
 	}
 

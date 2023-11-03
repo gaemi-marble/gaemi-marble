@@ -44,9 +44,11 @@ import codesquad.gaemimarble.game.entity.Stock;
 import codesquad.gaemimarble.game.entity.Theme;
 import codesquad.gaemimarble.game.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GameService {
 	private final GameRepository gameRepository;
 
@@ -306,7 +308,7 @@ public class GameService {
 				return GameEndTurnResponse.builder().nextPlayerId(currentPlayerInfo.getPlayerId()).build();
 			}
 		}
-
+		log.info("order: " + currentPlayerInfo.getOrder() + "game player size" + gameStatus.getPlayers().size());
 		if (currentPlayerInfo.getOrder() != gameStatus.getPlayers().size()) {
 			for (Player player : gameStatus.getPlayers()) {
 				if (player.getOrder() == currentPlayerInfo.getOrder() + 1) {
