@@ -44,9 +44,11 @@ import codesquad.gaemimarble.game.entity.Stock;
 import codesquad.gaemimarble.game.entity.Theme;
 import codesquad.gaemimarble.game.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GameService {
 	private final GameRepository gameRepository;
 
@@ -86,6 +88,7 @@ public class GameService {
 		int randomIndex = (int)(Math.random() * players.size()) + 1;
 		Player player = players.get(randomIndex - 1);
 
+		log.info("first order" + player.getOrder());
 		gameStatus.setOrder(player.getOrder());
 		gameStatus.initCurrentPlayerInfo(player);
 		return player.getPlayerId();
@@ -110,21 +113,19 @@ public class GameService {
 		Player player = gameStatus.getPlayer(playerId);
 		int startLocation = player.getLocation();
 
-		// int dice1 = (int)(Math.random() * 6) + 1;
-		// int dice2 = (int)(Math.random() * 6) + 1;
-		int dice1 = 6;
-		int dice2 = 3;
+		int dice1 = (int)(Math.random() * 6) + 1;
+		int dice2 = (int)(Math.random() * 6) + 1;
 
 		if (dice1 == dice2) {
 			int countDouble = gameStatus.getCurrentPlayerInfo().increaseCountDouble();
 
 			if (countDouble == 3) {
 				player.goToPrison();
-				return new GameDiceResult(startLocation, dice1, dice2);
+				return new GameDiceResult(true, dice1, dice2);
 			}
 		}
 		player.move(dice1 + dice2);
-		return new GameDiceResult(startLocation, dice1, dice2);
+		return new GameDiceResult(false, dice1, dice2);
 	}
 
 	public GameCellResponse arriveAtCell(Long gameId, String playerId) {
@@ -303,9 +304,12 @@ public class GameService {
 
 		if (currentPlayerInfo.getRolledDouble()) {
 			currentPlayerInfo.initRolledDouble();
-			return GameEndTurnResponse.builder().nextPlayerId(currentPlayerInfo.getPlayerId()).build();
+			Integer location = gameStatus.getPlayer(currentPlayerInfo.getPlayerId()).getLocation();
+			if (!(location == 18 || location == 6)) {
+				return GameEndTurnResponse.builder().nextPlayerId(currentPlayerInfo.getPlayerId()).build();
+			}
 		}
-
+		log.info("order: " + currentPlayerInfo.getOrder() + "game player size" + gameStatus.getPlayers().size());
 		if (currentPlayerInfo.getOrder() != gameStatus.getPlayers().size()) {
 			for (Player player : gameStatus.getPlayers()) {
 				if (player.getOrder() == currentPlayerInfo.getOrder() + 1) {
