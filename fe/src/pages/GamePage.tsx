@@ -5,15 +5,18 @@ import StockBuyModal from '@components/Modal/StockBuyModal/StockBuyModal';
 import LeftPlayers from '@components/Player/LeftPlayers';
 import RightPlayers from '@components/Player/RightPlayers';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
+import { ROUTE_PATH } from '@router/constants';
 import { usePlayerIdValue } from '@store/index';
 import { useGameInfoValue, usePlayersValue } from '@store/reducer';
 import useGameReducer from '@store/reducer/useGameReducer';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 import { GOLD_CARD_LOCATIONS, STOCK_LOCATION } from './constants';
 
 export default function GamePage() {
+  const navigate = useNavigate();
   const playersInfo = usePlayersValue();
   const playerId = usePlayerIdValue();
   const { isMoveFinished, currentPlayerId, goldCardInfo, isArrived } =
@@ -21,8 +24,14 @@ export default function GamePage() {
   const { dispatch } = useGameReducer();
   const socketUrl = useGetSocketUrl();
 
+  const handleCloseSocket = () => {
+    alert('유효하지 않은 게임방입니다');
+    navigate(ROUTE_PATH.HOME);
+  };
+
   const { lastMessage } = useWebSocket(socketUrl, {
     share: true,
+    onClose: handleCloseSocket,
   });
 
   // Memo: dependency에 dispatch 추가시 무한렌더링
