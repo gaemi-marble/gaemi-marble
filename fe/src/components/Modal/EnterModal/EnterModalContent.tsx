@@ -19,6 +19,7 @@ export default function EnterModalContent() {
 
     if (!(res.status === 200)) {
       // Todo: 방 입장 실패 시 토스트 띄우기
+      alert('입장할 수 없습니다');
       return;
     }
 
