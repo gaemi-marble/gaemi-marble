@@ -226,10 +226,5 @@ export const initialGame = {
   teleportLocation: null,
   goldCardInfo: { title: '', description: '' },
   isArrived: false,
-  ranking: [
-    { playerId: 'fuse12', totalAsset: 4000000000 },
-    { playerId: 'toko123', totalAsset: 300000000 },
-    { playerId: 'movie', totalAsset: 20000000 },
-    { playerId: 'tommy', totalAsset: 10000000 },
-  ],
+  ranking: [],
 };

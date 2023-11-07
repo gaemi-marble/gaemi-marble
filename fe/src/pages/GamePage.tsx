@@ -23,7 +23,7 @@ export default function GamePage() {
     goldCardInfo,
     isArrived,
     isPlaying,
-    firstPlayerId,
+    ranking,
   } = useGameInfoValue();
   const { dispatch } = useGameReducer();
   const socketUrl = useGetSocketUrl();
@@ -49,7 +49,7 @@ export default function GamePage() {
   )?.location;
   const isLocatedGoldCard = GOLD_CARD_LOCATIONS.includes(currentLocation ?? 0);
   const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
-  const isGameOver = !isPlaying && currentPlayerId === firstPlayerId;
+  const isGameOver = !isPlaying && ranking.length !== 0;
 
   return (
     <>
@@ -69,7 +69,7 @@ export default function GamePage() {
       {isLocatedStockCell && isMoveFinished && isCurrentPlayer && isArrived && (
         <StockBuyModal />
       )}
-      <GameOverModal />
+      {isGameOver && <GameOverModal />}
     </>
   );
 }
