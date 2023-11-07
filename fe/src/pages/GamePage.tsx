@@ -6,10 +6,12 @@ import StockBuyModal from '@components/Modal/StockBuyModal/StockBuyModal';
 import LeftPlayers from '@components/Player/LeftPlayers';
 import RightPlayers from '@components/Player/RightPlayers';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
+import useWindowSize from '@hooks/useWindowSize';
 import { usePlayerIdValue } from '@store/index';
 import { useGameInfoValue, usePlayersValue } from '@store/reducer';
 import useGameReducer from '@store/reducer/useGameReducer';
 import { useEffect } from 'react';
+import Confetti from 'react-confetti';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 import { GOLD_CARD_LOCATIONS, STOCK_LOCATION } from './constants';
@@ -27,6 +29,7 @@ export default function GamePage() {
   } = useGameInfoValue();
   const { dispatch } = useGameReducer();
   const socketUrl = useGetSocketUrl();
+  const { width, height } = useWindowSize();
 
   const { lastMessage } = useWebSocket(socketUrl, {
     share: true,
@@ -70,6 +73,7 @@ export default function GamePage() {
         <StockBuyModal />
       )}
       {isGameOver && <GameOverModal />}
+      {isGameOver && <Confetti width={width} height={height} />}
     </>
   );
 }
