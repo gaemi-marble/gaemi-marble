@@ -76,4 +76,15 @@ public class SocketDataSender {
 			log.error(e.getMessage(), e);
 		}
 	}
+
+	public void close(Long gameId) {
+		for (WebSocketSession session : gameSocketMap.get(gameId).values()) {
+			try {
+				session.close();
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+		gameSocketMap.remove(gameId);
+	}
 }
