@@ -421,7 +421,7 @@ public class GameService {
 
 	public boolean checkGameOver(Long gameId) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
-		return gameStatus.getRoundCount() > 15;
+		return gameStatus.getRoundCount() > 5;
 	}
 
 	public UserRankingResponse createUserRanking(Long gameId) {
