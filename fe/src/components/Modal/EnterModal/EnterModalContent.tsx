@@ -25,9 +25,12 @@ export default function EnterModalContent() {
 
     const isSuccess = res.data.isPresent && !res.data.isFull;
 
-    if (isSuccess) {
-      navigate(`${ROUTE_PATH.GAME}/${roomNumber}`);
+    if (!isSuccess) {
+      alert('입장할 수 없습니다');
+      return;
     }
+
+    navigate(`${ROUTE_PATH.GAME}/${roomNumber}`);
   };
 
   return (
