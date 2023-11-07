@@ -24,7 +24,6 @@ export default function PlayerRank({
 }
 
 const PlayerRankCard = styled.li`
-  width: 30rem;
   height: 6rem;
   padding: 0 1rem;
   display: flex;
@@ -38,7 +37,8 @@ const PlayerRankCard = styled.li`
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 2rem;
 `;
 
 const Rank = styled.div`
