@@ -1,6 +1,7 @@
 package codesquad.gaemimarble.game.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ import codesquad.gaemimarble.game.dto.response.GameGoldCardResponse;
 import codesquad.gaemimarble.game.dto.response.GamePrisonDiceResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.PlayerAsset;
+import codesquad.gaemimarble.game.dto.response.UserRankingResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
 import codesquad.gaemimarble.game.entity.Board;
@@ -215,6 +218,7 @@ public class GameService {
 			}
 		}
 		updatePlayersAsset(gameStatus.getPlayers(), stockList);
+		gameStatus.incrementRoundCount();
 
 		return createGameStatusBoardResponse(gameId);
 	}
@@ -323,6 +327,7 @@ public class GameService {
 				currentPlayerInfo.update(player);
 			}
 		}
+
 		return GameEndTurnResponse.builder().nextPlayerId(null).build();
 	}
 
@@ -407,5 +412,18 @@ public class GameService {
 		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getTargetId());
 		target.addCashAsset(-10_000_000);
 		return List.of(taker, target);
+	}
+
+	public boolean checkGameOver(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		return gameStatus.getRoundCount() > 15;
+	}
+
+	public UserRankingResponse createUserRanking(Long gameId) {
+		return UserRankingResponse.builder().ranking(gameRepository.getAllPlayer(gameId)
+			.stream()
+			.sorted(Comparator.comparing(Player::getTotalAsset).reversed())
+			.map(p -> PlayerAsset.builder().playerId(p.getPlayerId()).totalAsset(p.getTotalAsset()).build())
+			.collect(Collectors.toList())).build();
 	}
 }
