@@ -10,6 +10,12 @@ import { GameBoardType } from '@store/reducer/type';
 import { delay } from '@utils/index';
 import { MutableRefObject } from 'react';
 
+type MoveTokenParams = {
+  diceCount: number;
+  playerGameBoardData: GameBoardType;
+  type?: 'dice' | 'teleport';
+};
+
 export default function useMoveToken() {
   const gameInfo = useGameInfoValue();
   const setPlayers = useSetPlayers();
@@ -27,11 +33,11 @@ export default function useMoveToken() {
     ref.current.style.transform = `translate(${tokenCoordinates.x}rem, ${tokenCoordinates.y}rem)`;
   };
 
-  const moveToken = async (
-    diceCount: number,
-    playerGameBoardData: GameBoardType,
-    type: 'dice' | 'teleport' = 'dice'
-  ) => {
+  const moveToken = async ({
+    diceCount,
+    playerGameBoardData,
+    type = 'dice',
+  }: MoveTokenParams) => {
     const delayTime =
       type === 'teleport' ? TELEPORT_MOVE_DELAY : DICE_MOVE_DELAY;
     const tokenCoordinates = {

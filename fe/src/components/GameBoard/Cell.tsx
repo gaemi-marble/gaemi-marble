@@ -11,7 +11,7 @@ type CellType = {
   location: number;
 };
 
-type Cellprops = {
+type CellProps = {
   cell: CellType;
   price?: number;
   playerStatus: PlayerStatusType;
@@ -25,9 +25,10 @@ export default function Cell({
   playerStatus,
   targetLocation,
   selectTargetLocation,
-}: Cellprops) {
-  const isSelected = targetLocation === cell.location;
-  const isPrison = cell.location === PRISON_CELL;
+}: CellProps) {
+  const { logo, name, location, theme } = cell;
+  const isSelected = targetLocation === location;
+  const isPrison = location === PRISON_CELL;
 
   return (
     <Container
@@ -36,22 +37,22 @@ export default function Cell({
       $isPrison={isPrison}
       onClick={() => {
         if (playerStatus !== 'teleport') return;
-        if (cell.location === 18) {
+        if (location === 18) {
           alert('이동할 수 없는 위치입니다.');
           return;
         }
-        selectTargetLocation(cell.location);
+        selectTargetLocation(location);
         return;
       }}
     >
-      {cell.theme && (
+      {theme && (
         <Header>
-          <Name>{cell.name}</Name>
+          <Name>{name}</Name>
         </Header>
       )}
       <Content>
-        {cell.theme && <Logo src={cellImageMap[cell.logo]} />}
-        {!cell.theme && <CellImg src={cellImageMap[cell.logo]} />}
+        {theme && <Logo src={cellImageMap[logo]} />}
+        {!theme && <CellImg src={cellImageMap[logo]} />}
         {price && <span>{addCommasToNumber(price)}</span>}
       </Content>
     </Container>

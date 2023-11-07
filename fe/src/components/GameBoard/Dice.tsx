@@ -16,10 +16,11 @@ export default function Dice() {
   const { sound: DiceRollSound } = useSound({
     src: '/sound/roll.mp3',
   });
+  const [dice1, dice2] = gameInfo.dice;
 
   useEffect(() => {
-    if (gameInfo.dice[0] === 0 || gameInfo.dice[1] === 0) return;
-    rollDice(gameInfo.dice[0], gameInfo.dice[1]);
+    if (dice1 === 0 || dice2 === 0) return;
+    rollDice(dice1, dice2);
   }, [gameInfo.dice]);
 
   const rollDice = (dice1: number, dice2: number) => {
@@ -28,9 +29,9 @@ export default function Dice() {
   };
 
   const rollDone = async () => {
-    if (gameInfo.dice[0] === 0 || gameInfo.dice[1] === 0) return;
+    if (dice1 === 0 || dice2 === 0) return;
 
-    const totalDiceValue = gameInfo.dice[0] + gameInfo.dice[1];
+    const totalDiceValue = dice1 + dice2;
     setDiceValue(totalDiceValue);
     const targetPlayer = players.find(
       (player) => player.playerId === gameInfo.currentPlayerId
@@ -40,7 +41,10 @@ export default function Dice() {
     if (!targetPlayer) return;
     if (!targetPlayer.gameboard.hasEscaped) return;
 
-    await moveToken(totalDiceValue, targetPlayer.gameboard);
+    await moveToken({
+      diceCount: totalDiceValue,
+      playerGameBoardData: targetPlayer.gameboard,
+    });
 
     setGameInfo((prev) => {
       return {
