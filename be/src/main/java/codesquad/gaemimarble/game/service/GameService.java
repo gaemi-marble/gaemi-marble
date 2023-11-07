@@ -205,7 +205,7 @@ public class GameService {
 			}
 		}
 		if (eventToProceed == null) {
-			throw new RuntimeException("이벤트 이름이 맞지 않습니다");
+			throw new CustomException("이벤트 이름이 맞지 않습니다", null, gameId);
 		}
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		Map<Theme, Integer> impactMap = eventToProceed.getImpact();
@@ -288,7 +288,8 @@ public class GameService {
 		}
 		for (String stockName : sellingStockInfoMap.keySet()) {
 			if (player.getMyStocks().get(stockName) < sellingStockInfoMap.get(stockName)) {
-				throw new RuntimeException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다");
+				throw new CustomException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다", gameSellStockRequest.getPlayerId(),
+					gameSellStockRequest.getGameId());
 			}
 		}
 
@@ -337,7 +338,8 @@ public class GameService {
 	public void teleport(GameTeleportRequest gameTeleportRequest) {
 		Player player = gameRepository.getPlayer(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
 		if (gameTeleportRequest.getLocation().equals(player.getLocation()) && player.getLocation() == 18) {
-			throw new RuntimeException("순간이동 칸으로 이동 할 수 없습니다");
+			throw new CustomException("순간이동 칸으로 이동 할 수 없습니다", gameTeleportRequest.getPlayerId(),
+				gameTeleportRequest.getGameId());
 		}
 		player.setLocation(
 			gameTeleportRequest.getLocation() > player.getLocation() ? gameTeleportRequest.getLocation() :
@@ -349,7 +351,7 @@ public class GameService {
 		String shareName = gameStatus.getBoard().getBoard().get(location);
 		Stock stock = gameStatus.getStocks().stream()
 			.filter(s -> s.getName().equals(shareName)).findFirst()
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식입니다."));
+			.orElseThrow(() -> new CustomException("존재하지 않는 주식입니다.", null, gameId));
 		if (stock.getWasBought()) {
 			stock.changePrice(10);
 		}

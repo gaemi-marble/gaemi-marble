@@ -66,6 +66,10 @@ public class SocketDataSender {
 
 	public void sendErrorMessage(Long gameId, String playerId, String message) {
 		try {
+			if (playerId == null) {
+				send(gameId, new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse(message)));
+				return;
+			}
 			gameSocketMap.get(gameId).get(playerId).sendMessage(new TextMessage(objectMapper.writeValueAsString(
 				new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse(message)))));
 		} catch (IOException e) {

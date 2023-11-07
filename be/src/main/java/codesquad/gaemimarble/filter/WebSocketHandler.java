@@ -7,6 +7,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import codesquad.gaemimarble.exception.CustomException;
+import codesquad.gaemimarble.game.controller.SocketDataSender;
 import codesquad.gaemimarble.game.dto.request.GameMessage;
 import codesquad.gaemimarble.game.controller.GameController;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
 	private final GameController gameController;
+	private final SocketDataSender socketDataSender;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -37,7 +40,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			payload, expectedClass);
 		log.info("payload:{}", payload);
 		log.info("className:{}", mappedRequest.getClass().cast(mappedRequest));
-		gameController.handleRequest(mappedRequest);
+		try {
+			gameController.handleRequest(mappedRequest);
+		} catch (CustomException ex) {
+			socketDataSender.sendErrorMessage(ex.getGameId(), ex.getPlayerId(), ex.getMessage());
+		}
 	}
 
 	private Long extractGameIdFromUri(String uri) {
