@@ -21,6 +21,7 @@ export type GameActionType = {
   expense: ExpensePayloadType;
   prisonDice: PrisonDicePayloadType;
   teleport: TeleportPayloadType;
+  gameOver: GameOverPayloadType;
 };
 
 export type GameInfoType = {
@@ -37,6 +38,7 @@ export type GameInfoType = {
     description: string;
   };
   isArrived: boolean;
+  ranking: PlayerRankingType[];
 };
 
 export type StartPayloadType = {
@@ -166,4 +168,13 @@ export type PrisonDicePayloadType = {
 
 export type TeleportPayloadType = {
   location: number;
+};
+
+export type GameOverPayloadType = {
+  ranking: PlayerRankingType[];
+};
+
+export type PlayerRankingType = {
+  playerId: string;
+  totalAsset: number;
 };

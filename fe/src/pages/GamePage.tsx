@@ -1,5 +1,6 @@
 import GameBoard from '@components/GameBoard/GameBoard';
 import GameHeader from '@components/Header/GameHeader';
+import GameOverModal from '@components/Modal/GameOverModal/GameOverModal';
 import GoldCardModal from '@components/Modal/GoldCardModal/GoldCardModal';
 import StockBuyModal from '@components/Modal/StockBuyModal/StockBuyModal';
 import LeftPlayers from '@components/Player/LeftPlayers';
@@ -16,8 +17,14 @@ import { GOLD_CARD_LOCATIONS, STOCK_LOCATION } from './constants';
 export default function GamePage() {
   const playersInfo = usePlayersValue();
   const playerId = usePlayerIdValue();
-  const { isMoveFinished, currentPlayerId, goldCardInfo, isArrived } =
-    useGameInfoValue();
+  const {
+    isMoveFinished,
+    currentPlayerId,
+    goldCardInfo,
+    isArrived,
+    isPlaying,
+    firstPlayerId,
+  } = useGameInfoValue();
   const { dispatch } = useGameReducer();
   const socketUrl = useGetSocketUrl();
 
@@ -42,6 +49,7 @@ export default function GamePage() {
   )?.location;
   const isLocatedGoldCard = GOLD_CARD_LOCATIONS.includes(currentLocation ?? 0);
   const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
+  const isGameOver = !isPlaying && currentPlayerId === firstPlayerId;
 
   return (
     <>
@@ -61,6 +69,7 @@ export default function GamePage() {
       {isLocatedStockCell && isMoveFinished && isCurrentPlayer && isArrived && (
         <StockBuyModal />
       )}
+      <GameOverModal />
     </>
   );
 }
