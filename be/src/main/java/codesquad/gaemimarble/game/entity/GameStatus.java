@@ -47,4 +47,8 @@ public class GameStatus {
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("해당하는 플레이어가 없습니다."));
 	}
+
+	public void incrementRoundCount() {
+		roundCount++;
+	}
 }

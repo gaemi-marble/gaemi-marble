@@ -1,6 +1,7 @@
 package codesquad.gaemimarble.game.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import codesquad.gaemimarble.exception.CustomException;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -32,6 +34,8 @@ import codesquad.gaemimarble.game.dto.response.GameGoldCardResponse;
 import codesquad.gaemimarble.game.dto.response.GamePrisonDiceResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.PlayerAsset;
+import codesquad.gaemimarble.game.dto.response.UserRankingResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
 import codesquad.gaemimarble.game.entity.Board;
@@ -201,7 +205,7 @@ public class GameService {
 			}
 		}
 		if (eventToProceed == null) {
-			throw new RuntimeException("이벤트 이름이 맞지 않습니다");
+			throw new CustomException("이벤트 이름이 맞지 않습니다", null, gameId);
 		}
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		Map<Theme, Integer> impactMap = eventToProceed.getImpact();
@@ -215,6 +219,7 @@ public class GameService {
 			}
 		}
 		updatePlayersAsset(gameStatus.getPlayers(), stockList);
+		gameStatus.incrementRoundCount();
 
 		return createGameStatusBoardResponse(gameId);
 	}
@@ -245,10 +250,12 @@ public class GameService {
 			.stream()
 			.filter(s -> s.getName().equals(gameStockBuyRequest.getStockName()))
 			.findFirst()
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식이름입니다"));
+			.orElseThrow(() -> new CustomException("존재하지 않는 주식이름입니다", gameStockBuyRequest.getPlayerId(),
+				gameStockBuyRequest.getGameId()));
 		if (stock.getRemainingStock() < gameStockBuyRequest.getQuantity()
 			| player.getCashAsset() < stock.getCurrentPrice() * gameStockBuyRequest.getQuantity()) {
-			throw new RuntimeException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다");
+			throw new CustomException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다", gameStockBuyRequest.getPlayerId(),
+				gameStockBuyRequest.getGameId());
 		}
 		player.buy(stock, gameStockBuyRequest.getQuantity());
 		stock.decrementQuantity(gameStockBuyRequest.getQuantity());
@@ -281,7 +288,8 @@ public class GameService {
 		}
 		for (String stockName : sellingStockInfoMap.keySet()) {
 			if (player.getMyStocks().get(stockName) < sellingStockInfoMap.get(stockName)) {
-				throw new RuntimeException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다");
+				throw new CustomException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다", gameSellStockRequest.getPlayerId(),
+					gameSellStockRequest.getGameId());
 			}
 		}
 
@@ -323,13 +331,15 @@ public class GameService {
 				currentPlayerInfo.update(player);
 			}
 		}
+
 		return GameEndTurnResponse.builder().nextPlayerId(null).build();
 	}
 
 	public void teleport(GameTeleportRequest gameTeleportRequest) {
 		Player player = gameRepository.getPlayer(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
 		if (gameTeleportRequest.getLocation().equals(player.getLocation()) && player.getLocation() == 18) {
-			throw new RuntimeException("순간이동 칸으로 이동 할 수 없습니다");
+			throw new CustomException("순간이동 칸으로 이동 할 수 없습니다", gameTeleportRequest.getPlayerId(),
+				gameTeleportRequest.getGameId());
 		}
 		player.setLocation(
 			gameTeleportRequest.getLocation() > player.getLocation() ? gameTeleportRequest.getLocation() :
@@ -341,7 +351,7 @@ public class GameService {
 		String shareName = gameStatus.getBoard().getBoard().get(location);
 		Stock stock = gameStatus.getStocks().stream()
 			.filter(s -> s.getName().equals(shareName)).findFirst()
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식입니다."));
+			.orElseThrow(() -> new CustomException("존재하지 않는 주식입니다.", null, gameId));
 		if (stock.getWasBought()) {
 			stock.changePrice(10);
 		}
@@ -407,5 +417,18 @@ public class GameService {
 		Player target = gameRepository.getPlayer(gameRobRequest.getGameId(), gameRobRequest.getTargetId());
 		target.addCashAsset(-10_000_000);
 		return List.of(taker, target);
+	}
+
+	public boolean checkGameOver(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		return gameStatus.getRoundCount() > 15;
+	}
+
+	public UserRankingResponse createUserRanking(Long gameId) {
+		return UserRankingResponse.builder().ranking(gameRepository.getAllPlayer(gameId)
+			.stream()
+			.sorted(Comparator.comparing(Player::getTotalAsset).reversed())
+			.map(p -> PlayerAsset.builder().playerId(p.getPlayerId()).totalAsset(p.getTotalAsset()).build())
+			.collect(Collectors.toList())).build();
 	}
 }

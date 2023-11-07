@@ -99,6 +99,12 @@ public class GameController {
 			gameEventNameResponse));
 		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 			gameService.proceedEvent(gameEventNameResponse.getName(), gameEventResultRequest.getGameId())));
+		if (gameService.checkGameOver(gameEventResultRequest.getGameId())) {
+			socketDataSender.send(
+				gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.GAME_OVER,
+					gameService.createUserRanking(gameEventResultRequest.getGameId())));
+			socketDataSender.close(gameEventResultRequest.getGameId());
+		}
 	}
 
 	@PostMapping("/api/games")

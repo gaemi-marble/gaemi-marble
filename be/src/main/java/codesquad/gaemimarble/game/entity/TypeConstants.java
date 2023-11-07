@@ -20,4 +20,5 @@ public final class TypeConstants {
 	public static final String GOLD_CARD = "goldCard";
 	public static final String ERROR = "error";
 	public static final String ROB = "rob";
+	public static final String GAME_OVER = "gameOver";
 }
