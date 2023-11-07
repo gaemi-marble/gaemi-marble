@@ -1,8 +1,6 @@
 package codesquad.gaemimarble.game.controller;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -42,8 +40,7 @@ public class SocketDataSender {
 			boolean isDuplicate = socketMap.containsKey(playerId);
 
 			if (!isDuplicate) {
-				session.getAttributes().put("playerId", playerId);
-				sessions.add(session);
+				socketMap.put(playerId, session);
 				return true;
 			} else {
 				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
