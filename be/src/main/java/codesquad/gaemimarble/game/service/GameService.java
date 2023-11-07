@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import codesquad.gaemimarble.exception.CustomException;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -249,10 +250,12 @@ public class GameService {
 			.stream()
 			.filter(s -> s.getName().equals(gameStockBuyRequest.getStockName()))
 			.findFirst()
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 주식이름입니다"));
+			.orElseThrow(() -> new CustomException("존재하지 않는 주식이름입니다", gameStockBuyRequest.getPlayerId(),
+				gameStockBuyRequest.getGameId()));
 		if (stock.getRemainingStock() < gameStockBuyRequest.getQuantity()
 			| player.getCashAsset() < stock.getCurrentPrice() * gameStockBuyRequest.getQuantity()) {
-			throw new RuntimeException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다");
+			throw new CustomException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다", gameStockBuyRequest.getPlayerId(),
+				gameStockBuyRequest.getGameId());
 		}
 		player.buy(stock, gameStockBuyRequest.getQuantity());
 		stock.decrementQuantity(gameStockBuyRequest.getQuantity());

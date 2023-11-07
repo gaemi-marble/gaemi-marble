@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import codesquad.gaemimarble.game.dto.ResponseDTO;
@@ -23,24 +22,24 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class SocketDataSender {
-	private final ConcurrentMap<Long, Set<WebSocketSession>> gameSocketMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<Long, ConcurrentMap<String, WebSocketSession>> gameSocketMap = new ConcurrentHashMap<>();
 	private final ObjectMapper objectMapper;
 
 	public void createRoom(Long gameRoomId) {
-		gameSocketMap.put(gameRoomId, new HashSet<>());
+		gameSocketMap.put(gameRoomId, new ConcurrentHashMap<>());
 	}
 
 	public boolean saveSocket(Long gameId, String playerId, WebSocketSession session) {
-		Set<WebSocketSession> sessions = gameSocketMap.computeIfAbsent(gameId, key -> ConcurrentHashMap.newKeySet());
+		ConcurrentMap<String, WebSocketSession> socketMap = gameSocketMap.get(gameId);
 		try {
-			if (sessions.size() == 4) {
+			if (socketMap.values().size() == 4) {
 				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-					new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse("full", "인원이 가득 찼습니다.")))));
+					new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse("인원이 가득 찼습니다.")))));
+				session.close();
 				return false;
 			}
 
-			boolean isDuplicate = sessions.stream()
-				.anyMatch(s -> s.getAttributes().get("playerId").equals(playerId));
+			boolean isDuplicate = socketMap.containsKey(playerId);
 
 			if (!isDuplicate) {
 				session.getAttributes().put("playerId", playerId);
@@ -48,7 +47,7 @@ public class SocketDataSender {
 				return true;
 			} else {
 				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-					new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse("duplicate", "이미 접속한 플레이어입니다.")))));
+					new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse("이미 접속한 플레이어입니다.")))));
 				return false;
 			}
 		} catch (IOException e) {
@@ -58,7 +57,7 @@ public class SocketDataSender {
 	}
 
 	public <T> void send(Long gameId, T object) {
-		for (WebSocketSession session : gameSocketMap.get(gameId)) {
+		for (WebSocketSession session : gameSocketMap.get(gameId).values()) {
 			try {
 				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(object)));
 			} catch (IOException e) {
@@ -66,5 +65,14 @@ public class SocketDataSender {
 			}
 		}
 		System.out.println("전송 완료");
+	}
+
+	public void sendErrorMessage(Long gameId, String playerId, String message) {
+		try {
+			gameSocketMap.get(gameId).get(playerId).sendMessage(new TextMessage(objectMapper.writeValueAsString(
+				new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse(message)))));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
 	}
 }
