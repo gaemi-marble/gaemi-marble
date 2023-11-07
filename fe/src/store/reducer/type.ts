@@ -21,6 +21,8 @@ export type GameActionType = {
   expense: ExpensePayloadType;
   prisonDice: PrisonDicePayloadType;
   teleport: TeleportPayloadType;
+  currentPlayer: CurrentPlayerPayloadType;
+  locations: LocationsPayloadType[];
 };
 
 export type GameInfoType = {
@@ -76,13 +78,6 @@ export type GameBoardType = {
   hasEscaped: boolean;
 };
 
-export type PlayerActionType = {
-  enter: EnterPayloadType[];
-  ready: ReadyPayloadType;
-  userStatusBoard: UserStatusPayloadType;
-  cell: CellPayloadType;
-};
-
 export type EnterPayloadType = {
   order: number;
   playerId: string;
@@ -123,10 +118,6 @@ export type StockType = {
   location: number;
 };
 
-export type StockActionType = {
-  statusBoard: StatusBoardPayloadType;
-};
-
 export type StatusBoardPayloadType = {
   stockStatusBoard: Omit<StockType, 'logo'>[];
 };
@@ -165,5 +156,14 @@ export type PrisonDicePayloadType = {
 };
 
 export type TeleportPayloadType = {
+  location: number;
+};
+
+export type CurrentPlayerPayloadType = {
+  playerId: string;
+};
+
+export type LocationsPayloadType = {
+  playerId: string;
   location: number;
 };

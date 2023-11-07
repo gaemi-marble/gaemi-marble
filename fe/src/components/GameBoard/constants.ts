@@ -77,6 +77,7 @@ export const directions = {
 
 export const DICE_MOVE_DELAY = 200;
 export const TELEPORT_MOVE_DELAY = 100;
+export const RECONNECT_MOVE_DELAY = 0;
 
 export const changeDirection = (direction: DirectionType) => {
   switch (direction) {
