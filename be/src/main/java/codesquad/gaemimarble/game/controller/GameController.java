@@ -115,8 +115,27 @@ public class GameController {
 
 	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
 		if (socketDataSender.saveSocket(gameId, playerId, session)) {
+			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.CURRENT_PLAYER,
+				gameService.getCurrentPlayer(gameId)));
+			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.LOCATIONS,
+				gameService.getLocations(gameId)));
+			socketDataSender.sendToPlayer(playerId,gameId,
+				new ResponseDTO<>(TypeConstants.ENTER, gameService.reenter(gameId)));
+			sendAllUserStatusBoardResponse(playerId,gameId);
+			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+				gameService.createGameStatusBoardResponse(gameId)));
+		} else {
 			socketDataSender.send(gameId,
 				new ResponseDTO<>(TypeConstants.ENTER, gameService.enterGame(gameId, playerId)));
+		}
+	}
+
+	private void sendAllUserStatusBoardResponse(String playerId, Long gameId) {
+		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+			gameId);
+		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
+			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameUserBoardResponse));
 		}
 	}
 

@@ -52,6 +52,14 @@ public class SocketDataSender {
 		}
 		System.out.println("전송 완료");
 	}
+	public <T> void sendToPlayer(String playerId,Long gameId, T object) {
+			try {
+				gameSocketMap.get(gameId).get(playerId).sendMessage(new TextMessage(objectMapper.writeValueAsString(object)));
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+			}
+		System.out.println("전송 완료");
+	}
 
 	public void sendErrorMessage(Long gameId, String playerId, String message) {
 		try {

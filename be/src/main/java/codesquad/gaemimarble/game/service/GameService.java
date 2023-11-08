@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
 import codesquad.gaemimarble.game.dto.request.StockNameQuantity;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
+import codesquad.gaemimarble.game.dto.response.GameCurrentPlayerIdResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
 import codesquad.gaemimarble.game.dto.response.GameEndTurnResponse;
 import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
@@ -31,6 +33,7 @@ import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
 import codesquad.gaemimarble.game.dto.response.GameGoldCardResponse;
+import codesquad.gaemimarble.game.dto.response.GameLocationResponse;
 import codesquad.gaemimarble.game.dto.response.GamePrisonDiceResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
@@ -430,5 +433,31 @@ public class GameService {
 			.sorted(Comparator.comparing(Player::getTotalAsset).reversed())
 			.map(p -> PlayerAsset.builder().playerId(p.getPlayerId()).totalAsset(p.getTotalAsset()).build())
 			.collect(Collectors.toList())).build();
+	}
+
+	public GameCurrentPlayerIdResponse getCurrentPlayer(Long gameId) {
+		return GameCurrentPlayerIdResponse.builder()
+			.playerId(gameRepository.getGameStatus(gameId).getCurrentPlayerInfo().getPlayerId())
+			.build();
+	}
+
+	public List<GameLocationResponse> getLocations(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		return gameStatus.getPlayers()
+			.stream()
+			.map(p -> GameLocationResponse.builder()
+				.playerId(p.getPlayerId())
+				.location(p.getLocation())
+				.build())
+			.toList();
+	}
+
+	public List<GameEnterResponse> reenter(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		AtomicInteger order = new AtomicInteger(1);
+		return gameStatus.getPlayers()
+			.stream()
+			.map(p -> GameEnterResponse.of(order.getAndIncrement(), p.getPlayerId(), p.getIsReady()))
+			.toList();
 	}
 }
