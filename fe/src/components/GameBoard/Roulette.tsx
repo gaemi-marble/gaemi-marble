@@ -33,7 +33,7 @@ export default function Roulette() {
         alert('이벤트 룰렛을 정상적으로 불러오지 못했습니다.');
         return;
       }
-      if (rouletteTimer >= 0 && !isRolling) {
+      if (rouletteTimer > 0 && !isRolling) {
         setRouletteTimer((prev) => prev - 1);
       }
     };
