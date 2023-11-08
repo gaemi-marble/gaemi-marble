@@ -1,17 +1,13 @@
 import EventModal from '@components/Modal/EventModal/EventModal';
-import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import useSound from '@hooks/useSound';
-import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
   useResetEventRound,
   useRouletteTimer,
 } from '@store/reducer';
 import { delay } from '@utils/index';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
-import { useParams } from 'react-router-dom';
-import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 
 export default function Roulette() {
@@ -20,32 +16,13 @@ export default function Roulette() {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const [rouletteTimer, setRouletteTimer] = useRouletteTimer();
-  const { gameId } = useParams();
-  const { eventList, eventResult, firstPlayerId } = useGameInfoValue();
-  const playerId = usePlayerIdValue();
-  const socketUrl = useGetSocketUrl();
+  const { eventList, eventResult } = useGameInfoValue();
   const resetGameInfo = useResetEventRound();
-  const { sendJsonMessage } = useWebSocket(socketUrl, {
-    share: true,
-  });
 
   const [isRolling, setIsRolling] = useState(false);
   const { sound: RouletteRollingSound } = useSound({
     src: '/sound/roulette.mp3',
   });
-
-  const startSpin = useCallback(() => {
-    const eventTitles = eventList.map((event) => event.title);
-    if (eventTitles.length === 0) return;
-    if (firstPlayerId !== playerId) return;
-    const message = {
-      type: 'eventResult',
-      gameId,
-      events: eventTitles,
-    };
-    sendJsonMessage(message);
-    setIsRolling(true);
-  }, [gameId, playerId, eventList, firstPlayerId, sendJsonMessage]);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,10 +33,8 @@ export default function Roulette() {
         alert('이벤트 룰렛을 정상적으로 불러오지 못했습니다.');
         return;
       }
-      if (rouletteTimer > 0) {
+      if (rouletteTimer >= 0 && !isRolling) {
         setRouletteTimer((prev) => prev - 1);
-      } else {
-        startSpin();
       }
     };
     stockSellTimer();
@@ -67,7 +42,7 @@ export default function Roulette() {
     return () => {
       isMounted = false;
     };
-  }, [rouletteTimer, setRouletteTimer, startSpin]);
+  }, [rouletteTimer, setRouletteTimer, isRolling]);
 
   useEffect(() => {
     if (eventResult === '') return;
@@ -75,6 +50,7 @@ export default function Roulette() {
       (event) => event.title === eventResult
     );
     setPrizeNumber(prizeNumber);
+    setIsRolling(true);
     setMustSpin(true);
   }, [eventResult, eventList]);
 
