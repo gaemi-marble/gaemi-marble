@@ -117,6 +117,10 @@ public class GameController {
 
 	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
 		if (socketDataSender.saveSocket(gameId, playerId, session)) {
+			if (gameService.checkSellingTime(gameId)) {
+				socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.EVENTS,
+					gameService.selectedEvents(gameId)));
+			}
 			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.CURRENT_PLAYER,
 				gameService.getCurrentPlayer(gameId)));
 			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.LOCATIONS,
@@ -206,16 +210,12 @@ public class GameController {
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
-		GameEventListResponse eventListResponse = gameService.selectEvents();
+		GameEventListResponse eventListResponse = gameService.selectEvents(gameEventRequest.getGameId());
 		socketDataSender.send(gameEventRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS,
 			eventListResponse));
-		try {
-			Thread.sleep(5_000);
-			sendEventResult(GameEventResultRequest.builder().gameId(gameEventRequest.getGameId())
-				.events(eventListResponse.getEvents().stream().map(GameEventResponse::getTitle).toList()).build());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		gameService.waitToSell(gameEventRequest.getGameId());
+		sendEventResult(GameEventResultRequest.builder().gameId(gameEventRequest.getGameId())
+			.events(eventListResponse.getEvents().stream().map(GameEventResponse::getTitle).toList()).build());
 	}
 
 	private void sendBuyResult(GameStockBuyRequest gameStockBuyRequest) {

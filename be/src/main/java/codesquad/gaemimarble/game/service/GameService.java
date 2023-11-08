@@ -50,6 +50,7 @@ import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.Stock;
 import codesquad.gaemimarble.game.entity.Theme;
 import codesquad.gaemimarble.game.repository.GameRepository;
+import codesquad.gaemimarble.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +67,8 @@ public class GameService {
 			.roundCount(0)
 			.isStarted(false)
 			.board(new Board())
+			.selectedEvents(new ArrayList<>())
+			.sellingTime(Constants.SELLING_TIME)
 			.build();
 		Long gameRoomId = gameRepository.createRoom(gameStatus);
 		return GameRoomCreateResponse.builder().gameId(gameRoomId).build();
@@ -166,9 +169,11 @@ public class GameService {
 			.build();
 	}
 
-	public GameEventListResponse selectEvents() {
+	public GameEventListResponse selectEvents(Long gameId) {
 		List<Integer> numbers = new ArrayList<>();
-		GameEventListResponse gameEventListResponse = GameEventListResponse.builder().events(new ArrayList<>()).build();
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		GameEventListResponse gameEventListResponse = GameEventListResponse.builder().
+			timer(gameStatus.getSellingTime()).events(new ArrayList<>()).build();
 
 		for (int i = 1; i <= Events.values().length; i++) {
 			numbers.add(i);
@@ -190,6 +195,7 @@ public class GameService {
 						.content(event.getContents())
 						.impact(event.getImpactDescription())
 						.build());
+				gameStatus.getSelectedEvents().add(event);
 			}
 		}
 		return gameEventListResponse;
@@ -223,6 +229,7 @@ public class GameService {
 		}
 		updatePlayersAsset(gameStatus.getPlayers(), stockList);
 		gameStatus.incrementRoundCount();
+		gameStatus.getSelectedEvents().clear();
 
 		return createGameStatusBoardResponse(gameId);
 	}
@@ -459,5 +466,29 @@ public class GameService {
 			.stream()
 			.map(p -> GameEnterResponse.of(order.getAndIncrement(), p.getPlayerId(), p.getIsReady()))
 			.toList();
+	}
+
+	public void waitToSell(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		gameStatus.waitSellingTime();
+	}
+
+	public boolean checkSellingTime(Long gameId) {
+		return gameRepository.getGameStatus(gameId).getSellingTime() < 5;
+	}
+
+	public GameEventListResponse selectedEvents(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		GameEventListResponse gameEventListResponse = GameEventListResponse.builder().
+			timer(gameStatus.getSellingTime()).events(new ArrayList<>()).build();
+		for (Events event : gameStatus.getSelectedEvents()) {
+			gameEventListResponse.getEvents()
+				.add(GameEventResponse.builder()
+					.title(event.getTitle())
+					.content(event.getContents())
+					.impact(event.getImpactDescription())
+					.build());
+		}
+		return gameEventListResponse;
 	}
 }
