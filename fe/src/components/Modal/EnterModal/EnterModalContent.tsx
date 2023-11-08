@@ -16,17 +16,21 @@ export default function EnterModalContent() {
     // Todo: 유효한 방인지 검증하는 api 완성되면 추가
     const gameId = +roomNumber;
     const res = await getGameCheck(gameId);
+    const { isPresent, isFull } = res.data;
 
     if (!(res.status === 200)) {
       // Todo: 방 입장 실패 시 토스트 띄우기
-      alert('입장할 수 없습니다');
+      alert('서버오류로 입장할 수 없습니다');
       return;
     }
 
-    const isSuccess = res.data.isPresent && !res.data.isFull;
+    if (!isPresent) {
+      alert('존재하지 않는 게임 방 입니다');
+      return;
+    }
 
-    if (!isSuccess) {
-      alert('입장할 수 없습니다');
+    if (isFull) {
+      alert('게임 방이 가득 찼습니다');
       return;
     }
 
