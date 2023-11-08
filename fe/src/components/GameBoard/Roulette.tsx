@@ -3,7 +3,7 @@ import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import useSound from '@hooks/useSound';
 import { usePlayerIdValue } from '@store/index';
 import {
-  useGameInfo,
+  useGameInfoValue,
   useResetEventRound,
   useRouletteTimer,
 } from '@store/reducer';
@@ -21,7 +21,7 @@ export default function Roulette() {
 
   const [rouletteTimer, setRouletteTimer] = useRouletteTimer();
   const { gameId } = useParams();
-  const [gameInfo] = useGameInfo();
+  const { eventList, eventResult, firstPlayerId } = useGameInfoValue();
   const playerId = usePlayerIdValue();
   const socketUrl = useGetSocketUrl();
   const resetGameInfo = useResetEventRound();
@@ -35,23 +35,17 @@ export default function Roulette() {
   });
 
   const startSpin = useCallback(() => {
-    const eventListData = gameInfo.eventList.map((event) => event.title);
-    if (eventListData.length === 0) return;
-    if (gameInfo.firstPlayerId !== playerId) return;
+    const eventTitles = eventList.map((event) => event.title);
+    if (eventTitles.length === 0) return;
+    if (firstPlayerId !== playerId) return;
     const message = {
       type: 'eventResult',
       gameId,
-      events: eventListData,
+      events: eventTitles,
     };
     sendJsonMessage(message);
     setIsRolling(true);
-  }, [
-    gameId,
-    playerId,
-    gameInfo.eventList,
-    gameInfo.firstPlayerId,
-    sendJsonMessage,
-  ]);
+  }, [gameId, playerId, eventList, firstPlayerId, sendJsonMessage]);
 
   useEffect(() => {
     let isMounted = true;
@@ -76,16 +70,16 @@ export default function Roulette() {
   }, [rouletteTimer, setRouletteTimer, startSpin]);
 
   useEffect(() => {
-    if (gameInfo.eventResult === '') return;
-    const prizeNumber = gameInfo.eventList.findIndex(
-      (event) => event.title === gameInfo.eventResult
+    if (eventResult === '') return;
+    const prizeNumber = eventList.findIndex(
+      (event) => event.title === eventResult
     );
     setPrizeNumber(prizeNumber);
     setMustSpin(true);
-  }, [gameInfo.eventResult, gameInfo.eventList]);
+  }, [eventResult, eventList]);
 
-  if (gameInfo.eventList.length === 0) return null;
-  const wheelData = gameInfo.eventList.map((event) => {
+  if (eventList.length === 0) return null;
+  const wheelData = eventList.map((event) => {
     return { option: event.title };
   });
 
