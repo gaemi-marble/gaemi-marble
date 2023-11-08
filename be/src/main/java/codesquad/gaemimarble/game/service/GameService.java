@@ -474,7 +474,7 @@ public class GameService {
 	}
 
 	public boolean checkSellingTime(Long gameId) {
-		return gameRepository.getGameStatus(gameId).getSellingTime() < 5;
+		return gameRepository.getGameStatus(gameId).getSellingTime() < Constants.SELLING_TIME;
 	}
 
 	public GameEventListResponse selectedEvents(Long gameId) {
