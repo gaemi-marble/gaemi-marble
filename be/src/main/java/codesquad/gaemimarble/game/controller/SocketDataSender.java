@@ -39,6 +39,7 @@ public class SocketDataSender {
 		if (socketMap.values().size() >= 4) {
 			throw new SocketException("인원이 가득 찼습니다.", playerId, gameId, session);
 		}
+		socketMap.put(playerId, session);
 		return false;
 	}
 
