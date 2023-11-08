@@ -2,6 +2,7 @@ package codesquad.gaemimarble.game.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.yaml.snakeyaml.scanner.Constant;
 
@@ -45,7 +46,7 @@ public class GameStatus {
 	public void waitSellingTime() {
 		for (int i = 0; i < sellingTime; i++) {
 			try {
-				Thread.sleep(1_000);
+				TimeUnit.SECONDS.sleep(1);
 				this.sellingTime--;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
