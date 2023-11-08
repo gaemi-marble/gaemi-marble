@@ -13,7 +13,7 @@ import { styled } from 'styled-components';
 export default function Roulette() {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [stockSellTime, setStockSellTime] = useState(10);
+  const [stockSellTime, setStockSellTime] = useState(15);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const { gameId } = useParams();

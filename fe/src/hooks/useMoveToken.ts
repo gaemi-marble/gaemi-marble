@@ -1,6 +1,7 @@
 import {
   CORNER_CELLS,
   DICE_MOVE_DELAY,
+  RECONNECT_MOVE_DELAY,
   TELEPORT_MOVE_DELAY,
   changeDirection,
   directions,
@@ -13,7 +14,7 @@ import { MutableRefObject } from 'react';
 type MoveTokenParams = {
   diceCount: number;
   playerGameBoardData: GameBoardType;
-  type?: 'dice' | 'teleport';
+  type?: 'dice' | 'teleport' | 'reconnect';
 };
 
 export default function useMoveToken() {
@@ -39,7 +40,11 @@ export default function useMoveToken() {
     type = 'dice',
   }: MoveTokenParams) => {
     const delayTime =
-      type === 'teleport' ? TELEPORT_MOVE_DELAY : DICE_MOVE_DELAY;
+      type === 'teleport'
+        ? TELEPORT_MOVE_DELAY
+        : type === 'reconnect'
+        ? RECONNECT_MOVE_DELAY
+        : DICE_MOVE_DELAY;
     const tokenCoordinates = {
       x: playerGameBoardData.coordinates.x,
       y: playerGameBoardData.coordinates.y,

@@ -1,3 +1,4 @@
+import useMoveToken from '@hooks/useMoveToken';
 import { useReducerAtom } from 'jotai/utils';
 import {
   CellPayloadType,
@@ -16,11 +17,15 @@ import {
   StatusBoardPayloadType,
   TeleportPayloadType,
   UserStatusPayloadType,
+  CurrentPlayerPayloadType,
+  LocationsPayloadType,
   GameOverPayloadType,
 } from './type';
 import { gameAtom } from '.';
 
 export default function useGameReducer() {
+  const moveToken = useMoveToken();
+
   const [gameInfo, dispatch] = useReducerAtom(
     gameAtom,
     (
@@ -76,17 +81,23 @@ export default function useGameReducer() {
         case 'enter': {
           return {
             ...prev,
-            players: prev.players.map((player, index) => {
+            players: prev.players.map((player) => {
               const payload = action.payload as EnterPayloadType[];
 
-              if (!payload[index]) {
+              const currentPlayer = payload.find(
+                (currentPlayer) => currentPlayer.order === player.order
+              );
+
+              if (!currentPlayer) {
                 return player;
               }
 
+              const { playerId, isReady } = currentPlayer;
+
               return {
                 ...player,
-                playerId: payload[index].playerId,
-                isReady: payload[index].isReady,
+                playerId: playerId,
+                isReady: isReady,
               };
             }),
           };
@@ -319,6 +330,49 @@ export default function useGameReducer() {
               teleportLocation: payload.location,
               isArrived: false,
             },
+          };
+        }
+
+        case 'currentPlayer': {
+          const payload = action.payload as CurrentPlayerPayloadType;
+
+          return {
+            ...prev,
+            game: {
+              ...prev.game,
+              currentPlayerId: payload.playerId,
+            },
+          };
+        }
+
+        // Memo: 수정 필요
+        case 'locations': {
+          return {
+            ...prev,
+            players: prev.players.map((player) => {
+              const payload = action.payload as LocationsPayloadType[];
+
+              const currentPlayer = payload.find(
+                (currentPlayer) => currentPlayer.playerId === player.playerId
+              );
+
+              if (!currentPlayer) {
+                return player;
+              }
+
+              const { location } = currentPlayer;
+
+              moveToken({
+                diceCount: location,
+                playerGameBoardData: player.gameboard,
+                type: 'reconnect',
+              });
+
+              return {
+                ...player,
+                location: location,
+              };
+            }),
           };
         }
 
