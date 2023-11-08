@@ -366,10 +366,6 @@ export default function useGameReducer() {
               return {
                 ...player,
                 location: location,
-                gameboard: {
-                  ...player.gameboard,
-                  location: location,
-                },
               };
             }),
           };
