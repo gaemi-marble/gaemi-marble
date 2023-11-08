@@ -29,7 +29,9 @@ import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
+import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
+import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
@@ -204,8 +206,16 @@ public class GameController {
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
+		GameEventListResponse eventListResponse = gameService.selectEvents();
 		socketDataSender.send(gameEventRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS,
-			gameService.selectEvents()));
+			eventListResponse));
+		try {
+			Thread.sleep(5_000);
+			sendEventResult(GameEventResultRequest.builder().gameId(gameEventRequest.getGameId())
+				.events(eventListResponse.getEvents().stream().map(GameEventResponse::getTitle).toList()).build());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void sendBuyResult(GameStockBuyRequest gameStockBuyRequest) {
