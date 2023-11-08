@@ -64,6 +64,9 @@ const resetTeleportLocationAtom = atom(null, (_get, set) => {
   });
 });
 
+const timerAtom = focusAtom(gameInfoAtom, (optic) => optic.prop('timer'));
+export const useRouletteTimer = () => useAtom(timerAtom);
+
 export const useGameInfo = () => useAtom(gameInfoAtom);
 export const usePlayers = () => useAtom(playersAtom);
 

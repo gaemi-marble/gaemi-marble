@@ -2,7 +2,11 @@ import EventModal from '@components/Modal/EventModal/EventModal';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import useSound from '@hooks/useSound';
 import { usePlayerIdValue } from '@store/index';
-import { useGameInfo, useResetEventRound } from '@store/reducer';
+import {
+  useGameInfo,
+  useResetEventRound,
+  useRouletteTimer,
+} from '@store/reducer';
 import { delay } from '@utils/index';
 import { useCallback, useEffect, useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
@@ -13,9 +17,9 @@ import { styled } from 'styled-components';
 export default function Roulette() {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
-  const [stockSellTime, setStockSellTime] = useState(15);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
+  const [rouletteTimer, setRouletteTimer] = useRouletteTimer();
   const { gameId } = useParams();
   const [gameInfo] = useGameInfo();
   const playerId = usePlayerIdValue();
@@ -54,8 +58,12 @@ export default function Roulette() {
     const stockSellTimer = async () => {
       await delay(1000);
       if (!isMounted) return;
-      if (stockSellTime > 0) {
-        setStockSellTime((prev) => prev - 1);
+      if (rouletteTimer === undefined) {
+        alert('이벤트 룰렛을 정상적으로 불러오지 못했습니다.');
+        return;
+      }
+      if (rouletteTimer > 0) {
+        setRouletteTimer((prev) => prev - 1);
       } else {
         startSpin();
       }
@@ -65,7 +73,7 @@ export default function Roulette() {
     return () => {
       isMounted = false;
     };
-  }, [stockSellTime, startSpin]);
+  }, [rouletteTimer, setRouletteTimer, startSpin]);
 
   useEffect(() => {
     if (gameInfo.eventResult === '') return;
@@ -106,7 +114,7 @@ export default function Roulette() {
         onStopSpinning={handleSpinDone}
       />
       <Wrapper>
-        <Timer>남은 매도시간: {stockSellTime}</Timer>
+        <Timer>남은 매도시간: {rouletteTimer}</Timer>
       </Wrapper>
       {isEventModalOpen && <EventModal />}
       {isRolling && RouletteRollingSound}

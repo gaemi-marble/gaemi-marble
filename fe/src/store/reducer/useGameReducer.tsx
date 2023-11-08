@@ -208,6 +208,7 @@ export default function useGameReducer() {
             ...prev,
             game: {
               ...prev.game,
+              timer: payload.timer,
               eventList: [...payload.events],
               isArrived: false,
             },

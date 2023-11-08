@@ -220,6 +220,7 @@ export const initialGame = {
   firstPlayerId: '',
   currentPlayerId: '',
   dice: [0, 0],
+  timer: 0,
   eventList: [],
   eventResult: '',
   isMoveFinished: false,
