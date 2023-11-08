@@ -480,7 +480,7 @@ public class GameService {
 	public GameEventListResponse selectedEvents(Long gameId) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		GameEventListResponse gameEventListResponse = GameEventListResponse.builder().
-			timer(gameStatus.getSellingTime()).events(new ArrayList<>()).build();
+			timer(gameStatus.getSellingTime()+1).events(new ArrayList<>()).build();
 		for (Events event : gameStatus.getSelectedEvents()) {
 			gameEventListResponse.getEvents()
 				.add(GameEventResponse.builder()
