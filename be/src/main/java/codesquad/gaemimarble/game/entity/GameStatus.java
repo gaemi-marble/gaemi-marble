@@ -44,7 +44,8 @@ public class GameStatus {
 	}
 
 	public void waitSellingTime() {
-		for (int i = 0; i < sellingTime; i++) {
+		int time = sellingTime;
+		for (int i = 0; i < time; i++) {
 			try {
 				TimeUnit.SECONDS.sleep(1);
 				this.sellingTime--;

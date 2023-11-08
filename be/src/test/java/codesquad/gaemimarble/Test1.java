@@ -34,4 +34,20 @@ public class Test1 {
 		randomIndex = (int)(Math.random() * 2) + 1;
 		System.out.println(randomIndex);
 	}
+
+	@Test
+	void waitTest() {
+		long startTime = System.currentTimeMillis();
+		for (int i = 0; i < 10; i++) {
+			try {
+				Thread.sleep(1_000);
+				System.out.println(i);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		long endTime = System.currentTimeMillis();
+
+		System.out.println(endTime - startTime);
+	}
 }
