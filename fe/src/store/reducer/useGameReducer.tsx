@@ -208,6 +208,7 @@ export default function useGameReducer() {
             ...prev,
             game: {
               ...prev.game,
+              timer: payload.timer,
               eventList: [...payload.events],
               isArrived: false,
             },
@@ -349,6 +350,10 @@ export default function useGameReducer() {
         case 'locations': {
           return {
             ...prev,
+            game: {
+              ...prev.game,
+              isPlaying: true,
+            },
             players: prev.players.map((player) => {
               const payload = action.payload as LocationsPayloadType[];
 

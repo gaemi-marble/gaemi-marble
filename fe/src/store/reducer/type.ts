@@ -31,6 +31,7 @@ export type GameInfoType = {
   firstPlayerId: string;
   currentPlayerId: string | null;
   dice: number[];
+  timer: number;
   eventList: RouletteEvent[];
   eventResult: string;
   isMoveFinished: boolean;
@@ -104,6 +105,7 @@ export type CellPayloadType = {
 };
 
 export type EventsPayloadType = {
+  timer: number;
   events: RouletteEvent[];
 };
 
