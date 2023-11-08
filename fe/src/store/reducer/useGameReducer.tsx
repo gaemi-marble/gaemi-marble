@@ -19,6 +19,7 @@ import {
   UserStatusPayloadType,
   CurrentPlayerPayloadType,
   LocationsPayloadType,
+  GameOverPayloadType,
 } from './type';
 import { gameAtom } from '.';
 
@@ -361,13 +362,30 @@ export default function useGameReducer() {
 
               const { location } = currentPlayer;
 
-              moveToken(location, player.gameboard, 'reconnect');
+              moveToken({
+                diceCount: location,
+                playerGameBoardData: player.gameboard,
+                type: 'reconnect',
+              });
 
               return {
                 ...player,
                 location: location,
               };
             }),
+          };
+        }
+
+        case 'gameOver': {
+          const payload = action.payload as GameOverPayloadType;
+
+          return {
+            ...prev,
+            game: {
+              ...prev.game,
+              isPlaying: false,
+              ranking: [...payload.ranking],
+            },
           };
         }
 

@@ -226,4 +226,5 @@ export const initialGame = {
   teleportLocation: null,
   goldCardInfo: { title: '', description: '' },
   isArrived: false,
+  ranking: [],
 };

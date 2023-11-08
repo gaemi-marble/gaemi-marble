@@ -88,7 +88,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
               매도하기
             </StockSellButton>
           )}
-          {isStockSellModalOpen && (
+          {isStockSellModalOpen && eventTime && beforeRouletteSpin && (
             <StockSellModal handleClose={toggleStockSellModal} />
           )}
         </CardWrapper>
