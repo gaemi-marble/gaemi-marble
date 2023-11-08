@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import codesquad.gaemimarble.exception.CustomException;
+import codesquad.gaemimarble.exception.PlayTimeException;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -205,7 +205,7 @@ public class GameService {
 			}
 		}
 		if (eventToProceed == null) {
-			throw new CustomException("이벤트 이름이 맞지 않습니다", null, gameId);
+			throw new PlayTimeException("이벤트 이름이 맞지 않습니다", null, gameId);
 		}
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		Map<Theme, Integer> impactMap = eventToProceed.getImpact();
@@ -250,11 +250,11 @@ public class GameService {
 			.stream()
 			.filter(s -> s.getName().equals(gameStockBuyRequest.getStockName()))
 			.findFirst()
-			.orElseThrow(() -> new CustomException("존재하지 않는 주식이름입니다", gameStockBuyRequest.getPlayerId(),
+			.orElseThrow(() -> new PlayTimeException("존재하지 않는 주식이름입니다", gameStockBuyRequest.getPlayerId(),
 				gameStockBuyRequest.getGameId()));
 		if (stock.getRemainingStock() < gameStockBuyRequest.getQuantity()
 			| player.getCashAsset() < stock.getCurrentPrice() * gameStockBuyRequest.getQuantity()) {
-			throw new CustomException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다", gameStockBuyRequest.getPlayerId(),
+			throw new PlayTimeException("구매할 수량이 부족하거나, 플레이어 보유 캐쉬가 부족합니다", gameStockBuyRequest.getPlayerId(),
 				gameStockBuyRequest.getGameId());
 		}
 		player.buy(stock, gameStockBuyRequest.getQuantity());
@@ -288,7 +288,7 @@ public class GameService {
 		}
 		for (String stockName : sellingStockInfoMap.keySet()) {
 			if (player.getMyStocks().get(stockName) < sellingStockInfoMap.get(stockName)) {
-				throw new CustomException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다", gameSellStockRequest.getPlayerId(),
+				throw new PlayTimeException("플레이어가 보유한 주식보다 더 많이 팔수는 없습니다", gameSellStockRequest.getPlayerId(),
 					gameSellStockRequest.getGameId());
 			}
 		}
@@ -338,7 +338,7 @@ public class GameService {
 	public void teleport(GameTeleportRequest gameTeleportRequest) {
 		Player player = gameRepository.getPlayer(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
 		if (gameTeleportRequest.getLocation().equals(player.getLocation()) && player.getLocation() == 18) {
-			throw new CustomException("순간이동 칸으로 이동 할 수 없습니다", gameTeleportRequest.getPlayerId(),
+			throw new PlayTimeException("순간이동 칸으로 이동 할 수 없습니다", gameTeleportRequest.getPlayerId(),
 				gameTeleportRequest.getGameId());
 		}
 		player.setLocation(
@@ -351,7 +351,7 @@ public class GameService {
 		String shareName = gameStatus.getBoard().getBoard().get(location);
 		Stock stock = gameStatus.getStocks().stream()
 			.filter(s -> s.getName().equals(shareName)).findFirst()
-			.orElseThrow(() -> new CustomException("존재하지 않는 주식입니다.", null, gameId));
+			.orElseThrow(() -> new PlayTimeException("존재하지 않는 주식입니다.", null, gameId));
 		if (stock.getWasBought()) {
 			stock.changePrice(10);
 		}

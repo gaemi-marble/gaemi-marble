@@ -10,6 +10,8 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import codesquad.gaemimarble.exception.PlayTimeException;
+import codesquad.gaemimarble.exception.SocketException;
 import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.SocketErrorResponse;
 import codesquad.gaemimarble.game.entity.TypeConstants;
@@ -29,28 +31,15 @@ public class SocketDataSender {
 
 	public boolean saveSocket(Long gameId, String playerId, WebSocketSession session) {
 		ConcurrentMap<String, WebSocketSession> socketMap = gameSocketMap.get(gameId);
-		try {
-			if (socketMap.values().size() == 4) {
-				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-					new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse("인원이 가득 찼습니다.")))));
-				session.close();
-				return false;
-			}
-
-			boolean isDuplicate = socketMap.containsKey(playerId);
-
-			if (!isDuplicate) {
-				socketMap.put(playerId, session);
-				return true;
-			} else {
-				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-					new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse("이미 접속한 플레이어입니다.")))));
-				return false;
-			}
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-			return false;
+		if (socketMap.containsKey(playerId)) {
+			socketMap.put(playerId, session);
+			return true;
 		}
+
+		if (socketMap.values().size() >= 4) {
+			throw new SocketException("인원이 가득 찼습니다.", playerId, gameId, session);
+		}
+		return false;
 	}
 
 	public <T> void send(Long gameId, T object) {
