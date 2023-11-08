@@ -75,7 +75,11 @@ export default function CenterArea({
       currentPlayerInfo.gameboard.location
     );
 
-    await moveToken(cellCount, currentPlayerInfo.gameboard, 'teleport');
+    await moveToken({
+      diceCount: cellCount,
+      playerGameBoardData: currentPlayerInfo.gameboard,
+      type: 'teleport',
+    });
 
     setGameInfo((prev) => {
       return {

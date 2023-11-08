@@ -16,6 +16,7 @@ import {
   StatusBoardPayloadType,
   TeleportPayloadType,
   UserStatusPayloadType,
+  GameOverPayloadType,
 } from './type';
 import { gameAtom } from '.';
 
@@ -317,6 +318,19 @@ export default function useGameReducer() {
               ...prev.game,
               teleportLocation: payload.location,
               isArrived: false,
+            },
+          };
+        }
+
+        case 'gameOver': {
+          const payload = action.payload as GameOverPayloadType;
+
+          return {
+            ...prev,
+            game: {
+              ...prev.game,
+              isPlaying: false,
+              ranking: [...payload.ranking],
             },
           };
         }

@@ -1,4 +1,4 @@
-name: FE CI/CD
+name: FE DEPLOY
 
 on:
   push:
