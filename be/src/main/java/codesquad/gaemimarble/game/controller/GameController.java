@@ -103,7 +103,6 @@ public class GameController {
 			socketDataSender.send(
 				gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.GAME_OVER,
 					gameService.createUserRanking(gameEventResultRequest.getGameId())));
-			socketDataSender.close(gameEventResultRequest.getGameId());
 		}
 	}
 
