@@ -22,6 +22,7 @@ import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameArrestRequest;
 import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameDonationRequest;
 import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
@@ -30,6 +31,8 @@ import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStatusBoardRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameStockManipulationRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameViciousRumorRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
@@ -69,6 +72,10 @@ public class GameController {
 		typeMap.put(TypeConstants.STATUS_BOARD, GameStatusBoardRequest.class);
 		typeMap.put(TypeConstants.CELL, GameCellArrivalRequest.class);
 		typeMap.put(TypeConstants.DONATION, GameDonationRequest.class);
+		typeMap.put(TypeConstants.VICIOUS_RUMOR, GameViciousRumorRequest.class);
+		typeMap.put(TypeConstants.MANIPULATION, GameStockManipulationRequest.class);
+		typeMap.put(TypeConstants.ARREST, GameArrestRequest.class);
+
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -86,8 +93,25 @@ public class GameController {
 		handlers.put(GameStatusBoardRequest.class, req -> sendStatusBoard((GameStatusBoardRequest)req));
 		handlers.put(GameCellArrivalRequest.class, req -> sendCellArrival((GameCellArrivalRequest)req));
 		handlers.put(GameDonationRequest.class, req -> sendDonationResult((GameDonationRequest)req));
+		handlers.put(GameViciousRumorRequest.class, req -> sendViciousRumorResult((GameViciousRumorRequest)req));
+		handlers.put(GameStockManipulationRequest.class, req -> sendStockManipulationResult((GameStockManipulationRequest)req));
+		handlers.put(GameArrestRequest.class, req -> sendArrestResult((GameArrestRequest)req));
 	}
 
+	private void sendArrestResult(GameArrestRequest gameArrestRequest) {
+		socketDataSender.send(gameArrestRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
+			gameService.arrest(gameArrestRequest)));
+	}
+
+	private void sendStockManipulationResult(GameStockManipulationRequest gameStockManipulationRequest) {
+		gameService.increaseStockPrice(gameStockManipulationRequest);
+		sendStatusBoard(GameStatusBoardRequest.builder().gameId(gameStockManipulationRequest.getGameId()).build());
+	}
+
+	private void sendViciousRumorResult(GameViciousRumorRequest gameViciousRumorRequest) {
+		gameService.dropStockPrice(gameViciousRumorRequest);
+		sendStatusBoard(GameStatusBoardRequest.builder().gameId(gameViciousRumorRequest.getGameId()).build());
+	}
 
 	private void sendDonationResult(GameDonationRequest gameDonationRequest) {
 		List<Player> players = gameService.donate(gameDonationRequest);
@@ -233,9 +257,8 @@ public class GameController {
 	}
 
 	private void sendTeleport(GameTeleportRequest gameTeleportRequest) {
-		gameService.teleport(gameTeleportRequest);
 		socketDataSender.send(gameTeleportRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
-			GameTeleportResponse.builder().location(gameTeleportRequest.getLocation()).build()));
+			gameService.teleport(gameTeleportRequest)));
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {

@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameDonationRequest {
+public class GameArrestRequest {
 	private Long gameId;
-	private String playerId;
-	private String receiverId;
+	private String targetId;
 
 	@Builder
-	private GameDonationRequest(Long gameId, String playerId, String receiverId) {
+	public GameArrestRequest(Long gameId, String targetId) {
 		this.gameId = gameId;
-		this.playerId = playerId;
-		this.receiverId = receiverId;
+		this.targetId = targetId;
 	}
 }

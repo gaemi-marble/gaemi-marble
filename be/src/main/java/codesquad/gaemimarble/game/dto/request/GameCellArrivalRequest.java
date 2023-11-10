@@ -2,11 +2,13 @@ package codesquad.gaemimarble.game.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class GameCellArrivalRequest {
-	private final Long gameId;
-	private final String playerId;
+	private Long gameId;
+	private String playerId;
 
 	@Builder
 	public GameCellArrivalRequest(Long gameId, String playerId) {

@@ -6,4 +6,6 @@ public class Constants {
 	public static final String REFRESH_TOKEN = "Refresh-Token";
 	public static final int SELLING_TIME = 10;
 	public static final int GAME_OVER_ROUND = 5;
+	public static final int VICIOUS_RUMOR_STOCK_DROP = -30;
+	public static final int STOCK_MANIPULATION_INCREASE = 30;
 }

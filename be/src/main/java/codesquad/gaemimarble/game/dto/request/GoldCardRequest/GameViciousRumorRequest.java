@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameDonationRequest {
+public class GameViciousRumorRequest {
 	private Long gameId;
-	private String playerId;
-	private String receiverId;
+	private String stockName;
 
 	@Builder
-	private GameDonationRequest(Long gameId, String playerId, String receiverId) {
+	private GameViciousRumorRequest(Long gameId, String stockName) {
 		this.gameId = gameId;
-		this.playerId = playerId;
-		this.receiverId = receiverId;
+		this.stockName = stockName;
 	}
 }
