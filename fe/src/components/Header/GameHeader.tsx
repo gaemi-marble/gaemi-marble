@@ -1,4 +1,5 @@
 import StatusBoardModal from '@components/Modal/StatusBoardModal/StatusBoardModal';
+import { SOUND_PATH } from '@components/constants';
 import { Icon } from '@components/icon/Icon';
 import useSound from '@hooks/useSound';
 import { ROUTE_PATH } from '@router/constants';
@@ -9,13 +10,12 @@ import { styled } from 'styled-components';
 export default function GameHeader() {
   const navigate = useNavigate();
   const [isStatusBoardModalOpen, setIsStatusBoardModalOpen] = useState(false);
-
   const {
     isSoundPlaying,
     togglePlayingSound,
     sound: GameBgm,
   } = useSound({
-    src: '/bgm/game.mp3',
+    src: SOUND_PATH.GAME_PAGE,
   });
 
   const handleExit = () => {

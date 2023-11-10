@@ -7,10 +7,12 @@ type EventModalContentProps = {
 export default function EventModalContent({
   eventInfo,
 }: EventModalContentProps) {
+  const { content, impact } = eventInfo;
+
   return (
     <>
-      <div>{eventInfo.content}</div>
-      <div>{eventInfo.impact}</div>
+      <div>{content}</div>
+      <div>{impact}</div>
     </>
   );
 }

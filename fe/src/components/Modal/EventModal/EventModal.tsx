@@ -3,17 +3,17 @@ import Modal from '../Modal';
 import EventModalContent from './EventModalContent';
 
 export default function EventModal() {
-  const gameInfo = useGameInfoValue();
-  const targetEvent = gameInfo.eventList.find(
-    (event) => event.title === gameInfo.eventResult
-  );
-
-  if (!targetEvent) return null;
+  const { eventList, eventResult } = useGameInfoValue();
+  const targetEvent = eventList.find((event) => event.title === eventResult);
 
   return (
-    <Modal
-      header={targetEvent.title}
-      content={<EventModalContent eventInfo={targetEvent} />}
-    />
+    <>
+      {targetEvent && (
+        <Modal
+          header={targetEvent.title}
+          content={<EventModalContent eventInfo={targetEvent} />}
+        />
+      )}
+    </>
   );
 }

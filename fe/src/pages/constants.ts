@@ -9,7 +9,7 @@ export const STOCK_LOCATION = [
 
 export const ANT_LIST: {
   order: number;
-  antName: IconsType;
+  antName: Partial<IconsType>;
 }[] = [
   { order: 1, antName: 'antBasic' },
   { order: 2, antName: 'antFire' },

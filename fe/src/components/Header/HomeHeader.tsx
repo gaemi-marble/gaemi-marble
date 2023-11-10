@@ -1,4 +1,5 @@
 import { postLogout } from '@api/index';
+import { SOUND_PATH } from '@components/constants';
 import useHover from '@hooks/useHover';
 import useSound from '@hooks/useSound';
 import { ROUTE_PATH } from '@router/constants';
@@ -22,7 +23,7 @@ export default function HomeHeader() {
     togglePlayingSound,
     sound: HomeBgm,
   } = useSound({
-    src: '/bgm/home.mp3',
+    src: SOUND_PATH.HOME_PAGE,
   });
 
   const handleLogout = async () => {
@@ -31,11 +32,8 @@ export default function HomeHeader() {
       setPlayer('');
       setAccessToken('');
       setRefreshToken('');
-      localStorage.removeItem('playerId');
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
 
-      navigate(ROUTE_PATH.SIGNIN);
+      navigate(ROUTE_PATH.SIGN_IN);
     }
   };
 

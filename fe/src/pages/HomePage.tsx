@@ -5,9 +5,9 @@ import { Icon } from '@components/icon/Icon';
 import { ROUTE_PATH } from '@router/constants';
 import { useSetGame } from '@store/reducer';
 import {
-  initialGame,
-  initialPlayer,
-  initialStock,
+  INITIAL_GAME,
+  INITIAL_PLAYER,
+  INITIAL_STOCK,
 } from '@store/reducer/constants';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,9 +20,9 @@ export default function HomePage() {
 
   useEffect(() => {
     setGame({
-      game: initialGame,
-      players: initialPlayer,
-      stocks: initialStock,
+      game: INITIAL_GAME,
+      players: INITIAL_PLAYER,
+      stocks: INITIAL_STOCK,
     });
   }, [setGame]);
 

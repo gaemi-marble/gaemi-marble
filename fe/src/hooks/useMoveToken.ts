@@ -4,7 +4,7 @@ import {
   RECONNECT_MOVE_DELAY,
   TELEPORT_MOVE_DELAY,
   changeDirection,
-  directions,
+  DIRECTIONS,
 } from '@components/GameBoard/constants';
 import { useGameInfoValue, useSetPlayers } from '@store/reducer';
 import { GameBoardType } from '@store/reducer/type';
@@ -53,7 +53,7 @@ export default function useMoveToken() {
     let tokenLocation = playerGameBoardData.location;
 
     for (let i = diceCount; i > 0; i--) {
-      const directionData = directions[tokenDirection];
+      const directionData = DIRECTIONS[tokenDirection];
       moveToNextCell(
         directionData.x,
         directionData.y,
@@ -81,8 +81,8 @@ export default function useMoveToken() {
         if (index !== targetPlayerIndex) return player;
         return {
           ...player,
-          gameboard: {
-            ...player.gameboard,
+          gameBoard: {
+            ...player.gameBoard,
             location: tokenLocation,
             coordinates: tokenCoordinates,
             direction: tokenDirection,

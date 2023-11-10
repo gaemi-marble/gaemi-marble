@@ -1,27 +1,32 @@
+import { SOUND_PATH } from '@components/constants';
 import useMoveToken from '@hooks/useMoveToken';
 import useSound from '@hooks/useSound';
-import { useGameInfoValue, usePlayers, useSetGameInfo } from '@store/reducer';
+import {
+  useGameInfoValue,
+  usePlayersValue,
+  useSetGameInfo,
+} from '@store/reducer';
 import { useEffect, useRef, useState } from 'react';
 import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 import { styled } from 'styled-components';
 
 export default function Dice() {
-  const [diceValue, setDiceValue] = useState(0);
   const reactDice = useRef<ReactDiceRef>(null);
-  const [players] = usePlayers();
-  const gameInfo = useGameInfoValue();
-  const moveToken = useMoveToken();
+  const players = usePlayersValue();
+  const { currentPlayerId, dice } = useGameInfoValue();
+  const [dice1, dice2] = dice;
   const setGameInfo = useSetGameInfo();
+  const moveToken = useMoveToken();
+  const [diceValue, setDiceValue] = useState(0);
   const [isRolling, setIsRolling] = useState(false);
   const { sound: DiceRollSound } = useSound({
-    src: '/sound/roll.mp3',
+    src: SOUND_PATH.DICE,
   });
-  const [dice1, dice2] = gameInfo.dice;
 
   useEffect(() => {
     if (dice1 === 0 || dice2 === 0) return;
     rollDice(dice1, dice2);
-  }, [gameInfo.dice]);
+  }, [dice1, dice2]);
 
   const rollDice = (dice1: number, dice2: number) => {
     reactDice.current?.rollAll([dice1, dice2]);
@@ -34,16 +39,16 @@ export default function Dice() {
     const totalDiceValue = dice1 + dice2;
     setDiceValue(totalDiceValue);
     const targetPlayer = players.find(
-      (player) => player.playerId === gameInfo.currentPlayerId
+      (player) => player.playerId === currentPlayerId
     );
     setIsRolling(false);
 
     if (!targetPlayer) return;
-    if (!targetPlayer.gameboard.hasEscaped) return;
+    if (!targetPlayer.gameBoard.hasEscaped) return;
 
     await moveToken({
       diceCount: totalDiceValue,
-      playerGameBoardData: targetPlayer.gameboard,
+      playerGameBoardData: targetPlayer.gameBoard,
     });
 
     setGameInfo((prev) => {

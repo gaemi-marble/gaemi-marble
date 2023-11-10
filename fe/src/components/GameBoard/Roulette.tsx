@@ -11,14 +11,12 @@ import { Wheel } from 'react-custom-roulette';
 import { styled } from 'styled-components';
 
 export default function Roulette() {
-  const [mustSpin, setMustSpin] = useState(false);
-  const [prizeNumber, setPrizeNumber] = useState(0);
-  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-
-  const [rouletteTimer, setRouletteTimer] = useRouletteTimer();
   const { eventList, eventResult } = useGameInfoValue();
   const resetGameInfo = useResetEventRound();
-
+  const [mustSpin, setMustSpin] = useState(false);
+  const [rouletteTimer, setRouletteTimer] = useRouletteTimer();
+  const [prizeNumber, setPrizeNumber] = useState(0);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
   const { sound: RouletteRollingSound } = useSound({
     src: '/sound/roulette.mp3',

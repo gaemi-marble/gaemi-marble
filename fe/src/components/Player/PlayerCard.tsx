@@ -19,24 +19,22 @@ type PlayerCardProps = {
 };
 
 export default function PlayerCard({ player }: PlayerCardProps) {
-  const [isStockSellModalOpen, setIsStockSellModalOpen] = useState(false);
   const { ref, handleClickScroll } = useClickScrollButton<HTMLUListElement>({
     width: SCROLL_ONCE,
   });
-
   const { gameId } = useParams();
-  const gameInfo = useGameInfoValue();
-  const playerId = usePlayerIdValue();
+  const myId = usePlayerIdValue();
+  const { currentPlayerId, eventResult, isPlaying } = useGameInfoValue();
+  const { isReady, playerId, userStatusBoard } = player;
+  const [isStockSellModalOpen, setIsStockSellModalOpen] = useState(false);
   const socketUrl = useGetSocketUrl();
-
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
 
-  const isReady = player.isReady;
-  const isMyButton = player.playerId === playerId;
-  const eventTime = gameInfo.currentPlayerId === null;
-  const beforeRouletteSpin = gameInfo.eventResult === '';
+  const isMyButton = playerId === myId;
+  const eventTime = !!currentPlayerId;
+  const beforeRouletteSpin = !!eventResult;
 
   const handleReady = () => {
     const message = {
@@ -54,17 +52,17 @@ export default function PlayerCard({ player }: PlayerCardProps) {
 
   return (
     <>
-      {player.playerId ? (
+      {playerId ? (
         <CardWrapper>
           <PlayerInfo player={player} />
-          {!!player.userStatusBoard.stockList.length && (
+          {!!userStatusBoard.stockList.length && (
             <>
               <StockWrapper>
                 <ArrowButton onClick={() => handleClickScroll()}>
                   <Icon name="arrowLeft" color="accentText" />
                 </ArrowButton>
                 <PlayerStockList ref={ref}>
-                  {player.userStatusBoard.stockList.map((stock) => (
+                  {userStatusBoard.stockList.map((stock) => (
                     <PlayerStock key={stock.name} stockInfo={stock} />
                   ))}
                 </PlayerStockList>
@@ -74,7 +72,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
               </StockWrapper>
             </>
           )}
-          {!gameInfo.isPlaying && (
+          {!isPlaying && (
             <Button
               onClick={handleReady}
               disabled={!isMyButton}

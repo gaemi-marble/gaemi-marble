@@ -19,11 +19,11 @@ export const router = createBrowserRouter(
           <ProtectedRoute needAuth={false} redirectRoute={ROUTE_PATH.HOME} />
         }
       >
-        <Route path={ROUTE_PATH.SIGNIN} element={<SignInPage />} />
-        <Route path={ROUTE_PATH.SIGNUP} element={<SignUpPage />} />
+        <Route path={ROUTE_PATH.SIGN_IN} element={<SignInPage />} />
+        <Route path={ROUTE_PATH.SIGN_UP} element={<SignUpPage />} />
       </Route>
       <Route
-        element={<ProtectedRoute needAuth redirectRoute={ROUTE_PATH.SIGNIN} />}
+        element={<ProtectedRoute needAuth redirectRoute={ROUTE_PATH.SIGN_IN} />}
       >
         <Route path={ROUTE_PATH.HOME} element={<HomePage />} />
         <Route path={`${ROUTE_PATH.GAME}/:gameId`} element={<GamePage />} />

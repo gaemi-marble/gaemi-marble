@@ -14,17 +14,17 @@ import { css, styled } from 'styled-components';
 import Cell from './Cell';
 import CenterArea from './CenterArea';
 import PlayerToken from './PlayerToken';
-import { initialBoard } from './constants';
+import { INITIAL_BOARD } from './constants';
 
 export default function GameBoard() {
-  const [targetLocation, setTargetLocation] = useState<number | null>(null);
-  const gameInfo = useGameInfoValue();
+  const { gameId } = useParams();
+  const playerId = usePlayerIdValue();
+  const { currentPlayerId, isPlaying } = useGameInfoValue();
   const stockList = useStocksValue();
   const players = usePlayersValue();
   const [playerAtoms] = useAtom(playerAtomsAtom);
+  const [targetLocation, setTargetLocation] = useState<number | null>(null);
   const socketUrl = useGetSocketUrl();
-  const { gameId } = useParams();
-  const playerId = usePlayerIdValue();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
@@ -33,9 +33,9 @@ export default function GameBoard() {
     (player) => player.playerId === '' || player.isReady
   );
   const currentPlayer = players.find(
-    (player) => player.playerId === gameInfo.currentPlayerId
+    (player) => player.playerId === currentPlayerId
   );
-  const currentPlayerStatus = currentPlayer?.gameboard.status ?? 'event';
+  const currentPlayerStatus = currentPlayer?.gameBoard.status ?? 'event';
   const isCaptain =
     players.find((player) => player.playerId === playerId)?.order === 1;
 
@@ -58,7 +58,7 @@ export default function GameBoard() {
   return (
     <Container>
       <Board>
-        {initialBoard.map((line, index) => (
+        {INITIAL_BOARD.map((line, index) => (
           <Line key={index} $lineNum={index + 1}>
             {line.map((cell) => {
               const stockPrice = stockList.find(
@@ -77,10 +77,10 @@ export default function GameBoard() {
             })}
           </Line>
         ))}
-        {!gameInfo.isPlaying && isEveryoneReady && isCaptain && (
+        {!isPlaying && isEveryoneReady && isCaptain && (
           <Button onClick={handleStart}>게임 시작</Button>
         )}
-        {gameInfo.isPlaying && (
+        {isPlaying && (
           <CenterArea
             currentStatus={currentPlayerStatus}
             targetLocation={targetLocation}

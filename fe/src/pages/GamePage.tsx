@@ -46,7 +46,7 @@ export default function GamePage() {
 
   // Memo: dependency에 dispatch 추가시 무한렌더링
   useEffect(() => {
-    if (lastMessage !== null) {
+    if (lastMessage) {
       const messageFromServer = JSON.parse(lastMessage?.data);
       dispatch({
         type: messageFromServer.type,

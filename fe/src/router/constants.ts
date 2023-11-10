@@ -1,6 +1,6 @@
 export const ROUTE_PATH = {
   HOME: '/',
-  SIGNIN: '/signin',
-  SIGNUP: '/signup',
+  SIGN_IN: '/signin',
+  SIGN_UP: '/signup',
   GAME: '/game',
 };
