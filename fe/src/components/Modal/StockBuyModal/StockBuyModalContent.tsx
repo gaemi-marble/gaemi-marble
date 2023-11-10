@@ -10,9 +10,9 @@ import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 
 export default function StockBuyModalContent() {
-  const { game, players, stocks } = useGameValue();
-  const playerId = usePlayerIdValue();
   const { gameId } = useParams();
+  const playerId = usePlayerIdValue();
+  const { game, players, stocks } = useGameValue();
   const setGameInfo = useSetGameInfo();
   const [purchaseQuantity, setPurchaseQuantity] = useState(0);
   const socketUrl = useGetSocketUrl();
@@ -54,7 +54,8 @@ export default function StockBuyModalContent() {
 
   const currentStock = stocks.find(
     (stock) => stock.location === currentLocation
-  );
+  )!;
+  const { logo, name, theme, price, quantity } = currentStock;
 
   const cashAsset = currentPlayer!.userStatusBoard.cashAsset;
   const totalPrice = purchaseQuantity * currentStock!.price;
@@ -66,24 +67,24 @@ export default function StockBuyModalContent() {
 
   return (
     <ModalContent>
-      <StockLogo src={cellImageMap[currentStock!.logo]} />
+      <StockLogo src={cellImageMap[logo]} />
       <StockInfoTable>
         <tbody>
           <tr>
             <th>주식 이름</th>
-            <td>{currentStock!.name}</td>
+            <td>{name}</td>
           </tr>
           <tr>
             <th>주식 테마</th>
-            <td>{currentStock!.theme}</td>
+            <td>{theme}</td>
           </tr>
           <tr>
             <th>주당 가격</th>
-            <td>{addCommasToNumber(currentStock!.price)}</td>
+            <td>{addCommasToNumber(price)}</td>
           </tr>
           <tr>
             <th>잔여 수량</th>
-            <td>{currentStock!.quantity - purchaseQuantity}</td>
+            <td>{quantity - purchaseQuantity}</td>
           </tr>
           <tr>
             <th>보유 현금</th>

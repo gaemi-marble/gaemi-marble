@@ -18,8 +18,8 @@ export default function PlayerToken({ playerAtom }: PlayerTokenWithAtomProps) {
     setPlayer((prev) => {
       return {
         ...prev,
-        gameboard: {
-          ...prev.gameboard,
+        gameBoard: {
+          ...prev.gameBoard,
           ref: tokenRef,
         },
       };

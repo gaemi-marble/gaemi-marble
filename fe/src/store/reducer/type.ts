@@ -64,7 +64,7 @@ export type PlayerType = {
   isReady: boolean;
   location: number;
   userStatusBoard: UserStatusType;
-  gameboard: GameBoardType;
+  gameBoard: GameBoardType;
 };
 
 type UserStatusType = {

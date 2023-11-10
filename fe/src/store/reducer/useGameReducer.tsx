@@ -169,8 +169,8 @@ export default function useGameReducer() {
                   ...player.userStatusBoard,
                   cashAsset: player.userStatusBoard.cashAsset + bonus,
                 },
-                gameboard: {
-                  ...player.gameboard,
+                gameBoard: {
+                  ...player.gameBoard,
                   status: playerStatus as PlayerStatusType,
                 },
               };
@@ -263,8 +263,8 @@ export default function useGameReducer() {
                   ...player.userStatusBoard,
                   cashAsset: player.userStatusBoard.cashAsset - payload.amount,
                 },
-                gameboard: {
-                  ...player.gameboard,
+                gameBoard: {
+                  ...player.gameBoard,
                   hasEscaped: true,
                 },
               };
@@ -290,8 +290,8 @@ export default function useGameReducer() {
                 }
                 return {
                   ...player,
-                  gameboard: {
-                    ...player.gameboard,
+                  gameBoard: {
+                    ...player.gameBoard,
                     hasEscaped: false,
                   },
                 };
@@ -312,8 +312,8 @@ export default function useGameReducer() {
               }
               return {
                 ...player,
-                gameboard: {
-                  ...player.gameboard,
+                gameBoard: {
+                  ...player.gameBoard,
                   hasEscaped: true,
                 },
               };
@@ -369,7 +369,7 @@ export default function useGameReducer() {
 
               moveToken({
                 diceCount: location,
-                playerGameBoardData: player.gameboard,
+                playerGameBoardData: player.gameBoard,
                 type: 'reconnect',
               });
 

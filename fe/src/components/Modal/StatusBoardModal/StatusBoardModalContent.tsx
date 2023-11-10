@@ -18,17 +18,21 @@ export default function StatusBoardModalContent() {
         </tr>
       </thead>
       <tbody>
-        {stocks.map((stock) => (
-          <tr key={stock.name}>
-            <td>
-              <Logo src={cellImageMap[stock.logo]} />
-            </td>
-            <td>{stock.name}</td>
-            <td>{stock.theme}</td>
-            <td>{addCommasToNumber(stock.price)}</td>
-            <td>{stock.quantity}</td>
-          </tr>
-        ))}
+        {stocks.map((stock) => {
+          const { name, logo, theme, price, quantity } = stock;
+
+          return (
+            <tr key={name}>
+              <td>
+                <Logo src={cellImageMap[logo]} />
+              </td>
+              <td>{name}</td>
+              <td>{theme}</td>
+              <td>{addCommasToNumber(price)}</td>
+              <td>{quantity}</td>
+            </tr>
+          );
+        })}
       </tbody>
     </Stocks>
   );

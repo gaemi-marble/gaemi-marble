@@ -6,15 +6,13 @@ import { styled } from 'styled-components';
 
 export default function EnterModalContent() {
   const navigate = useNavigate();
-  const [roomNumber, setRoomNumber] = useState('');
+  const [gameId, setGameId] = useState('');
 
   const handleChangeRoomNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomNumber(e.target.value);
+    setGameId(e.target.value);
   };
 
   const handleEnterRoom = async () => {
-    // Todo: 유효한 방인지 검증하는 api 완성되면 추가
-    const gameId = +roomNumber;
     const res = await getGameCheck(gameId);
     const { isPresent, isFull } = res.data;
 
@@ -34,12 +32,12 @@ export default function EnterModalContent() {
       return;
     }
 
-    navigate(`${ROUTE_PATH.GAME}/${roomNumber}`);
+    navigate(`${ROUTE_PATH.GAME}/${gameId}`);
   };
 
   return (
     <Content>
-      <Input value={roomNumber} onChange={handleChangeRoomNumber} />
+      <Input value={gameId} onChange={handleChangeRoomNumber} />
       <Button onClick={handleEnterRoom}>입장하기</Button>
     </Content>
   );

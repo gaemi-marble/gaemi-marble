@@ -30,7 +30,6 @@
       "@api/*": ["api/*"],
       "@hooks/*": ["hooks/*"],
       "@styles/*": ["styles/*"],
-      "@mocks/*": ["mocks/*"],
       "@store/*": ["store/*"],
       "@utils/*": ["utils/*"]
     },

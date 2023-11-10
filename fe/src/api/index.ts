@@ -29,7 +29,7 @@ export const postCreateRoom = async () => {
   return res;
 };
 
-export const getGameCheck = async (gameId: number) => {
+export const getGameCheck = async (gameId: string) => {
   const res = await fetcher.get(`${API_END_POINT.GAMES}/${gameId}`);
   return res;
 };

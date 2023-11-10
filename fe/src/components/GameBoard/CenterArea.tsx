@@ -32,14 +32,14 @@ export default function CenterArea({
   const { hoverRef: escapeRef, isHover: isEscapeBtnHover } =
     useHover<HTMLButtonElement>();
   const { gameId } = useParams();
+  const playerId = usePlayerIdValue();
   const players = usePlayersValue();
   const { currentPlayerId, firstPlayerId, isMoveFinished, teleportLocation } =
     useGameInfoValue();
-  const playerId = usePlayerIdValue();
   const setGameInfo = useSetGameInfo();
-  const socketUrl = useGetSocketUrl();
   const moveToken = useMoveToken();
   const resetTeleportLocation = useResetTeleportLocation();
+  const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
@@ -48,12 +48,11 @@ export default function CenterArea({
   const eventTime = currentPlayerId === null;
   const isPrison = currentStatus === 'prison';
   const isTeleport = currentStatus === 'teleport';
-  const isMoveDone = isMoveFinished;
 
   const defaultStart =
-    isMyTurn && !eventTime && !isPrison && !isTeleport && !isMoveDone;
-  const prisonStart = isMyTurn && !eventTime && isPrison && !isMoveDone;
-  const teleportStart = isMyTurn && !eventTime && isTeleport && !isMoveDone;
+    isMyTurn && !eventTime && !isPrison && !isTeleport && !isMoveFinished;
+  const prisonStart = isMyTurn && !eventTime && isPrison && !isMoveFinished;
+  const teleportStart = isMyTurn && !eventTime && isTeleport && !isMoveFinished;
 
   const currentPlayerInfo = players.find(
     (player) => player.playerId === currentPlayerId
@@ -69,33 +68,16 @@ export default function CenterArea({
     sendJsonMessage(message);
   }, [eventTime, gameId, playerId, firstPlayerId, sendJsonMessage]);
 
-  const sendCellMessage = () => {
-    const message = {
-      type: 'cell',
-      gameId,
-      playerId,
-    };
-    sendJsonMessage(message);
-  };
-
-  const sendStatusBoardMessage = () => {
-    const message = {
-      type: 'statusBoard',
-      gameId,
-    };
-    sendJsonMessage(message);
-  };
-
   const teleportToken = async () => {
     if (!currentPlayerInfo || !teleportLocation) return;
-    const cellCount = calculateCellCount(
-      teleportLocation,
-      currentPlayerInfo.gameboard.location
-    );
+    const cellCount = calculateCellCount({
+      targetCell: teleportLocation,
+      currentCell: currentPlayerInfo.gameBoard.location,
+    });
 
     await moveToken({
       diceCount: cellCount,
-      playerGameBoardData: currentPlayerInfo.gameboard,
+      playerGameBoardData: currentPlayerInfo.gameBoard,
       type: 'teleport',
     });
 
@@ -166,7 +148,30 @@ export default function CenterArea({
     sendJsonMessage(message);
   };
 
-  const calculateCellCount = (targetCell: number, currentCell: number) => {
+  const sendCellMessage = () => {
+    const message = {
+      type: 'cell',
+      gameId,
+      playerId,
+    };
+    sendJsonMessage(message);
+  };
+
+  const sendStatusBoardMessage = () => {
+    const message = {
+      type: 'statusBoard',
+      gameId,
+    };
+    sendJsonMessage(message);
+  };
+
+  const calculateCellCount = ({
+    targetCell,
+    currentCell,
+  }: {
+    targetCell: number;
+    currentCell: number;
+  }) => {
     const cellCount = (24 + targetCell - currentCell) % 24;
     return cellCount;
   };
@@ -178,11 +183,9 @@ export default function CenterArea({
       )}
       {!eventTime && <Dice sendCellMessage={sendCellMessage} />}
       {defaultStart && (
-        <>
-          <Button onClick={() => throwDice()} disabled={isMoveDone}>
-            굴리기
-          </Button>
-        </>
+        <Button onClick={throwDice} disabled={isMoveFinished}>
+          굴리기
+        </Button>
       )}
       {prisonStart && (
         <Wrapper>
@@ -198,12 +201,10 @@ export default function CenterArea({
       {teleportStart && (
         <>
           <div>이동할 칸을 선택한 후 이동하기 버튼을 눌러주세요.</div>
-          <Button onClick={() => handleTeleport()}>이동하기</Button>
+          <Button onClick={handleTeleport}>이동하기</Button>
         </>
       )}
-      {isMyTurn && isMoveDone && (
-        <Button onClick={() => endTurn()}>턴종료</Button>
-      )}
+      {isMyTurn && isMoveFinished && <Button onClick={endTurn}>턴종료</Button>}
     </Center>
   );
 }

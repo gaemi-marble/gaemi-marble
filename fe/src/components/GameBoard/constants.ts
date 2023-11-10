@@ -1,6 +1,6 @@
 import { DirectionType } from '@store/reducer/type';
 
-export const initialBoard = [
+export const INITIAL_BOARD = [
   [
     { logo: 'start', name: '시작', location: 0 },
     { theme: 'it', logo: 'codesquad', name: '코드스쿼드', location: 1 },
@@ -68,7 +68,7 @@ export const CELL = {
 export const CORNER_CELLS = [0, 6, 12, 18];
 export const PRISON_CELL = 6;
 
-export const directions = {
+export const DIRECTIONS = {
   top: { x: 0, y: -CELL.HEIGHT },
   right: { x: CELL.WIDTH, y: 0 },
   bottom: { x: 0, y: CELL.HEIGHT },

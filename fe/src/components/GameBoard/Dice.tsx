@@ -1,6 +1,11 @@
+import { SOUND_PATH } from '@components/constants';
 import useMoveToken from '@hooks/useMoveToken';
 import useSound from '@hooks/useSound';
-import { useGameInfoValue, usePlayers, useSetGameInfo } from '@store/reducer';
+import {
+  useGameInfoValue,
+  usePlayersValue,
+  useSetGameInfo,
+} from '@store/reducer';
 import { useEffect, useRef, useState } from 'react';
 import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 import { styled } from 'styled-components';
@@ -9,19 +14,18 @@ type DiceProps = {
   sendCellMessage: () => void;
 };
 
-// TODO: Dice가 반복적으로 재렌더링 되는 원인 찾아서 수정하기
 export default function Dice({ sendCellMessage }: DiceProps) {
-  const [diceValue, setDiceValue] = useState(0);
   const reactDice = useRef<ReactDiceRef>(null);
-  const [players] = usePlayers();
-  const { dice, currentPlayerId } = useGameInfoValue();
-  const moveToken = useMoveToken();
+  const players = usePlayersValue();
+  const { currentPlayerId, dice } = useGameInfoValue();
+  const [dice1, dice2] = dice;
   const setGameInfo = useSetGameInfo();
+  const moveToken = useMoveToken();
+  const [diceValue, setDiceValue] = useState(0);
   const [isRolling, setIsRolling] = useState(false);
   const { sound: DiceRollSound } = useSound({
-    src: '/sound/roll.mp3',
+    src: SOUND_PATH.DICE,
   });
-  const [dice1, dice2] = dice;
 
   useEffect(() => {
     if (dice1 === 0 || dice2 === 0) return;
@@ -44,11 +48,11 @@ export default function Dice({ sendCellMessage }: DiceProps) {
     setIsRolling(false);
 
     if (!targetPlayer) return;
-    if (!targetPlayer.gameboard.hasEscaped) return;
+    if (!targetPlayer.gameBoard.hasEscaped) return;
 
     await moveToken({
       diceCount: totalDiceValue,
-      playerGameBoardData: targetPlayer.gameboard,
+      playerGameBoardData: targetPlayer.gameBoard,
     });
 
     sendCellMessage();

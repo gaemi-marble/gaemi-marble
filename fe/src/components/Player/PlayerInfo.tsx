@@ -13,9 +13,10 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
   const antName = ANT_LIST.find((ant) => ant.order === player?.order)!.antName;
   const { currentPlayerId } = useGameInfoValue();
   const stocks = useStocksValue();
-  const isCurrentPlayer = currentPlayerId === player.playerId;
+  const { userStatusBoard, playerId } = player;
+  const isCurrentPlayer = currentPlayerId === playerId;
 
-  const playerStocks = player.userStatusBoard.stockList;
+  const playerStocks = userStatusBoard.stockList;
   const stockAsset = playerStocks.reduce((acc, playerStock) => {
     const stock = stocks.find(
       (stockItem) => stockItem.name === playerStock.name
@@ -33,17 +34,17 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
         <Icon name={antName} size="8rem" />
       </IconContainer>
       <PlayerInfoContainer>
-        <PlayerId>{player.playerId}</PlayerId>
+        <PlayerId>{playerId}</PlayerId>
         <PlayerProperty>
           <PropertyText>
-            보유 현금: {addCommasToNumber(player.userStatusBoard.cashAsset)}원
+            보유 현금: {addCommasToNumber(userStatusBoard.cashAsset)}원
           </PropertyText>
           <PropertyText>
             주식 가치: {addCommasToNumber(stockAsset)}원
           </PropertyText>
           <PropertyText>
             총 자산:
-            {addCommasToNumber(player.userStatusBoard.cashAsset + stockAsset)}원
+            {addCommasToNumber(userStatusBoard.cashAsset + stockAsset)}원
           </PropertyText>
         </PlayerProperty>
       </PlayerInfoContainer>

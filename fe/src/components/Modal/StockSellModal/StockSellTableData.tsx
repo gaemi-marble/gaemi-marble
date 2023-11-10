@@ -15,28 +15,27 @@ export default function StockSellTableData({
   salesList,
   handleSalesQuantity,
 }: StockSellTableDataProps) {
+  const { name, quantity } = stock;
   const stocks = useStocksValue();
 
-  const saleQuantity = salesList.find(
-    (sale) => sale.name === stock.name
-  )!.quantity;
-  const stockInfo = stocks.find((stockInfo) => stockInfo.name === stock.name);
+  const saleQuantity = salesList.find((sale) => sale.name === name)!.quantity;
+  const { logo, theme, price } = stocks.find((stock) => stock.name === name)!;
 
-  const salePrice = saleQuantity * stockInfo!.price;
-  const isOverLimit = saleQuantity >= stock.quantity;
+  const salePrice = saleQuantity * price;
+  const isOverLimit = saleQuantity >= quantity;
   const isUnderLimit = saleQuantity <= 0;
 
   return (
-    <tr key={stock.name}>
+    <tr key={name}>
       <td>
         <center>
-          <StockLogo src={cellImageMap[stockInfo!.logo]} />
+          <StockLogo src={cellImageMap[logo]} />
         </center>
       </td>
-      <td>{stock.name}</td>
-      <td>{stockInfo!.theme}</td>
-      <td>{addCommasToNumber(stockInfo!.price)}</td>
-      <td>{stock.quantity - saleQuantity}</td>
+      <td>{name}</td>
+      <td>{theme}</td>
+      <td>{addCommasToNumber(price)}</td>
+      <td>{quantity - saleQuantity}</td>
       <td className="sell-quantity">
         <SellQuantityWrapper>
           {saleQuantity}
@@ -45,7 +44,7 @@ export default function StockSellTableData({
               disabled={isUnderLimit}
               onClick={() =>
                 handleSalesQuantity({
-                  name: stock.name,
+                  name: name,
                   perQuantity: -5,
                 })
               }
@@ -56,7 +55,7 @@ export default function StockSellTableData({
               disabled={isOverLimit}
               onClick={() =>
                 handleSalesQuantity({
-                  name: stock.name,
+                  name: name,
                   perQuantity: +5,
                 })
               }
