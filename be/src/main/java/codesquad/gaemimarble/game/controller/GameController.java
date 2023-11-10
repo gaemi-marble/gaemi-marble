@@ -22,7 +22,8 @@ import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
-import codesquad.gaemimarble.game.dto.request.GameRobRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameDonationRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
@@ -67,6 +68,7 @@ public class GameController {
 		typeMap.put(TypeConstants.ROB, GameRobRequest.class);
 		typeMap.put(TypeConstants.STATUS_BOARD, GameStatusBoardRequest.class);
 		typeMap.put(TypeConstants.CELL, GameCellArrivalRequest.class);
+		typeMap.put(TypeConstants.DONATION, GameDonationRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -83,6 +85,15 @@ public class GameController {
 		handlers.put(GameRobRequest.class, req -> sendRobResult((GameRobRequest)req));
 		handlers.put(GameStatusBoardRequest.class, req -> sendStatusBoard((GameStatusBoardRequest)req));
 		handlers.put(GameCellArrivalRequest.class, req -> sendCellArrival((GameCellArrivalRequest)req));
+		handlers.put(GameDonationRequest.class, req -> sendDonationResult((GameDonationRequest)req));
+	}
+
+
+	private void sendDonationResult(GameDonationRequest gameDonationRequest) {
+		List<Player> players = gameService.donate(gameDonationRequest);
+		players.forEach(
+			p -> socketDataSender.send(gameDonationRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameService.createUserBoardResponse(p))));
 	}
 
 	private void sendRobResult(GameRobRequest gameRobRequest) {

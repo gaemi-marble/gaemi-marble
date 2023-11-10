@@ -17,7 +17,8 @@ import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
-import codesquad.gaemimarble.game.dto.request.GameRobRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameDonationRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
@@ -410,6 +411,7 @@ public class GameService {
 	public GameGoldCardResponse selectGoldCard(Long gameId, String playerId) {
 		GoldCard goldCard = GoldCard.getRandomGoldCard();
 		return GameGoldCardResponse.builder()
+			.cardType(goldCard.name().toLowerCase())
 			.title(goldCard.getTitle())
 			.description(goldCard.getDescription())
 			.build();
@@ -484,5 +486,13 @@ public class GameService {
 					.build());
 		}
 		return gameEventListResponse;
+	}
+
+	public List<Player> donate(GameDonationRequest gameDonationRequest) {
+		Player giver = gameRepository.getPlayer(gameDonationRequest.getGameId(), gameDonationRequest.getPlayerId());
+		giver.addCashAsset(-10_000_000);
+		Player receiver = gameRepository.getPlayer(gameDonationRequest.getGameId(), gameDonationRequest.getReceiverId());
+		receiver.addCashAsset(10_000_000);
+		return List.of(giver, receiver);
 	}
 }

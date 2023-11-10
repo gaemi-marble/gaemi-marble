@@ -1,4 +1,4 @@
-package codesquad.gaemimarble.game.dto.request;
+package codesquad.gaemimarble.game.dto.request.GoldCardRequest;
 
 import lombok.Builder;
 import lombok.Getter;
