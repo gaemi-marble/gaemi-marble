@@ -48,6 +48,7 @@ export default function CenterArea({
   const eventTime = currentPlayerId === null;
   const isPrison = currentStatus === 'prison';
   const isTeleport = currentStatus === 'teleport';
+  const isFirstPlayer = firstPlayerId === playerId;
 
   const defaultStart =
     isMyTurn && !eventTime && !isPrison && !isTeleport && !isMoveFinished;
@@ -164,7 +165,10 @@ export default function CenterArea({
       type: 'statusBoard',
       gameId,
     };
-    sendJsonMessage(message);
+
+    if (isFirstPlayer) {
+      sendJsonMessage(message);
+    }
   };
 
   const calculateCellCount = ({
