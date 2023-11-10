@@ -81,7 +81,9 @@ export default function CenterArea({
       type: 'teleport',
     });
 
-    sendCellMessage();
+    if (isMyTurn) {
+      sendCellMessage();
+    }
 
     setGameInfo((prev) => {
       return {
