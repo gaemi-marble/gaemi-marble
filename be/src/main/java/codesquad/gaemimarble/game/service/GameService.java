@@ -148,12 +148,14 @@ public class GameService {
 
 		int location = player.getLocation();
 		int salary = 0;
+		int dividend = 0;
 		if (location > 23) {
 			salary = 5_000_000;
+			dividend = (int)((player.getStockAsset() * 5) / 100);
+			dividend = (dividend / 100_000) * 100_000;
+
 			player.setLocation(location % 24);
 		}
-		int dividend = (int)((player.getStockAsset() * 5) / 100);
-		dividend = (dividend / 100_000) * 100_000;
 		player.addCashAsset(salary + dividend);
 
 		return GameCellResponse.builder()
