@@ -31,7 +31,6 @@ import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
-import codesquad.gaemimarble.game.dto.response.GameExpenseResponse;
 import codesquad.gaemimarble.game.dto.response.GameGoldCardResponse;
 import codesquad.gaemimarble.game.dto.response.GameLocationResponse;
 import codesquad.gaemimarble.game.dto.response.GamePrisonDiceResponse;
@@ -41,7 +40,6 @@ import codesquad.gaemimarble.game.dto.response.PlayerAsset;
 import codesquad.gaemimarble.game.dto.response.UserRankingResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
-import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserStatusBoardResponse;
 import codesquad.gaemimarble.game.entity.Board;
 import codesquad.gaemimarble.game.entity.CurrentPlayerInfo;
 import codesquad.gaemimarble.game.entity.Events;
@@ -156,8 +154,6 @@ public class GameService {
 		return GameCellResponse.builder()
 			.playerId(player.getPlayerId())
 			.location(player.getLocation())
-			.salary(salary)
-			.dividend(dividend)
 			.build();
 	}
 

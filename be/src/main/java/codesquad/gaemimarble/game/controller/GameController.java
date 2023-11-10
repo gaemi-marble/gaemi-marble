@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
 
+import codesquad.gaemimarble.exception.PlayTimeException;
 import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.request.GameBailRequest;
+import codesquad.gaemimarble.game.dto.request.GameCellArrivalRequest;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -64,6 +66,7 @@ public class GameController {
 		typeMap.put(TypeConstants.TELEPORT, GameTeleportRequest.class);
 		typeMap.put(TypeConstants.ROB, GameRobRequest.class);
 		typeMap.put(TypeConstants.STATUS_BOARD, GameStatusBoardRequest.class);
+		typeMap.put(TypeConstants.CELL, GameCellArrivalRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -79,6 +82,7 @@ public class GameController {
 		handlers.put(GameTeleportRequest.class, req -> sendTeleport((GameTeleportRequest)req));
 		handlers.put(GameRobRequest.class, req -> sendRobResult((GameRobRequest)req));
 		handlers.put(GameStatusBoardRequest.class, req -> sendStatusBoard((GameStatusBoardRequest)req));
+		handlers.put(GameCellArrivalRequest.class, req -> sendCellArrival((GameCellArrivalRequest)req));
 	}
 
 	private void sendRobResult(GameRobRequest gameRobRequest) {
@@ -102,8 +106,7 @@ public class GameController {
 		GameEventNameResponse gameEventNameResponse = gameService.selectEvent(gameEventResultRequest);
 		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS_RESULT,
 			gameEventNameResponse));
-		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
-			gameService.proceedEvent(gameEventNameResponse.getName(), gameEventResultRequest.getGameId())));
+		gameService.proceedEvent(gameEventNameResponse.getName(), gameEventResultRequest.getGameId());
 		if (gameService.checkGameOver(gameEventResultRequest.getGameId())) {
 			socketDataSender.send(
 				gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.GAME_OVER,
@@ -209,19 +212,17 @@ public class GameController {
 			socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
 				GameTeleportResponse.builder().location(6).build()));
 		}
-		sendCellArrival(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId());
 	}
 
-	private void sendCellArrival(Long gameId, String playerId) {
-		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameId, playerId);
-		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.CELL,
+	private void sendCellArrival(GameCellArrivalRequest gameCellArrivalRequest) {
+		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameCellArrivalRequest.getGameId(), gameCellArrivalRequest.getPlayerId());
+		socketDataSender.send(gameCellArrivalRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
 			gameCellResponse));
-		actCell(gameId, gameCellResponse);
+		actCell(gameCellArrivalRequest.getGameId(), gameCellResponse);
 	}
 
 	private void sendTeleport(GameTeleportRequest gameTeleportRequest) {
 		gameService.teleport(gameTeleportRequest);
-		sendCellArrival(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
 		socketDataSender.send(gameTeleportRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
 			GameTeleportResponse.builder().location(gameTeleportRequest.getLocation()).build()));
 	}
@@ -243,7 +244,6 @@ public class GameController {
 	public void sendPrisonDiceResult(GamePrisonDiceRequest gamePrisonDiceRequest) {
 		socketDataSender.send(gamePrisonDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
 			gameService.prisonDice(gamePrisonDiceRequest)));
-		sendCellArrival(gamePrisonDiceRequest.getGameId(), gamePrisonDiceRequest.getPlayerId());
 	}
 
 	public void sendBailResult(GameBailRequest gameBailRequest) {
@@ -251,16 +251,25 @@ public class GameController {
 			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), 5_000_000)));
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameBailRequest.getGameId(), gameBailRequest.getPlayerId())));
-		sendCellArrival(gameBailRequest.getGameId(), gameBailRequest.getPlayerId());
+	}
+
+	private void sendUserStatusBoardResponse(Long gameId, String playerId){
+		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+			gameService.createUserStatusBoardResponse(gameId)
+				.stream()
+				.filter(o -> o.getPlayerId().equals(playerId))
+				.findFirst().orElseThrow(()-> new PlayTimeException("잘못된 플레이어 아이디입니다", playerId, gameId))));
 	}
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
 		switch (gameCellResponse.getLocation()) {
 			case 0, 6, 18: // 시작, 감옥, 순간이동
+				sendUserStatusBoardResponse(gameId, gameCellResponse.getPlayerId());
 				break;
 			case 9, 21: // 황금카드
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.GOLD_CARD,
 					gameService.selectGoldCard(gameId, gameCellResponse.getPlayerId())));
+				sendUserStatusBoardResponse(gameId, gameCellResponse.getPlayerId());
 				break;
 			case 12: // 호재
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
