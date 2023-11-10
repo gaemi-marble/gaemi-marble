@@ -24,6 +24,7 @@ import codesquad.gaemimarble.game.dto.request.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
+import codesquad.gaemimarble.game.dto.request.GameStatusBoardRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
@@ -62,6 +63,7 @@ public class GameController {
 		typeMap.put(TypeConstants.BAIL, GameBailRequest.class);
 		typeMap.put(TypeConstants.TELEPORT, GameTeleportRequest.class);
 		typeMap.put(TypeConstants.ROB, GameRobRequest.class);
+		typeMap.put(TypeConstants.STATUS_BOARD, GameStatusBoardRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -76,6 +78,7 @@ public class GameController {
 		handlers.put(GameBailRequest.class, req -> sendBailResult((GameBailRequest)req));
 		handlers.put(GameTeleportRequest.class, req -> sendTeleport((GameTeleportRequest)req));
 		handlers.put(GameRobRequest.class, req -> sendRobResult((GameRobRequest)req));
+		handlers.put(GameStatusBoardRequest.class, req -> sendStatusBoard((GameStatusBoardRequest)req));
 	}
 
 	private void sendRobResult(GameRobRequest gameRobRequest) {
@@ -127,7 +130,7 @@ public class GameController {
 				gameService.getLocations(gameId)));
 			socketDataSender.sendToPlayer(playerId,gameId,
 				new ResponseDTO<>(TypeConstants.ENTER, gameService.reenter(gameId)));
-			sendAllUserStatusBoardResponse(playerId,gameId);
+			sendAllUserStatusBoardResponseToPlayer(playerId,gameId);
 			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 				gameService.createGameStatusBoardResponse(gameId)));
 		} else {
@@ -136,11 +139,25 @@ public class GameController {
 		}
 	}
 
-	private void sendAllUserStatusBoardResponse(String playerId, Long gameId) {
+	private void sendStatusBoard(GameStatusBoardRequest gameStatusBoardRequest) {
+		socketDataSender.send(gameStatusBoardRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+			gameService.createGameStatusBoardResponse(gameStatusBoardRequest.getGameId())));
+		sendAllUserStatusBoardResponse(gameStatusBoardRequest.getGameId());
+	}
+
+	private void sendAllUserStatusBoardResponseToPlayer(String playerId, Long gameId) {
 		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
 			gameId);
 		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
 			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameUserBoardResponse));
+		}
+	}
+	private void sendAllUserStatusBoardResponse(Long gameId) {
+		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+			gameId);
+		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
+			socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 				gameUserBoardResponse));
 		}
 	}
@@ -248,14 +265,16 @@ public class GameController {
 			case 12: // 호재
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 					gameService.increasePlayerStockPrice(gameId, gameCellResponse.getPlayerId())));
+				sendAllUserStatusBoardResponse(gameId);
 				break;
 			case 15: // 세금
-				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.EXPENSE,
+				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 					gameService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
 				break;
 			default: // 기업
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 					gameService.increaseCompanyStock(gameId, gameCellResponse.getLocation())));
+				sendAllUserStatusBoardResponse(gameId);
 				break;
 		}
 	}

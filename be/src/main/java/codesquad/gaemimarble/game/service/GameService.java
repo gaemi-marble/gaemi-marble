@@ -41,6 +41,7 @@ import codesquad.gaemimarble.game.dto.response.PlayerAsset;
 import codesquad.gaemimarble.game.dto.response.UserRankingResponse;
 import codesquad.gaemimarble.game.dto.response.generalStatusBoard.GameStatusBoardResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
+import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserStatusBoardResponse;
 import codesquad.gaemimarble.game.entity.Board;
 import codesquad.gaemimarble.game.entity.CurrentPlayerInfo;
 import codesquad.gaemimarble.game.entity.Events;
@@ -160,13 +161,10 @@ public class GameService {
 			.build();
 	}
 
-	public GameExpenseResponse payExpense(Long gameId, String playerId, int expense) {
+	public GameUserBoardResponse payExpense(Long gameId, String playerId, int expense) {
 		Player player = gameRepository.getGameStatus(gameId).getPlayer(playerId);
 		player.addCashAsset(-expense);
-		return GameExpenseResponse.builder()
-			.playerId(player.getPlayerId())
-			.amount(expense)
-			.build();
+		return createUserBoardResponse(player);
 	}
 
 	public GameEventListResponse selectEvents(Long gameId) {
