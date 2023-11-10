@@ -20,15 +20,14 @@ export default function PlayerStockTooltip({
   position,
 }: PlayerStockTooltipProps) {
   const stocks = useStocksValue();
+  const { name, quantity } = stockInfo;
 
-  const stockPrice = stocks.find(
-    (stock) => stock.name === stockInfo.name
-  )!.price;
+  const stockPrice = stocks.find((stock) => stock.name === name)!.price;
 
   return (
     <StockTooltip $position={position}>
-      <div>이름: {stockInfo.name}</div>
-      <div>수량: {stockInfo.quantity}</div>
+      <div>이름: {name}</div>
+      <div>수량: {quantity}</div>
       <div>1주당 가격: {addCommasToNumber(stockPrice)}</div>
     </StockTooltip>
   );

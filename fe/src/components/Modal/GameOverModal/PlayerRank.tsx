@@ -1,20 +1,27 @@
+import { useGameInfoValue } from '@store/reducer';
+import { PlayerRankingType } from '@store/reducer/type';
 import { addCommasToNumber } from '@utils/index';
 import { styled } from 'styled-components';
 
 type PlayerRankProps = {
-  rank: number;
-  playerId: string;
-  totalAsset: number;
+  rankInfo: PlayerRankingType;
 };
 
-export default function PlayerRank({
-  rank,
-  playerId,
-  totalAsset,
-}: PlayerRankProps) {
+export default function PlayerRank({ rankInfo }: PlayerRankProps) {
+  const { ranking } = useGameInfoValue();
+  const { playerId, totalAsset } = rankInfo;
+
+  const sortedRank = ranking.sort(
+    (playerA, playerB) => playerB.totalAsset - playerA.totalAsset
+  );
+  const currentRankIndex = sortedRank.findIndex(
+    (rank) => rank.playerId === playerId
+  );
+  const finalRank = currentRankIndex + 1;
+
   return (
     <PlayerRankCard>
-      <Rank>{rank}</Rank>
+      <Rank>{finalRank}</Rank>
       <Wrapper>
         <Name>{playerId}</Name>
         <div>{addCommasToNumber(totalAsset)}원</div>

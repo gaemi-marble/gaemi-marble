@@ -18,7 +18,7 @@ export default function SignUpPage() {
 
     const res = await postSignup(playerId, password);
     if (res.status === 201) {
-      navigate(ROUTE_PATH.SIGNIN);
+      navigate(ROUTE_PATH.SIGN_IN);
     }
     // TODO: 회원가입시 에러 처리
   };

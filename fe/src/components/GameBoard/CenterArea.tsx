@@ -32,22 +32,22 @@ export default function CenterArea({
   const { hoverRef: escapeRef, isHover: isEscapeBtnHover } =
     useHover<HTMLButtonElement>();
   const { gameId } = useParams();
-  const players = usePlayersValue();
-  const gameInfo = useGameInfoValue();
   const playerId = usePlayerIdValue();
+  const players = usePlayersValue();
+  const { currentPlayerId, firstPlayerId, isMoveFinished, teleportLocation } =
+    useGameInfoValue();
   const setGameInfo = useSetGameInfo();
-  const socketUrl = useGetSocketUrl();
   const moveToken = useMoveToken();
   const resetTeleportLocation = useResetTeleportLocation();
+  const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
 
-  const isMyTurn = playerId === gameInfo.currentPlayerId;
-  const eventTime = gameInfo.currentPlayerId === null;
+  const isMyTurn = playerId === currentPlayerId;
+  const eventTime = currentPlayerId === null;
   const isPrison = currentStatus === 'prison';
   const isTeleport = currentStatus === 'teleport';
-  const isMoveFinished = gameInfo.isMoveFinished;
 
   const defaultStart =
     isMyTurn && !eventTime && !isPrison && !isTeleport && !isMoveFinished;
@@ -55,29 +55,29 @@ export default function CenterArea({
   const teleportStart = isMyTurn && !eventTime && isTeleport && !isMoveFinished;
 
   const currentPlayerInfo = players.find(
-    (player) => player.playerId === gameInfo.currentPlayerId
+    (player) => player.playerId === currentPlayerId
   );
 
   useEffect(() => {
     if (!eventTime) return;
-    if (gameInfo.firstPlayerId !== playerId) return;
+    if (firstPlayerId !== playerId) return;
     const message = {
       type: 'events',
       gameId,
     };
     sendJsonMessage(message);
-  }, [eventTime, gameId, playerId, gameInfo.firstPlayerId, sendJsonMessage]);
+  }, [eventTime, gameId, playerId, firstPlayerId, sendJsonMessage]);
 
   const teleportToken = async () => {
-    if (!currentPlayerInfo || !gameInfo.teleportLocation) return;
-    const cellCount = calculateCellCount(
-      gameInfo.teleportLocation,
-      currentPlayerInfo.gameboard.location
-    );
+    if (!currentPlayerInfo || !teleportLocation) return;
+    const cellCount = calculateCellCount({
+      targetCell: teleportLocation,
+      currentCell: currentPlayerInfo.gameBoard.location,
+    });
 
     await moveToken({
       diceCount: cellCount,
-      playerGameBoardData: currentPlayerInfo.gameboard,
+      playerGameBoardData: currentPlayerInfo.gameBoard,
       type: 'teleport',
     });
 
@@ -92,9 +92,9 @@ export default function CenterArea({
   };
 
   useEffect(() => {
-    if (!gameInfo.teleportLocation) return;
+    if (!teleportLocation) return;
     teleportToken();
-  }, [gameInfo.teleportLocation]);
+  }, [teleportLocation]);
 
   const throwDice = () => {
     const message = {
@@ -146,7 +146,13 @@ export default function CenterArea({
     sendJsonMessage(message);
   };
 
-  const calculateCellCount = (targetCell: number, currentCell: number) => {
+  const calculateCellCount = ({
+    targetCell,
+    currentCell,
+  }: {
+    targetCell: number;
+    currentCell: number;
+  }) => {
     const cellCount = (24 + targetCell - currentCell) % 24;
     return cellCount;
   };
@@ -157,7 +163,7 @@ export default function CenterArea({
       {!eventTime && <Dice />}
       {defaultStart && (
         <>
-          <Button onClick={() => throwDice()} disabled={isMoveFinished}>
+          <Button onClick={throwDice} disabled={isMoveFinished}>
             굴리기
           </Button>
         </>
@@ -176,12 +182,10 @@ export default function CenterArea({
       {teleportStart && (
         <>
           <div>이동할 칸을 선택한 후 이동하기 버튼을 눌러주세요.</div>
-          <Button onClick={() => handleTeleport()}>이동하기</Button>
+          <Button onClick={handleTeleport}>이동하기</Button>
         </>
       )}
-      {isMyTurn && isMoveFinished && (
-        <Button onClick={() => endTurn()}>턴종료</Button>
-      )}
+      {isMyTurn && isMoveFinished && <Button onClick={endTurn}>턴종료</Button>}
     </Center>
   );
 }

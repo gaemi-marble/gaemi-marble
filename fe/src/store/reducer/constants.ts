@@ -1,6 +1,6 @@
 import { DirectionType, PlayerStatusType } from './type';
 
-export const initialPlayer = [
+export const INITIAL_PLAYER = [
   {
     playerId: '',
     order: 1,
@@ -10,7 +10,7 @@ export const initialPlayer = [
       cashAsset: 0,
       stockList: [],
     },
-    gameboard: {
+    gameBoard: {
       ref: null,
       status: 'default' as PlayerStatusType,
       location: 0,
@@ -28,7 +28,7 @@ export const initialPlayer = [
       cashAsset: 0,
       stockList: [],
     },
-    gameboard: {
+    gameBoard: {
       ref: null,
       status: 'default' as PlayerStatusType,
       location: 0,
@@ -47,7 +47,7 @@ export const initialPlayer = [
       stockList: [],
       hasEscaped: true,
     },
-    gameboard: {
+    gameBoard: {
       ref: null,
       status: 'default' as PlayerStatusType,
       location: 0,
@@ -65,7 +65,7 @@ export const initialPlayer = [
       cashAsset: 0,
       stockList: [],
     },
-    gameboard: {
+    gameBoard: {
       ref: null,
       status: 'default' as PlayerStatusType,
       location: 0,
@@ -76,7 +76,7 @@ export const initialPlayer = [
   },
 ];
 
-export const initialStock = [
+export const INITIAL_STOCK = [
   {
     logo: 'codesquad',
     name: '코드스쿼드',
@@ -215,7 +215,7 @@ export const initialStock = [
   },
 ];
 
-export const initialGame = {
+export const INITIAL_GAME = {
   isPlaying: false,
   firstPlayerId: '',
   currentPlayerId: '',

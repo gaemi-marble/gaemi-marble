@@ -36,7 +36,7 @@ export default function SignInPage() {
   };
 
   const handleClickSignUpBtn = () => {
-    navigate(ROUTE_PATH.SIGNUP);
+    navigate(ROUTE_PATH.SIGN_UP);
   };
 
   return (
