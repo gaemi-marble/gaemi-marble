@@ -16,7 +16,7 @@ export default function PlayerStock({ stockInfo }: PlayerStockProps) {
   const { hoverRef, isHover } = useHover();
   const stockList = useStocksValue();
 
-  const mergeRef = (element: HTMLImageElement | null) => {
+  const imgRef = (element: HTMLImageElement | null) => {
     if (element) {
       positionRef.current = element;
       hoverRef.current = element;
@@ -37,7 +37,7 @@ export default function PlayerStock({ stockInfo }: PlayerStockProps) {
     <>
       <StockImgWrapper>
         <StockImg
-          ref={mergeRef}
+          ref={imgRef}
           src={cellImageMap[stockLogo]}
           onMouseEnter={handleMouseEnter}
         />
