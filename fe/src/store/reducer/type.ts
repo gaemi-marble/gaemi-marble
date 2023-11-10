@@ -18,7 +18,6 @@ export type GameActionType = {
   events: EventsPayloadType;
   eventResult: EventResultPayloadType;
   goldCard: GoldCardPayloadType;
-  expense: ExpensePayloadType;
   prisonDice: PrisonDicePayloadType;
   teleport: TeleportPayloadType;
   gameOver: GameOverPayloadType;
@@ -69,6 +68,8 @@ export type PlayerType = {
 
 type UserStatusType = {
   cashAsset: number;
+  stockAsset: number;
+  totalAsset: number;
   stockList: Pick<StockType, 'name' | 'quantity'>[];
 };
 
@@ -100,8 +101,6 @@ export type UserStatusPayloadType = {
 export type CellPayloadType = {
   playerId: string;
   location: number;
-  salary: number;
-  dividend: number;
 };
 
 export type EventsPayloadType = {
@@ -145,11 +144,6 @@ export type PlayerTokenAtom = {
   location: number;
   direction: DirectionType;
   coordinates: { x: number; y: number };
-};
-
-export type ExpensePayloadType = {
-  playerId: string;
-  amount: number;
 };
 
 export type PrisonDicePayloadType = {

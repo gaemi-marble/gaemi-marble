@@ -1,6 +1,7 @@
 import { SOUND_PATH } from '@components/constants';
 import useMoveToken from '@hooks/useMoveToken';
 import useSound from '@hooks/useSound';
+import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
   usePlayersValue,
@@ -17,6 +18,7 @@ type DiceProps = {
 export default function Dice({ sendCellMessage }: DiceProps) {
   const reactDice = useRef<ReactDiceRef>(null);
   const players = usePlayersValue();
+  const playerId = usePlayerIdValue();
   const { currentPlayerId, dice } = useGameInfoValue();
   const [dice1, dice2] = dice;
   const setGameInfo = useSetGameInfo();
@@ -26,6 +28,8 @@ export default function Dice({ sendCellMessage }: DiceProps) {
   const { sound: DiceRollSound } = useSound({
     src: SOUND_PATH.DICE,
   });
+
+  const isMyTurn = currentPlayerId === playerId;
 
   useEffect(() => {
     if (dice1 === 0 || dice2 === 0) return;
@@ -55,7 +59,9 @@ export default function Dice({ sendCellMessage }: DiceProps) {
       playerGameBoardData: targetPlayer.gameBoard,
     });
 
-    sendCellMessage();
+    if (isMyTurn) {
+      sendCellMessage();
+    }
 
     setGameInfo((prev) => {
       return {

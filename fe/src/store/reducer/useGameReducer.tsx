@@ -7,7 +7,6 @@ import {
   EnterPayloadType,
   EventResultPayloadType,
   EventsPayloadType,
-  ExpensePayloadType,
   GameActionType,
   PlayerStatusType,
   GoldCardPayloadType,
@@ -155,9 +154,6 @@ export default function useGameReducer() {
               isMoveFinished: true,
             },
             players: prev.players.map((player) => {
-              const { salary, dividend } = payload;
-              const bonus = salary + dividend;
-
               if (player.playerId !== payload.playerId) {
                 return player;
               }
@@ -165,10 +161,6 @@ export default function useGameReducer() {
               return {
                 ...player,
                 location: payload.location,
-                userStatusBoard: {
-                  ...player.userStatusBoard,
-                  cashAsset: player.userStatusBoard.cashAsset + bonus,
-                },
                 gameBoard: {
                   ...player.gameBoard,
                   status: playerStatus as PlayerStatusType,
@@ -240,35 +232,6 @@ export default function useGameReducer() {
                 description: payload.description,
               },
             },
-          };
-        }
-
-        case 'expense': {
-          const payload = action.payload as ExpensePayloadType;
-
-          return {
-            ...prev,
-            game: {
-              ...prev.game,
-              isArrived: false,
-            },
-            players: prev.players.map((player) => {
-              if (player.playerId !== payload.playerId) {
-                return player;
-              }
-
-              return {
-                ...player,
-                userStatusBoard: {
-                  ...player.userStatusBoard,
-                  cashAsset: player.userStatusBoard.cashAsset - payload.amount,
-                },
-                gameBoard: {
-                  ...player.gameBoard,
-                  hasEscaped: true,
-                },
-              };
-            }),
           };
         }
 

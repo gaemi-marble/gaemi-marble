@@ -8,6 +8,8 @@ export const INITIAL_PLAYER = [
     location: 0,
     userStatusBoard: {
       cashAsset: 0,
+      stockAsset: 0,
+      totalAsset: 0,
       stockList: [],
     },
     gameBoard: {
@@ -26,6 +28,8 @@ export const INITIAL_PLAYER = [
     location: 0,
     userStatusBoard: {
       cashAsset: 0,
+      stockAsset: 0,
+      totalAsset: 0,
       stockList: [],
     },
     gameBoard: {
@@ -44,6 +48,8 @@ export const INITIAL_PLAYER = [
     location: 0,
     userStatusBoard: {
       cashAsset: 0,
+      stockAsset: 0,
+      totalAsset: 0,
       stockList: [],
       hasEscaped: true,
     },
@@ -63,6 +69,8 @@ export const INITIAL_PLAYER = [
     location: 0,
     userStatusBoard: {
       cashAsset: 0,
+      stockAsset: 0,
+      totalAsset: 0,
       stockList: [],
     },
     gameBoard: {
