@@ -154,9 +154,6 @@ export default function useGameReducer() {
               isMoveFinished: true,
             },
             players: prev.players.map((player) => {
-              const { salary, dividend } = payload;
-              const bonus = salary + dividend;
-
               if (player.playerId !== payload.playerId) {
                 return player;
               }
@@ -164,10 +161,6 @@ export default function useGameReducer() {
               return {
                 ...player,
                 location: payload.location,
-                userStatusBoard: {
-                  ...player.userStatusBoard,
-                  cashAsset: player.userStatusBoard.cashAsset + bonus,
-                },
                 gameBoard: {
                   ...player.gameBoard,
                   status: playerStatus as PlayerStatusType,

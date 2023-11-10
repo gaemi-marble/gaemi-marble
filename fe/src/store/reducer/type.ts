@@ -101,8 +101,6 @@ export type UserStatusPayloadType = {
 export type CellPayloadType = {
   playerId: string;
   location: number;
-  salary: number;
-  dividend: number;
 };
 
 export type EventsPayloadType = {
