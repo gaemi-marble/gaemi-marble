@@ -33,7 +33,8 @@ export default function CenterArea({
     useHover<HTMLButtonElement>();
   const { gameId } = useParams();
   const players = usePlayersValue();
-  const gameInfo = useGameInfoValue();
+  const { currentPlayerId, firstPlayerId, isMoveFinished, teleportLocation } =
+    useGameInfoValue();
   const playerId = usePlayerIdValue();
   const setGameInfo = useSetGameInfo();
   const socketUrl = useGetSocketUrl();
@@ -43,35 +44,52 @@ export default function CenterArea({
     share: true,
   });
 
-  const isMyTurn = playerId === gameInfo.currentPlayerId;
-  const eventTime = gameInfo.currentPlayerId === null;
+  const isMyTurn = playerId === currentPlayerId;
+  const eventTime = currentPlayerId === null;
   const isPrison = currentStatus === 'prison';
   const isTeleport = currentStatus === 'teleport';
-  const isMoveFinished = gameInfo.isMoveFinished;
+  const isMoveDone = isMoveFinished;
 
   const defaultStart =
-    isMyTurn && !eventTime && !isPrison && !isTeleport && !isMoveFinished;
-  const prisonStart = isMyTurn && !eventTime && isPrison && !isMoveFinished;
-  const teleportStart = isMyTurn && !eventTime && isTeleport && !isMoveFinished;
+    isMyTurn && !eventTime && !isPrison && !isTeleport && !isMoveDone;
+  const prisonStart = isMyTurn && !eventTime && isPrison && !isMoveDone;
+  const teleportStart = isMyTurn && !eventTime && isTeleport && !isMoveDone;
 
   const currentPlayerInfo = players.find(
-    (player) => player.playerId === gameInfo.currentPlayerId
+    (player) => player.playerId === currentPlayerId
   );
 
   useEffect(() => {
     if (!eventTime) return;
-    if (gameInfo.firstPlayerId !== playerId) return;
+    if (firstPlayerId !== playerId) return;
     const message = {
       type: 'events',
       gameId,
     };
     sendJsonMessage(message);
-  }, [eventTime, gameId, playerId, gameInfo.firstPlayerId, sendJsonMessage]);
+  }, [eventTime, gameId, playerId, firstPlayerId, sendJsonMessage]);
+
+  const sendCellMessage = () => {
+    const message = {
+      type: 'cell',
+      gameId,
+      playerId,
+    };
+    sendJsonMessage(message);
+  };
+
+  const sendStatusBoardMessage = () => {
+    const message = {
+      type: 'statusBoard',
+      gameId,
+    };
+    sendJsonMessage(message);
+  };
 
   const teleportToken = async () => {
-    if (!currentPlayerInfo || !gameInfo.teleportLocation) return;
+    if (!currentPlayerInfo || !teleportLocation) return;
     const cellCount = calculateCellCount(
-      gameInfo.teleportLocation,
+      teleportLocation,
       currentPlayerInfo.gameboard.location
     );
 
@@ -80,6 +98,8 @@ export default function CenterArea({
       playerGameBoardData: currentPlayerInfo.gameboard,
       type: 'teleport',
     });
+
+    sendCellMessage();
 
     setGameInfo((prev) => {
       return {
@@ -92,9 +112,9 @@ export default function CenterArea({
   };
 
   useEffect(() => {
-    if (!gameInfo.teleportLocation) return;
+    if (!teleportLocation) return;
     teleportToken();
-  }, [gameInfo.teleportLocation]);
+  }, [teleportLocation]);
 
   const throwDice = () => {
     const message = {
@@ -153,11 +173,13 @@ export default function CenterArea({
 
   return (
     <Center>
-      {eventTime && <Roulette />}
-      {!eventTime && <Dice />}
+      {eventTime && (
+        <Roulette sendStatusBoardMessage={sendStatusBoardMessage} />
+      )}
+      {!eventTime && <Dice sendCellMessage={sendCellMessage} />}
       {defaultStart && (
         <>
-          <Button onClick={() => throwDice()} disabled={isMoveFinished}>
+          <Button onClick={() => throwDice()} disabled={isMoveDone}>
             굴리기
           </Button>
         </>
@@ -179,7 +201,7 @@ export default function CenterArea({
           <Button onClick={() => handleTeleport()}>이동하기</Button>
         </>
       )}
-      {isMyTurn && isMoveFinished && (
+      {isMyTurn && isMoveDone && (
         <Button onClick={() => endTurn()}>턴종료</Button>
       )}
     </Center>

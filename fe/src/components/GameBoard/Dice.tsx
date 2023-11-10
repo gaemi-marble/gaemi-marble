@@ -5,23 +5,28 @@ import { useEffect, useRef, useState } from 'react';
 import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 import { styled } from 'styled-components';
 
-export default function Dice() {
+type DiceProps = {
+  sendCellMessage: () => void;
+};
+
+// TODO: Dice가 반복적으로 재렌더링 되는 원인 찾아서 수정하기
+export default function Dice({ sendCellMessage }: DiceProps) {
   const [diceValue, setDiceValue] = useState(0);
   const reactDice = useRef<ReactDiceRef>(null);
   const [players] = usePlayers();
-  const gameInfo = useGameInfoValue();
+  const { dice, currentPlayerId } = useGameInfoValue();
   const moveToken = useMoveToken();
   const setGameInfo = useSetGameInfo();
   const [isRolling, setIsRolling] = useState(false);
   const { sound: DiceRollSound } = useSound({
     src: '/sound/roll.mp3',
   });
-  const [dice1, dice2] = gameInfo.dice;
+  const [dice1, dice2] = dice;
 
   useEffect(() => {
     if (dice1 === 0 || dice2 === 0) return;
     rollDice(dice1, dice2);
-  }, [gameInfo.dice]);
+  }, [dice1, dice2]);
 
   const rollDice = (dice1: number, dice2: number) => {
     reactDice.current?.rollAll([dice1, dice2]);
@@ -34,7 +39,7 @@ export default function Dice() {
     const totalDiceValue = dice1 + dice2;
     setDiceValue(totalDiceValue);
     const targetPlayer = players.find(
-      (player) => player.playerId === gameInfo.currentPlayerId
+      (player) => player.playerId === currentPlayerId
     );
     setIsRolling(false);
 
@@ -45,6 +50,8 @@ export default function Dice() {
       diceCount: totalDiceValue,
       playerGameBoardData: targetPlayer.gameboard,
     });
+
+    sendCellMessage();
 
     setGameInfo((prev) => {
       return {
