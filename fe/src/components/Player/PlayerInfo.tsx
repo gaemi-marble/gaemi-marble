@@ -1,6 +1,6 @@
 import { Icon } from '@components/icon/Icon';
 import { ANT_LIST } from '@pages/constants';
-import { useGameInfoValue, useStocksValue } from '@store/reducer';
+import { useGameInfoValue } from '@store/reducer';
 import { PlayerType } from '@store/reducer/type';
 import { addCommasToNumber } from '@utils/index';
 import { styled } from 'styled-components';
@@ -12,21 +12,9 @@ type PlayerInfoProps = {
 export default function PlayerInfo({ player }: PlayerInfoProps) {
   const antName = ANT_LIST.find((ant) => ant.order === player?.order)!.antName;
   const { currentPlayerId } = useGameInfoValue();
-  const stocks = useStocksValue();
   const { userStatusBoard, playerId } = player;
+  const { cashAsset, stockAsset, totalAsset } = userStatusBoard;
   const isCurrentPlayer = currentPlayerId === playerId;
-
-  const playerStocks = userStatusBoard.stockList;
-  const stockAsset = playerStocks.reduce((acc, playerStock) => {
-    const stock = stocks.find(
-      (stockItem) => stockItem.name === playerStock.name
-    );
-    if (stock) {
-      const stockValue = stock.price * playerStock.quantity;
-      return acc + stockValue;
-    }
-    return acc;
-  }, 0);
 
   return (
     <UserInfo $isCurrentPlayer={isCurrentPlayer}>
@@ -37,14 +25,14 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
         <PlayerId>{playerId}</PlayerId>
         <PlayerProperty>
           <PropertyText>
-            보유 현금: {addCommasToNumber(userStatusBoard.cashAsset)}원
+            보유 현금: {addCommasToNumber(cashAsset)}원
           </PropertyText>
           <PropertyText>
             주식 가치: {addCommasToNumber(stockAsset)}원
           </PropertyText>
           <PropertyText>
             총 자산:
-            {addCommasToNumber(userStatusBoard.cashAsset + stockAsset)}원
+            {addCommasToNumber(totalAsset)}원
           </PropertyText>
         </PlayerProperty>
       </PlayerInfoContainer>
