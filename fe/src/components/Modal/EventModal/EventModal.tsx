@@ -7,13 +7,11 @@ export default function EventModal() {
   const targetEvent = eventList.find((event) => event.title === eventResult);
 
   return (
-    <>
-      {targetEvent && (
-        <Modal
-          header={targetEvent.title}
-          content={<EventModalContent eventInfo={targetEvent} />}
-        />
-      )}
-    </>
+    targetEvent && (
+      <Modal
+        header={targetEvent.title}
+        content={<EventModalContent eventInfo={targetEvent} />}
+      />
+    )
   );
 }

@@ -81,6 +81,8 @@ export default function CenterArea({
       type: 'teleport',
     });
 
+    sendCellMessage();
+
     setGameInfo((prev) => {
       return {
         ...prev,
@@ -146,6 +148,23 @@ export default function CenterArea({
     sendJsonMessage(message);
   };
 
+  const sendCellMessage = () => {
+    const message = {
+      type: 'cell',
+      gameId,
+      playerId,
+    };
+    sendJsonMessage(message);
+  };
+
+  const sendStatusBoardMessage = () => {
+    const message = {
+      type: 'statusBoard',
+      gameId,
+    };
+    sendJsonMessage(message);
+  };
+
   const calculateCellCount = ({
     targetCell,
     currentCell,
@@ -159,14 +178,14 @@ export default function CenterArea({
 
   return (
     <Center>
-      {eventTime && <Roulette />}
-      {!eventTime && <Dice />}
+      {eventTime && (
+        <Roulette sendStatusBoardMessage={sendStatusBoardMessage} />
+      )}
+      {!eventTime && <Dice sendCellMessage={sendCellMessage} />}
       {defaultStart && (
-        <>
-          <Button onClick={throwDice} disabled={isMoveFinished}>
-            굴리기
-          </Button>
-        </>
+        <Button onClick={throwDice} disabled={isMoveFinished}>
+          굴리기
+        </Button>
       )}
       {prisonStart && (
         <Wrapper>

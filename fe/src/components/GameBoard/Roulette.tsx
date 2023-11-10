@@ -11,7 +11,11 @@ import { useEffect, useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import { styled } from 'styled-components';
 
-export default function Roulette() {
+type RouletteProps = {
+  sendStatusBoardMessage: () => void;
+};
+
+export default function Roulette({ sendStatusBoardMessage }: RouletteProps) {
   const { eventList, eventResult } = useGameInfoValue();
   const resetGameInfo = useResetEventRound();
   const [mustSpin, setMustSpin] = useState(false);
@@ -61,6 +65,7 @@ export default function Roulette() {
   const handleSpinDone = async () => {
     setIsEventModalOpen(true);
     setIsRolling(false);
+    sendStatusBoardMessage();
     await delay(5000);
     resetGameInfo();
     setMustSpin(false);

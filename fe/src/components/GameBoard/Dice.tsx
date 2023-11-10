@@ -10,7 +10,11 @@ import { useEffect, useRef, useState } from 'react';
 import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 import { styled } from 'styled-components';
 
-export default function Dice() {
+type DiceProps = {
+  sendCellMessage: () => void;
+};
+
+export default function Dice({ sendCellMessage }: DiceProps) {
   const reactDice = useRef<ReactDiceRef>(null);
   const players = usePlayersValue();
   const { currentPlayerId, dice } = useGameInfoValue();
@@ -50,6 +54,8 @@ export default function Dice() {
       diceCount: totalDiceValue,
       playerGameBoardData: targetPlayer.gameBoard,
     });
+
+    sendCellMessage();
 
     setGameInfo((prev) => {
       return {

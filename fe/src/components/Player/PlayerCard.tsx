@@ -33,8 +33,8 @@ export default function PlayerCard({ player }: PlayerCardProps) {
   });
 
   const isMyButton = playerId === myId;
-  const eventTime = !!currentPlayerId;
-  const beforeRouletteSpin = !!eventResult;
+  const eventTime = !currentPlayerId;
+  const beforeRouletteSpin = !eventResult;
 
   const handleReady = () => {
     const message = {
