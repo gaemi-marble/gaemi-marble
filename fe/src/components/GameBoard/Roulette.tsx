@@ -1,4 +1,5 @@
 import EventModal from '@components/Modal/EventModal/EventModal';
+import { SOUND_PATH } from '@components/constants';
 import useSound from '@hooks/useSound';
 import {
   useGameInfoValue,
@@ -19,7 +20,7 @@ export default function Roulette() {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
   const { sound: RouletteRollingSound } = useSound({
-    src: '/sound/roulette.mp3',
+    src: SOUND_PATH.ROULETTE,
   });
 
   useEffect(() => {
