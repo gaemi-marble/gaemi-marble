@@ -14,7 +14,7 @@ import { Icon } from '../icon/Icon';
 
 export default function HomeHeader() {
   const navigate = useNavigate();
-  const { hoverRef, isHover } = useHover<HTMLDivElement>();
+  const { handleMouseEnter, handleMouseLeave, isHover } = useHover();
   const setPlayer = useSetPlayer();
   const setAccessToken = useSetAccessToken();
   const setRefreshToken = useSetRefreshToken();
@@ -50,13 +50,16 @@ export default function HomeHeader() {
               onClick={togglePlayingSound}
             />
           </IconContainer>
-          <User ref={hoverRef}>
+          <IconContainer
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             {isHover ? (
               <Icon name="exit" size="3rem" onClick={handleLogout} />
             ) : (
               <Icon name="sample" size="3rem" />
             )}
-          </User>
+          </IconContainer>
         </IconWrapper>
       </StyledHeader>
       {HomeBgm}
@@ -101,11 +104,4 @@ const IconContainer = styled.div`
       stroke: ${({ theme: { color } }) => color.accentText};
     }
   }
-`;
-
-const User = styled.div`
-  width: 3rem;
-  height: 3rem;
-  border-radius: ${({ theme: { radius } }) => radius.half};
-  background-color: ${({ theme: { color } }) => color.neutralBackground};
 `;

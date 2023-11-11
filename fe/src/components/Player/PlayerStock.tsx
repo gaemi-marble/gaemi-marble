@@ -13,20 +13,15 @@ type PlayerStockProps = {
 export default function PlayerStock({ stockInfo }: PlayerStockProps) {
   const { positionRef, position, calcPosition } =
     useTooltipPosition<HTMLImageElement>();
-  const { hoverRef, isHover } = useHover();
+  const { handleMouseEnter, handleMouseLeave, isHover } = useHover();
   const stockList = useStocksValue();
 
-  const imgRef = (element: HTMLImageElement | null) => {
-    if (element) {
-      positionRef.current = element;
-      hoverRef.current = element;
-    }
-  };
-
-  const handleMouseEnter = (event: React.MouseEvent<HTMLImageElement>) => {
+  const handleStockImgEnter = (event: React.MouseEvent<HTMLImageElement>) => {
     if (calcPosition) {
       calcPosition(event);
     }
+
+    handleMouseEnter();
   };
 
   const stockLogo = stockList.find(
@@ -37,9 +32,10 @@ export default function PlayerStock({ stockInfo }: PlayerStockProps) {
     <>
       <StockImgWrapper>
         <StockImg
-          ref={imgRef}
+          ref={positionRef}
+          onMouseEnter={handleStockImgEnter}
+          onMouseLeave={handleMouseLeave}
           src={cellImageMap[stockLogo]}
-          onMouseEnter={handleMouseEnter}
         />
       </StockImgWrapper>
       {isHover && (
