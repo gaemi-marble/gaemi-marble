@@ -51,7 +51,6 @@ export const INITIAL_PLAYER = [
       stockAsset: 0,
       totalAsset: 0,
       stockList: [],
-      hasEscaped: true,
     },
     gameBoard: {
       ref: null,
