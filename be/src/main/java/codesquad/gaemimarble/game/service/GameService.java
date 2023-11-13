@@ -130,10 +130,8 @@ public class GameService {
 		if(gameStatus.getCurrentPlayerInfo().getHasMoved()){
 			throw new PlayTimeException("주사위를 이미 굴렸습니다.", playerId, gameId);
 		}
-		// int dice1 = (int)(Math.random() * 6) + 1;
-		// int dice2 = (int)(Math.random() * 6) + 1;
-		int dice1 = 5;
-		int dice2 = 4;
+		int dice1 = (int)(Math.random() * 6) + 1;
+		int dice2 = (int)(Math.random() * 6) + 1;
 
 		if (dice1 == dice2) {
 			int countDouble = gameStatus.getCurrentPlayerInfo().increaseCountDouble();
