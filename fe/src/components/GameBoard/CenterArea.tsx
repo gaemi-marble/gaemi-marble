@@ -4,7 +4,7 @@ import useMoveToken from '@hooks/useMoveToken';
 import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
-  usePlayersValue,
+  usePlayers,
   useResetTeleportLocation,
   useSetGameInfo,
 } from '@store/reducer';
@@ -27,13 +27,19 @@ export default function CenterArea({
   targetLocation,
   resetTargetLocation,
 }: CenterAreaProps) {
-  const { hoverRef: bailRef, isHover: isBailBtnHover } =
-    useHover<HTMLButtonElement>();
-  const { hoverRef: escapeRef, isHover: isEscapeBtnHover } =
-    useHover<HTMLButtonElement>();
+  const {
+    handleMouseEnter: handleBailBtnEnter,
+    handleMouseLeave: handleBailBtnLeave,
+    isHover: isBailBtnHover,
+  } = useHover();
+  const {
+    handleMouseEnter: handleEscapeBtnEnter,
+    handleMouseLeave: handleEscapeBtnLeave,
+    isHover: isEscapeBtnHover,
+  } = useHover();
   const { gameId } = useParams();
   const playerId = usePlayerIdValue();
-  const players = usePlayersValue();
+  const [players, setPlayers] = usePlayers();
   const { currentPlayerId, firstPlayerId, isMoveFinished, teleportLocation } =
     useGameInfoValue();
   const setGameInfo = useSetGameInfo();
@@ -125,7 +131,23 @@ export default function CenterArea({
       gameId,
       playerId,
     };
+
     sendJsonMessage(message);
+
+    setPlayers((prev) => {
+      return prev.map((player) => {
+        if (player.playerId === playerId) {
+          return {
+            ...player,
+            gameBoard: {
+              ...player.gameBoard,
+              hasEscaped: true,
+            },
+          };
+        }
+        return player;
+      });
+    });
   };
 
   const handleEscape = () => {
@@ -195,11 +217,18 @@ export default function CenterArea({
       )}
       {prisonStart && (
         <Wrapper>
-          <Button ref={bailRef} onClick={handleBail}>
-            {/* Memo: 호버시 내부 텍스트가 안 바뀌는 버그 발견 */}
+          <Button
+            onMouseEnter={handleBailBtnEnter}
+            onMouseLeave={handleBailBtnLeave}
+            onClick={handleBail}
+          >
             {isBailBtnHover ? '-5,000,000₩' : '보석금 지불'}
           </Button>
-          <Button ref={escapeRef} onClick={handleEscape}>
+          <Button
+            onMouseEnter={handleEscapeBtnEnter}
+            onMouseLeave={handleEscapeBtnLeave}
+            onClick={handleEscape}
+          >
             {isEscapeBtnHover ? '주사위 더블시 탈출' : '굴려서 탈출'}
           </Button>
         </Wrapper>
