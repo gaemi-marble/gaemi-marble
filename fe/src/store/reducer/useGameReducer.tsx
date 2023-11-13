@@ -228,6 +228,7 @@ export default function useGameReducer() {
             game: {
               ...prev.game,
               goldCardInfo: {
+                cardType: payload.cardType,
                 title: payload.title,
                 description: payload.description,
               },
