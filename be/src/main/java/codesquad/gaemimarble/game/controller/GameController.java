@@ -45,6 +45,7 @@ import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResp
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.TypeConstants;
 import codesquad.gaemimarble.game.service.GameService;
+import codesquad.gaemimarble.util.Constants;
 
 @RestController
 public class GameController {
@@ -281,8 +282,8 @@ public class GameController {
 	}
 
 	public void sendBailResult(GameBailRequest gameBailRequest) {
-		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.EXPENSE,
-			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), 5_000_000)));
+		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), Constants.BAIL_MONEY)));
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
 			gameService.rollDice(gameBailRequest.getGameId(), gameBailRequest.getPlayerId())));
 	}

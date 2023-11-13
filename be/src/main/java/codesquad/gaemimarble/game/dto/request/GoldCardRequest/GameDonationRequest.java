@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 public class GameDonationRequest {
 	private Long gameId;
 	private String playerId;
-	private String receiverId;
+	private String targetId;
 
 	@Builder
-	private GameDonationRequest(Long gameId, String playerId, String receiverId) {
+	private GameDonationRequest(Long gameId, String playerId, String targetId) {
 		this.gameId = gameId;
 		this.playerId = playerId;
-		this.receiverId = receiverId;
+		this.targetId = targetId;
 	}
 }

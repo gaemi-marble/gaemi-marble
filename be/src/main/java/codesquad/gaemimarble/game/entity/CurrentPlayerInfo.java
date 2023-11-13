@@ -11,6 +11,7 @@ public class CurrentPlayerInfo {
 	private Integer order;
 	private Integer countDouble;
 	private Boolean rolledDouble;
+	private Boolean hasMoved;
 
 	@Builder
 	private CurrentPlayerInfo(String playerId, Integer order) {
@@ -18,6 +19,7 @@ public class CurrentPlayerInfo {
 		this.order = order;
 		this.countDouble = 0;
 		this.rolledDouble = false;
+		this.hasMoved = false;
 	}
 
 	public int increaseCountDouble() {
@@ -31,6 +33,12 @@ public class CurrentPlayerInfo {
 		this.countDouble = 0;
 		this.rolledDouble = false;
 	}
+	public void move(){
+		hasMoved = true;
+	}
+	public void resetMove() {
+		hasMoved = false;
+	}
 
 	public void resetCountDouble() {
 		this.countDouble = 0;
@@ -39,4 +47,6 @@ public class CurrentPlayerInfo {
 	public void initRolledDouble() {
 		rolledDouble = false;
 	}
+
+
 }

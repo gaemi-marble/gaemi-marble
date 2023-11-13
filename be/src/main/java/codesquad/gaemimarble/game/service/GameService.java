@@ -1,5 +1,6 @@
 package codesquad.gaemimarble.game.service;
 
+import java.lang.management.LockInfo;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -126,7 +127,9 @@ public class GameService {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		Player player = gameStatus.getPlayer(playerId);
 		int startLocation = player.getLocation();
-
+		if(gameStatus.getCurrentPlayerInfo().getHasMoved()){
+			throw new PlayTimeException("주사위를 이미 굴렸습니다.", playerId, gameId);
+		}
 		int dice1 = (int)(Math.random() * 6) + 1;
 		int dice2 = (int)(Math.random() * 6) + 1;
 
@@ -139,6 +142,7 @@ public class GameService {
 			}
 		}
 		player.move(dice1 + dice2);
+		gameStatus.getCurrentPlayerInfo().move();
 		return new GameDiceResult(false, dice1, dice2);
 	}
 
@@ -320,7 +324,7 @@ public class GameService {
 	public GameEndTurnResponse endTurn(GameEndTurnRequest gameEndTurnRequest) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameEndTurnRequest.getGameId());
 		CurrentPlayerInfo currentPlayerInfo = gameStatus.getCurrentPlayerInfo();
-
+		currentPlayerInfo.resetMove();
 		if (currentPlayerInfo.getRolledDouble()) {
 			currentPlayerInfo.initRolledDouble();
 			Integer location = gameStatus.getPlayer(currentPlayerInfo.getPlayerId()).getLocation();
@@ -342,7 +346,6 @@ public class GameService {
 				currentPlayerInfo.update(player);
 			}
 		}
-
 		return GameEndTurnResponse.builder().nextPlayerId(null).build();
 	}
 
@@ -381,10 +384,12 @@ public class GameService {
 		if (stock.getWasBought()) {
 			stock.changePrice(10);
 		}
+		updatePlayersAsset(gameStatus.getPlayers(), List.of(stock));
 		return createGameStatusBoardResponse(gameId);
 	}
 
 	public GameStatusBoardResponse increasePlayerStockPrice(Long gameId, String playerId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		Player player = gameRepository.getPlayer(gameId, playerId);
 		List<Stock> stockList = gameRepository.getGameStatus(gameId).getStocks()
 			.stream()
@@ -393,6 +398,7 @@ public class GameService {
 		for (Stock stock : stockList) {
 			stock.changePrice(10);
 		}
+		updatePlayersAsset(gameStatus.getPlayers(), stockList);
 		return createGameStatusBoardResponse(gameId);
 
 	}
@@ -512,22 +518,26 @@ public class GameService {
 	public List<Player> donate(GameDonationRequest gameDonationRequest) {
 		Player giver = gameRepository.getPlayer(gameDonationRequest.getGameId(), gameDonationRequest.getPlayerId());
 		giver.addCashAsset(-10_000_000);
-		Player receiver = gameRepository.getPlayer(gameDonationRequest.getGameId(), gameDonationRequest.getReceiverId());
-		receiver.addCashAsset(10_000_000);
-		return List.of(giver, receiver);
+		Player targetId = gameRepository.getPlayer(gameDonationRequest.getGameId(), gameDonationRequest.getTargetId());
+		targetId.addCashAsset(10_000_000);
+		return List.of(giver, targetId);
 	}
 
 	public void dropStockPrice(GameViciousRumorRequest gameViciousRumorRequest) {
-		Stock stock = gameRepository.getGameStatus(gameViciousRumorRequest.getGameId()).getStocks().
+		GameStatus gameStatus = gameRepository.getGameStatus(gameViciousRumorRequest.getGameId());
+		Stock stock = gameStatus.getStocks().
 			stream().filter(s -> s.getName().equals(gameViciousRumorRequest.getStockName()))
 			.findFirst().orElseThrow(() -> new PlayTimeException("존재하지 않는 주식입니다", null,  gameViciousRumorRequest.getGameId()));
 		stock.changePrice(Constants.VICIOUS_RUMOR_STOCK_DROP);
+		updatePlayersAsset(gameStatus.getPlayers(), List.of(stock));
 	}
 
 	public void increaseStockPrice(GameStockManipulationRequest gameStockManipulationRequest) {
-		Stock stock = gameRepository.getGameStatus(gameStockManipulationRequest.getGameId()).getStocks().
+		GameStatus gameStatus = gameRepository.getGameStatus(gameStockManipulationRequest.getGameId());
+		Stock stock = gameStatus.getStocks().
 			stream().filter(s -> s.getName().equals(gameStockManipulationRequest.getStockName()))
 			.findFirst().orElseThrow(() -> new PlayTimeException("존재하지 않는 주식입니다", null,  gameStockManipulationRequest.getGameId()));
 		stock.changePrice(Constants.STOCK_MANIPULATION_INCREASE);
+		updatePlayersAsset(gameStatus.getPlayers(), List.of(stock));
 	}
 }
