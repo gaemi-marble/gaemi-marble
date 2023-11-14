@@ -34,6 +34,7 @@ export type GameInfoType = {
   eventList: RouletteEvent[];
   eventResult: string;
   isMoveFinished: boolean;
+  teleportPlayerId: string;
   teleportLocation: number | null;
   goldCardInfo: {
     cardType: string;
@@ -156,6 +157,7 @@ export type PrisonDicePayloadType = {
 };
 
 export type TeleportPayloadType = {
+  playerId: string;
   location: number;
 };
 

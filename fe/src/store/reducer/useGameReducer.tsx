@@ -292,6 +292,7 @@ export default function useGameReducer() {
             ...prev,
             game: {
               ...prev.game,
+              teleportPlayerId: payload.playerId,
               teleportLocation: payload.location,
               isArrived: false,
             },

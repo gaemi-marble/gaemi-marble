@@ -78,5 +78,5 @@ export default function useTeleportToken() {
     setPlayers((prev) => updatePlayerState(prev, updatedPlayerGameBoard));
   };
 
-  return { teleportToken };
+  return teleportToken;
 }

@@ -1,15 +1,15 @@
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import useHover from '@hooks/useHover';
-import useMoveToken from '@hooks/useMoveToken';
+import useTeleportToken from '@hooks/useTeleportToken';
 import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
   usePlayers,
-  useResetTeleportLocation,
-  useSetGameInfo,
+  useResetTeleportStatus,
+  useSetIsArrivedTrue,
 } from '@store/reducer';
 import { PlayerStatusType } from '@store/reducer/type';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
@@ -40,11 +40,16 @@ export default function CenterArea({
   const { gameId } = useParams();
   const playerId = usePlayerIdValue();
   const [players, setPlayers] = usePlayers();
-  const { currentPlayerId, firstPlayerId, isMoveFinished, teleportLocation } =
-    useGameInfoValue();
-  const setGameInfo = useSetGameInfo();
-  const moveToken = useMoveToken();
-  const resetTeleportLocation = useResetTeleportLocation();
+  const {
+    currentPlayerId,
+    firstPlayerId,
+    isMoveFinished,
+    teleportPlayerId,
+    teleportLocation,
+  } = useGameInfoValue();
+  const teleportToken = useTeleportToken();
+  const setIsArrivedTrue = useSetIsArrivedTrue();
+  const resetTeleportStatus = useResetTeleportStatus();
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
@@ -61,10 +66,6 @@ export default function CenterArea({
   const prisonStart = isMyTurn && !eventTime && isPrison && !isMoveFinished;
   const teleportStart = isMyTurn && !eventTime && isTeleport && !isMoveFinished;
 
-  const currentPlayerInfo = players.find(
-    (player) => player.playerId === currentPlayerId
-  );
-
   useEffect(() => {
     if (!eventTime) return;
     if (firstPlayerId !== playerId) return;
@@ -75,37 +76,45 @@ export default function CenterArea({
     sendJsonMessage(message);
   }, [eventTime, gameId, playerId, firstPlayerId, sendJsonMessage]);
 
-  const teleportToken = async () => {
-    if (!currentPlayerInfo || !teleportLocation) return;
-    const cellCount = calculateCellCount({
-      targetCell: teleportLocation,
-      currentCell: currentPlayerInfo.gameBoard.location,
-    });
-
-    await moveToken({
-      diceCount: cellCount,
-      playerGameBoardData: currentPlayerInfo.gameBoard,
-      type: 'teleport',
-    });
-
-    if (isMyTurn) {
-      sendCellMessage();
-    }
-
-    setGameInfo((prev) => {
-      return {
-        ...prev,
-        isArrived: true,
+  const sendCellMessage = useCallback(
+    (playerId: string) => {
+      const message = {
+        type: 'cell',
+        gameId,
+        playerId,
       };
-    });
-    resetTargetLocation();
-    resetTeleportLocation();
-  };
+      sendJsonMessage(message);
+    },
+    [gameId, sendJsonMessage]
+  );
 
   useEffect(() => {
     if (!teleportLocation) return;
-    teleportToken();
-  }, [teleportLocation]);
+    const targetPlayer = players.find(
+      (player) => player.playerId === teleportPlayerId
+    );
+    if (!targetPlayer) return;
+    teleportToken({
+      location: teleportLocation,
+      playerData: targetPlayer,
+    });
+    if (playerId === teleportPlayerId) {
+      sendCellMessage(teleportPlayerId);
+    }
+    setIsArrivedTrue();
+    resetTargetLocation();
+    resetTeleportStatus();
+  }, [
+    players,
+    playerId,
+    teleportPlayerId,
+    teleportLocation,
+    teleportToken,
+    sendCellMessage,
+    setIsArrivedTrue,
+    resetTargetLocation,
+    resetTeleportStatus,
+  ]);
 
   const throwDice = () => {
     const message = {
@@ -173,15 +182,6 @@ export default function CenterArea({
     sendJsonMessage(message);
   };
 
-  const sendCellMessage = () => {
-    const message = {
-      type: 'cell',
-      gameId,
-      playerId,
-    };
-    sendJsonMessage(message);
-  };
-
   const sendStatusBoardMessage = () => {
     const message = {
       type: 'statusBoard',
@@ -191,17 +191,6 @@ export default function CenterArea({
     if (isFirstPlayer) {
       sendJsonMessage(message);
     }
-  };
-
-  const calculateCellCount = ({
-    targetCell,
-    currentCell,
-  }: {
-    targetCell: number;
-    currentCell: number;
-  }) => {
-    const cellCount = (24 + targetCell - currentCell) % 24;
-    return cellCount;
   };
 
   return (
