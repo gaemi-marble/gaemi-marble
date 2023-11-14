@@ -277,16 +277,18 @@ public class GameController {
 	}
 
 	public void sendPrisonDiceResult(GamePrisonDiceRequest gamePrisonDiceRequest) {
+		Boolean hasPayed = false;
 		socketDataSender.send(gamePrisonDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
-			gameService.prisonDice(gamePrisonDiceRequest)));
+			gameService.prisonDice(gamePrisonDiceRequest, hasPayed)));
 	}
 
 	public void sendBailResult(GameBailRequest gameBailRequest) {
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), Constants.BAIL_MONEY)));
+		Boolean hasPayed = true;
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
 			gameService.prisonDice(GamePrisonDiceRequest.builder().gameId(gameBailRequest.getGameId()).playerId(
-				gameBailRequest.getPlayerId()).build())));
+				gameBailRequest.getPlayerId()).build(),hasPayed )));
 	}
 
 	private void sendUserStatusBoardResponse(Long gameId, String playerId){
