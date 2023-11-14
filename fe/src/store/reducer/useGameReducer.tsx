@@ -240,7 +240,7 @@ export default function useGameReducer() {
           const payload = action.payload as PrisonDicePayloadType;
           const { dice1, dice2 } = payload;
 
-          if (!payload.hasEscaped) {
+          if (payload.hasEscaped) {
             return {
               ...prev,
               game: {
