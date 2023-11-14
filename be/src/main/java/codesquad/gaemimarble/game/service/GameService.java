@@ -403,7 +403,7 @@ public class GameService {
 
 	}
 
-	public GamePrisonDiceResponse prisonDice(GamePrisonDiceRequest gamePrisonDiceRequest) {
+	public GamePrisonDiceResponse prisonDice(GamePrisonDiceRequest gamePrisonDiceRequest, Boolean hasPayed) {
 		GameStatus gameStatus = gameRepository.getGameStatus(gamePrisonDiceRequest.getGameId());
 		Player player = gameStatus.getPlayer(gamePrisonDiceRequest.getPlayerId());
 
@@ -412,13 +412,22 @@ public class GameService {
 
 		if (dice1 == dice2) {
 			player.escapePrison(dice1 + dice2);
+			gameStatus.getCurrentPlayerInfo().move();
 		} else {
 			player.increasePrisonCount();
-			if (player.getPrisonCount() == 3) {
+			if (player.getPrisonCount() == 3 || hasPayed) {
+				gameStatus.getCurrentPlayerInfo().increaseCountDouble();
 				player.escapePrison(dice1 + dice2);
+				gameStatus.getCurrentPlayerInfo().move();
+				return GamePrisonDiceResponse.builder()
+						.playerId(player.getPlayerId())
+						.dice1(dice1)
+						.dice2(dice2)
+						.hasEscaped(true)
+						.build();
+
 			}
 		}
-
 		return GamePrisonDiceResponse.builder()
 			.playerId(player.getPlayerId())
 			.dice1(dice1)

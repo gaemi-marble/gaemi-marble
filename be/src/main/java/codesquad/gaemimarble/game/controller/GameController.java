@@ -284,8 +284,9 @@ public class GameController {
 	public void sendBailResult(GameBailRequest gameBailRequest) {
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), Constants.BAIL_MONEY)));
-		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
-			gameService.rollDice(gameBailRequest.getGameId(), gameBailRequest.getPlayerId())));
+		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
+			gameService.prisonDice(GamePrisonDiceRequest.builder().gameId(gameBailRequest.getGameId()).playerId(
+				gameBailRequest.getPlayerId()).build())));
 	}
 
 	private void sendUserStatusBoardResponse(Long gameId, String playerId){
