@@ -45,6 +45,8 @@ export default function useTeleportToken() {
     prevPlayers: PlayerType[],
     { playerId, direction, location, coordinates }: updatedPlayerGameBoardType
   ) => {
+    const hasEscaped = location === 6 ? false : true;
+
     return prevPlayers.map((player) => {
       if (player.playerId === playerId) {
         return {
@@ -54,6 +56,7 @@ export default function useTeleportToken() {
             direction,
             location,
             coordinates,
+            hasEscaped,
           },
         };
       }
