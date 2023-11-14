@@ -2,9 +2,9 @@ name: FE DEPLOY
 
 on:
   push:
-    branches: [fe]
+    branches: [fe, dev]
   pull_request:
-    branches: [fe]
+    branches: [fe, dev]
 
 jobs:
   build:
