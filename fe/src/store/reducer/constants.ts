@@ -232,7 +232,7 @@ export const INITIAL_GAME = {
   eventResult: '',
   isMoveFinished: false,
   teleportLocation: null,
-  goldCardInfo: { title: '', description: '' },
+  goldCardInfo: { cardType: '', title: '', description: '' },
   isArrived: false,
   ranking: [],
 };
