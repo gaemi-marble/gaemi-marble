@@ -28,7 +28,7 @@ const resetGoldCardAtom = atom(null, (_get, set) => {
   set(gameInfoAtom, (prev) => {
     return {
       ...prev,
-      goldCardInfo: { title: '', description: '' },
+      goldCardInfo: { cardType: '', title: '', description: '' },
     };
   });
 });
