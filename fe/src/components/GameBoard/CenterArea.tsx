@@ -4,7 +4,7 @@ import useTeleportToken from '@hooks/useTeleportToken';
 import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
-  usePlayers,
+  usePlayersValue,
   useResetTeleportStatus,
   useSetIsArrivedTrue,
 } from '@store/reducer';
@@ -39,7 +39,7 @@ export default function CenterArea({
   } = useHover();
   const { gameId } = useParams();
   const playerId = usePlayerIdValue();
-  const [players, setPlayers] = usePlayers();
+  const players = usePlayersValue();
   const {
     currentPlayerId,
     firstPlayerId,
@@ -140,23 +140,7 @@ export default function CenterArea({
       gameId,
       playerId,
     };
-
     sendJsonMessage(message);
-
-    setPlayers((prev) => {
-      return prev.map((player) => {
-        if (player.playerId === playerId) {
-          return {
-            ...player,
-            gameBoard: {
-              ...player.gameBoard,
-              hasEscaped: true,
-            },
-          };
-        }
-        return player;
-      });
-    });
   };
 
   const handleEscape = () => {

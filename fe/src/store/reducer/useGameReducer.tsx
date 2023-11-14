@@ -1,4 +1,3 @@
-import useMoveToken from '@hooks/useMoveToken';
 import useTeleportToken from '@hooks/useTeleportToken';
 import { useReducerAtom } from 'jotai/utils';
 import {
@@ -257,13 +256,12 @@ export default function useGameReducer() {
                   ...player,
                   gameBoard: {
                     ...player.gameBoard,
-                    hasEscaped: false,
+                    hasEscaped: true,
                   },
                 };
               }),
             };
           }
-
           return {
             ...prev,
             game: {
@@ -279,7 +277,7 @@ export default function useGameReducer() {
                 ...player,
                 gameBoard: {
                   ...player.gameBoard,
-                  hasEscaped: true,
+                  hasEscaped: false,
                 },
               };
             }),
