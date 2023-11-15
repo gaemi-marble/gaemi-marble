@@ -28,23 +28,22 @@ export default function Dropdown({ isActive }: DropdownProps) {
 
   return (
     <Div $isActive={isActive}>
-      <Icon name="hi" size="3rem" onClick={() => sendEmote('hi')} />
-      <Icon name="angry" size="3rem" onClick={() => sendEmote('angry')} />
-      <Icon name="laugh" size="3rem" onClick={() => sendEmote('laugh')} />
-      <Icon name="cry" size="3rem" onClick={() => sendEmote('cry')} />
+      <Icon name="hi" size="4rem" onClick={() => sendEmote('hi')} />
+      <Icon name="angry" size="4rem" onClick={() => sendEmote('angry')} />
+      <Icon name="laugh" size="4rem" onClick={() => sendEmote('laugh')} />
+      <Icon name="cry" size="4rem" onClick={() => sendEmote('cry')} />
       <Icon
         name="celebrate"
-        size="3rem"
+        size="4rem"
         onClick={() => sendEmote('celebrate')}
       />
-      <Icon name="clock" size="3rem" onClick={() => sendEmote('clock')} />
+      <Icon name="clock" size="4rem" onClick={() => sendEmote('clock')} />
     </Div>
   );
 }
 
 const Div = styled.div<{ $isActive: boolean }>`
   width: 200px;
-  height: 250px;
   position: absolute;
   top: 40%;
   right: 60px;
