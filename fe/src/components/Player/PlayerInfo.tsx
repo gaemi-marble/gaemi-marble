@@ -30,9 +30,10 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
     <UserInfo $isCurrentPlayer={isCurrentPlayer}>
       <IconContainer>
         <Icon name={antName} size="8rem" />
-        {emote.isActive && emote.name !== '' && (
+        <EmoteBubble emoteName="angry" />
+        {/* {emote.isActive && emote.name !== '' && (
           <EmoteBubble emoteName={emote.name} />
-        )}
+        )} */}
       </IconContainer>
       <PlayerInfoContainer>
         <PlayerId>{playerId}</PlayerId>

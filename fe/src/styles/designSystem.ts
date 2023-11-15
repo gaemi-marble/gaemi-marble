@@ -9,6 +9,7 @@ export const colors = {
   red: '#FF3B30',
   yellow: '#FFCC00',
   green: '#B7F397',
+  beige: '#ece3ce',
   greyWithBlur: '#00000033',
   grey10: '#E5E5E5',
   grey20: '#CCC',
@@ -63,6 +64,7 @@ export const designSystem = {
     accentSecondary: colors.purple,
     accentTertiary: colors.green,
     accentGold: colors.yellow,
+    accentBeige: colors.beige,
 
     systemWarning: colors.red,
     systemBackground: colors.white,

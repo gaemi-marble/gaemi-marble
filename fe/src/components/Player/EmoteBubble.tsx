@@ -23,8 +23,8 @@ const Bubble = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 25%;
-  background: #eee;
+  border-radius: ${({ theme }) => theme.radius.large};
+  background-color: ${({ theme }) => theme.color.accentBeige};
 
   &:after {
     content: '';
@@ -34,7 +34,7 @@ const Bubble = styled.div`
     width: 0;
     height: 0;
     border: 15px solid transparent;
-    border-top-color: #eee;
+    border-top-color: ${({ theme }) => theme.color.accentBeige};
     border-bottom: 0;
     border-left: 0;
     margin-left: -15px;
