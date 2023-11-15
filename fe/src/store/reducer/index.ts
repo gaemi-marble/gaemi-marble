@@ -110,4 +110,5 @@ export const useSetTeleportLocation = () => useSetAtom(setTeleportLocationAtom);
 export const useResetTeleportStatus = () => useSetAtom(resetTeleportAtom);
 export const useSetIsArrivedTrue = () => useSetAtom(setIsArrivedTrueAtom);
 export const useResetGoldCard = () => useSetAtom(resetGoldCardAtom);
+export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useResetPlayerEmote = () => useSetAtom(resetPlayerEmoteAtom);
