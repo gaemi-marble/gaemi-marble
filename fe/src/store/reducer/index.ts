@@ -24,6 +24,15 @@ stocksAtom.debugLabel = 'stocksAtom';
 
 export const playerAtomsAtom = splitAtom(playersAtom);
 
+const setIsArrivedTrueAtom = atom(null, (_get, set) => {
+  set(gameInfoAtom, (prev) => {
+    return {
+      ...prev,
+      isArrived: true,
+    };
+  });
+});
+
 const resetGoldCardAtom = atom(null, (_get, set) => {
   set(gameInfoAtom, (prev) => {
     return {
@@ -55,10 +64,11 @@ const setTeleportLocationAtom = atom(null, (_get, set, location: number) => {
   });
 });
 
-const resetTeleportLocationAtom = atom(null, (_get, set) => {
+const resetTeleportAtom = atom(null, (_get, set) => {
   set(gameInfoAtom, (prev) => {
     return {
       ...prev,
+      teleportPlayerId: '',
       teleportLocation: null,
     };
   });
@@ -81,7 +91,6 @@ export const useSetPlayers = () => useSetAtom(playersAtom);
 
 export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useSetTeleportLocation = () => useSetAtom(setTeleportLocationAtom);
-export const useResetTeleportLocation = () =>
-  useSetAtom(resetTeleportLocationAtom);
-
+export const useResetTeleportStatus = () => useSetAtom(resetTeleportAtom);
+export const useSetIsArrivedTrue = () => useSetAtom(setIsArrivedTrueAtom);
 export const useResetGoldCard = () => useSetAtom(resetGoldCardAtom);

@@ -1,4 +1,4 @@
-import useMoveToken from '@hooks/useMoveToken';
+import useTeleportToken from '@hooks/useTeleportToken';
 import { useReducerAtom } from 'jotai/utils';
 import {
   CellPayloadType,
@@ -23,7 +23,7 @@ import {
 import { gameAtom } from '.';
 
 export default function useGameReducer() {
-  const moveToken = useMoveToken();
+  const teleportToken = useTeleportToken();
 
   const [gameInfo, dispatch] = useReducerAtom(
     gameAtom,
@@ -240,7 +240,7 @@ export default function useGameReducer() {
           const payload = action.payload as PrisonDicePayloadType;
           const { dice1, dice2 } = payload;
 
-          if (!payload.hasEscaped) {
+          if (payload.hasEscaped) {
             return {
               ...prev,
               game: {
@@ -256,13 +256,12 @@ export default function useGameReducer() {
                   ...player,
                   gameBoard: {
                     ...player.gameBoard,
-                    hasEscaped: false,
+                    hasEscaped: true,
                   },
                 };
               }),
             };
           }
-
           return {
             ...prev,
             game: {
@@ -278,7 +277,7 @@ export default function useGameReducer() {
                 ...player,
                 gameBoard: {
                   ...player.gameBoard,
-                  hasEscaped: true,
+                  hasEscaped: false,
                 },
               };
             }),
@@ -292,6 +291,7 @@ export default function useGameReducer() {
             ...prev,
             game: {
               ...prev.game,
+              teleportPlayerId: payload.playerId,
               teleportLocation: payload.location,
               isArrived: false,
             },
@@ -310,7 +310,8 @@ export default function useGameReducer() {
           };
         }
 
-        // Memo: 수정 필요
+        // Memo: enter 메세지가 오기전에 먼저 실행돼서 작동을 안 합니다.
+        // players 상태가 비어있는 초기 상태로 들어가서 이를 해결해야 할 것 같습니다.
         case 'locations': {
           return {
             ...prev,
@@ -331,10 +332,9 @@ export default function useGameReducer() {
 
               const { location } = currentPlayer;
 
-              moveToken({
-                diceCount: location,
-                playerGameBoardData: player.gameBoard,
-                type: 'reconnect',
+              teleportToken({
+                location,
+                playerData: player,
               });
 
               return {
