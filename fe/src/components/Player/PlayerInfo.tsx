@@ -16,21 +16,22 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
   const { currentPlayerId } = useGameInfoValue();
   const resetPlayerEmote = useResetPlayerEmote();
   const { userStatusBoard, playerId, emote } = player;
+  const { isActive: isEmoteActive, name: emoteName } = emote;
   const { cashAsset, stockAsset, totalAsset } = userStatusBoard;
   const isCurrentPlayer = currentPlayerId === playerId;
 
   useEffect(() => {
-    if (!emote.isActive || !emote.name) return;
+    if (!isEmoteActive || !emoteName) return;
     setTimeout(() => {
       resetPlayerEmote(playerId);
     }, 2000);
-  }, [emote, playerId, resetPlayerEmote]);
+  }, [isEmoteActive, emoteName, playerId, resetPlayerEmote]);
 
   return (
     <UserInfo $isCurrentPlayer={isCurrentPlayer}>
       <IconContainer>
         <Icon name={antName} size="8rem" />
-        {emote.isActive && emote.name && <EmoteBubble emoteName={emote.name} />}
+        {isEmoteActive && emoteName && <EmoteBubble emoteName={emoteName} />}
       </IconContainer>
       <PlayerInfoContainer>
         <PlayerId>{playerId}</PlayerId>

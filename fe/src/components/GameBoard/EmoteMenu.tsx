@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { styled } from 'styled-components';
 import EmotePanel from './EmotePanel';
 
-export default function Emotes() {
+export default function EmoteMenu() {
   const [isActive, setIsActive] = useState(false);
 
   const handleToggleEmotePanel = () => {
@@ -12,15 +12,15 @@ export default function Emotes() {
 
   return (
     <>
-      <Button onClick={handleToggleEmotePanel}>
+      <ToggleButton onClick={handleToggleEmotePanel}>
         <Icon name="emote" />
-      </Button>
+      </ToggleButton>
       <EmotePanel isActive={isActive} />
     </>
   );
 }
 
-const Button = styled.button`
+const ToggleButton = styled.button`
   width: 50px;
   height: 100px;
   position: absolute;
