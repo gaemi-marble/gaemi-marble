@@ -64,6 +64,23 @@ const resetTeleportLocationAtom = atom(null, (_get, set) => {
   });
 });
 
+const resetPlayerEmoteAtom = atom(null, (_get, set, playerId: string) => {
+  set(playersAtom, (prev) => {
+    return prev.map((player) => {
+      if (player.playerId === playerId) {
+        return {
+          ...player,
+          emote: {
+            isActive: false,
+            name: '',
+          },
+        };
+      }
+      return player;
+    });
+  });
+});
+
 const timerAtom = focusAtom(gameInfoAtom, (optic) => optic.prop('timer'));
 export const useRouletteTimer = () => useAtom(timerAtom);
 
@@ -79,9 +96,9 @@ export const useSetGame = () => useSetAtom(gameAtom);
 export const useSetGameInfo = () => useSetAtom(gameInfoAtom);
 export const useSetPlayers = () => useSetAtom(playersAtom);
 
-export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useSetTeleportLocation = () => useSetAtom(setTeleportLocationAtom);
+export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useResetTeleportLocation = () =>
   useSetAtom(resetTeleportLocationAtom);
-
 export const useResetGoldCard = () => useSetAtom(resetGoldCardAtom);
+export const useResetPlayerEmote = () => useSetAtom(resetPlayerEmoteAtom);

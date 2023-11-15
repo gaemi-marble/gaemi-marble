@@ -19,6 +19,7 @@ import {
   CurrentPlayerPayloadType,
   LocationsPayloadType,
   GameOverPayloadType,
+  EmoticonPayloadType,
 } from './type';
 import { gameAtom } from '.';
 
@@ -354,6 +355,28 @@ export default function useGameReducer() {
               isPlaying: false,
               ranking: [...payload.ranking],
             },
+          };
+        }
+
+        case 'emoticon': {
+          const payload = action.payload as EmoticonPayloadType;
+          const { playerId, name } = payload;
+
+          return {
+            ...prev,
+            players: prev.players.map((player) => {
+              if (player.playerId !== playerId) {
+                return player;
+              }
+
+              return {
+                ...player,
+                emote: {
+                  name: name,
+                  isActive: true,
+                },
+              };
+            }),
           };
         }
 
