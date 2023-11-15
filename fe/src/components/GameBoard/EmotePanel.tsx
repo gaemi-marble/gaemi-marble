@@ -2,6 +2,7 @@ import { Icon } from '@components/icon/Icon';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
 import { EmoteNameType } from '@store/reducer/type';
+import debounce from 'lodash.debounce';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 
@@ -25,18 +26,36 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
     sendJsonMessage(message);
   };
 
+  const debounceSendEmote = debounce(
+    (name: EmoteNameType) => sendEmote(name),
+    1000,
+    { leading: true, trailing: false }
+  );
+
   return (
     <Div $isActive={isActive}>
-      <Icon name="hi" size="4rem" onClick={() => sendEmote('hi')} />
-      <Icon name="angry" size="4rem" onClick={() => sendEmote('angry')} />
-      <Icon name="laugh" size="4rem" onClick={() => sendEmote('laugh')} />
-      <Icon name="cry" size="4rem" onClick={() => sendEmote('cry')} />
+      <Icon name="hi" size="4rem" onClick={() => debounceSendEmote('hi')} />
+      <Icon
+        name="angry"
+        size="4rem"
+        onClick={() => debounceSendEmote('angry')}
+      />
+      <Icon
+        name="laugh"
+        size="4rem"
+        onClick={() => debounceSendEmote('laugh')}
+      />
+      <Icon name="cry" size="4rem" onClick={() => debounceSendEmote('cry')} />
       <Icon
         name="celebrate"
         size="4rem"
-        onClick={() => sendEmote('celebrate')}
+        onClick={() => debounceSendEmote('celebrate')}
       />
-      <Icon name="clock" size="4rem" onClick={() => sendEmote('clock')} />
+      <Icon
+        name="clock"
+        size="4rem"
+        onClick={() => debounceSendEmote('clock')}
+      />
     </Div>
   );
 }

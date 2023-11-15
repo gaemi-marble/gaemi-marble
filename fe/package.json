@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
+    "@types/lodash.debounce": "^4.0.9",
     "axios": "^1.5.1",
     "jotai": "^2.4.3",
     "jotai-devtools": "^0.7.0",
+    "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
     "react-custom-roulette": "^1.4.1",
