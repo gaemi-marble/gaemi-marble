@@ -13,19 +13,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
 
+import codesquad.gaemimarble.exception.PlayTimeException;
 import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.request.GameBailRequest;
+import codesquad.gaemimarble.game.dto.request.GameCellArrivalRequest;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
-import codesquad.gaemimarble.game.dto.request.GameRobRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameArrestRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameDonationRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
+import codesquad.gaemimarble.game.dto.request.GameStatusBoardRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameStockManipulationRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameViciousRumorRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
@@ -38,6 +45,7 @@ import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResp
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.TypeConstants;
 import codesquad.gaemimarble.game.service.GameService;
+import codesquad.gaemimarble.util.Constants;
 
 @RestController
 public class GameController {
@@ -62,6 +70,13 @@ public class GameController {
 		typeMap.put(TypeConstants.BAIL, GameBailRequest.class);
 		typeMap.put(TypeConstants.TELEPORT, GameTeleportRequest.class);
 		typeMap.put(TypeConstants.ROB, GameRobRequest.class);
+		typeMap.put(TypeConstants.STATUS_BOARD, GameStatusBoardRequest.class);
+		typeMap.put(TypeConstants.CELL, GameCellArrivalRequest.class);
+		typeMap.put(TypeConstants.DONATION, GameDonationRequest.class);
+		typeMap.put(TypeConstants.VICIOUS_RUMOR, GameViciousRumorRequest.class);
+		typeMap.put(TypeConstants.MANIPULATION, GameStockManipulationRequest.class);
+		typeMap.put(TypeConstants.ARREST, GameArrestRequest.class);
+
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -76,6 +91,34 @@ public class GameController {
 		handlers.put(GameBailRequest.class, req -> sendBailResult((GameBailRequest)req));
 		handlers.put(GameTeleportRequest.class, req -> sendTeleport((GameTeleportRequest)req));
 		handlers.put(GameRobRequest.class, req -> sendRobResult((GameRobRequest)req));
+		handlers.put(GameStatusBoardRequest.class, req -> sendStatusBoard((GameStatusBoardRequest)req));
+		handlers.put(GameCellArrivalRequest.class, req -> sendCellArrival((GameCellArrivalRequest)req));
+		handlers.put(GameDonationRequest.class, req -> sendDonationResult((GameDonationRequest)req));
+		handlers.put(GameViciousRumorRequest.class, req -> sendViciousRumorResult((GameViciousRumorRequest)req));
+		handlers.put(GameStockManipulationRequest.class, req -> sendStockManipulationResult((GameStockManipulationRequest)req));
+		handlers.put(GameArrestRequest.class, req -> sendArrestResult((GameArrestRequest)req));
+	}
+
+	private void sendArrestResult(GameArrestRequest gameArrestRequest) {
+		socketDataSender.send(gameArrestRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
+			gameService.arrest(gameArrestRequest)));
+	}
+
+	private void sendStockManipulationResult(GameStockManipulationRequest gameStockManipulationRequest) {
+		gameService.increaseStockPrice(gameStockManipulationRequest);
+		sendStatusBoard(GameStatusBoardRequest.builder().gameId(gameStockManipulationRequest.getGameId()).build());
+	}
+
+	private void sendViciousRumorResult(GameViciousRumorRequest gameViciousRumorRequest) {
+		gameService.dropStockPrice(gameViciousRumorRequest);
+		sendStatusBoard(GameStatusBoardRequest.builder().gameId(gameViciousRumorRequest.getGameId()).build());
+	}
+
+	private void sendDonationResult(GameDonationRequest gameDonationRequest) {
+		List<Player> players = gameService.donate(gameDonationRequest);
+		players.forEach(
+			p -> socketDataSender.send(gameDonationRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameService.createUserBoardResponse(p))));
 	}
 
 	private void sendRobResult(GameRobRequest gameRobRequest) {
@@ -99,8 +142,7 @@ public class GameController {
 		GameEventNameResponse gameEventNameResponse = gameService.selectEvent(gameEventResultRequest);
 		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.EVENTS_RESULT,
 			gameEventNameResponse));
-		socketDataSender.send(gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
-			gameService.proceedEvent(gameEventNameResponse.getName(), gameEventResultRequest.getGameId())));
+		gameService.proceedEvent(gameEventNameResponse.getName(), gameEventResultRequest.getGameId());
 		if (gameService.checkGameOver(gameEventResultRequest.getGameId())) {
 			socketDataSender.send(
 				gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.GAME_OVER,
@@ -127,7 +169,7 @@ public class GameController {
 				gameService.getLocations(gameId)));
 			socketDataSender.sendToPlayer(playerId,gameId,
 				new ResponseDTO<>(TypeConstants.ENTER, gameService.reenter(gameId)));
-			sendAllUserStatusBoardResponse(playerId,gameId);
+			sendAllUserStatusBoardResponseToPlayer(playerId,gameId);
 			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 				gameService.createGameStatusBoardResponse(gameId)));
 		} else {
@@ -136,11 +178,25 @@ public class GameController {
 		}
 	}
 
-	private void sendAllUserStatusBoardResponse(String playerId, Long gameId) {
+	private void sendStatusBoard(GameStatusBoardRequest gameStatusBoardRequest) {
+		socketDataSender.send(gameStatusBoardRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+			gameService.createGameStatusBoardResponse(gameStatusBoardRequest.getGameId())));
+		sendAllUserStatusBoardResponse(gameStatusBoardRequest.getGameId());
+	}
+
+	private void sendAllUserStatusBoardResponseToPlayer(String playerId, Long gameId) {
 		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
 			gameId);
 		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
 			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+				gameUserBoardResponse));
+		}
+	}
+	private void sendAllUserStatusBoardResponse(Long gameId) {
+		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+			gameId);
+		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
+			socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 				gameUserBoardResponse));
 		}
 	}
@@ -192,21 +248,18 @@ public class GameController {
 			socketDataSender.send(gameRollDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
 				GameTeleportResponse.builder().location(6).build()));
 		}
-		sendCellArrival(gameRollDiceRequest.getGameId(), gameRollDiceRequest.getPlayerId());
 	}
 
-	private void sendCellArrival(Long gameId, String playerId) {
-		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameId, playerId);
-		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.CELL,
+	private void sendCellArrival(GameCellArrivalRequest gameCellArrivalRequest) {
+		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameCellArrivalRequest.getGameId(), gameCellArrivalRequest.getPlayerId());
+		socketDataSender.send(gameCellArrivalRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
 			gameCellResponse));
-		actCell(gameId, gameCellResponse);
+		actCell(gameCellArrivalRequest.getGameId(), gameCellResponse);
 	}
 
 	private void sendTeleport(GameTeleportRequest gameTeleportRequest) {
-		gameService.teleport(gameTeleportRequest);
-		sendCellArrival(gameTeleportRequest.getGameId(), gameTeleportRequest.getPlayerId());
 		socketDataSender.send(gameTeleportRequest.getGameId(), new ResponseDTO<>(TypeConstants.TELEPORT,
-			GameTeleportResponse.builder().location(gameTeleportRequest.getLocation()).build()));
+			gameService.teleport(gameTeleportRequest)));
 	}
 
 	private void sendRandomEvents(GameEventRequest gameEventRequest) {
@@ -224,38 +277,51 @@ public class GameController {
 	}
 
 	public void sendPrisonDiceResult(GamePrisonDiceRequest gamePrisonDiceRequest) {
+		Boolean hasPayed = false;
 		socketDataSender.send(gamePrisonDiceRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
-			gameService.prisonDice(gamePrisonDiceRequest)));
-		sendCellArrival(gamePrisonDiceRequest.getGameId(), gamePrisonDiceRequest.getPlayerId());
+			gameService.prisonDice(gamePrisonDiceRequest, hasPayed)));
 	}
 
 	public void sendBailResult(GameBailRequest gameBailRequest) {
-		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.EXPENSE,
-			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), 5_000_000)));
-		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.DICE,
-			gameService.rollDice(gameBailRequest.getGameId(), gameBailRequest.getPlayerId())));
-		sendCellArrival(gameBailRequest.getGameId(), gameBailRequest.getPlayerId());
+		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), Constants.BAIL_MONEY)));
+		Boolean hasPayed = true;
+		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
+			gameService.prisonDice(GamePrisonDiceRequest.builder().gameId(gameBailRequest.getGameId()).playerId(
+				gameBailRequest.getPlayerId()).build(),hasPayed )));
+	}
+
+	private void sendUserStatusBoardResponse(Long gameId, String playerId){
+		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+			gameService.createUserStatusBoardResponse(gameId)
+				.stream()
+				.filter(o -> o.getPlayerId().equals(playerId))
+				.findFirst().orElseThrow(()-> new PlayTimeException("잘못된 플레이어 아이디입니다", playerId, gameId))));
 	}
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
 		switch (gameCellResponse.getLocation()) {
 			case 0, 6, 18: // 시작, 감옥, 순간이동
+				sendUserStatusBoardResponse(gameId, gameCellResponse.getPlayerId());
 				break;
 			case 9, 21: // 황금카드
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.GOLD_CARD,
 					gameService.selectGoldCard(gameId, gameCellResponse.getPlayerId())));
+				sendUserStatusBoardResponse(gameId, gameCellResponse.getPlayerId());
 				break;
 			case 12: // 호재
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 					gameService.increasePlayerStockPrice(gameId, gameCellResponse.getPlayerId())));
+				sendAllUserStatusBoardResponse(gameId);
 				break;
 			case 15: // 세금
-				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.EXPENSE,
+				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 					gameService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
 				break;
 			default: // 기업
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 					gameService.increaseCompanyStock(gameId, gameCellResponse.getLocation())));
+				sendAllUserStatusBoardResponse(gameId);
 				break;
 		}
 	}

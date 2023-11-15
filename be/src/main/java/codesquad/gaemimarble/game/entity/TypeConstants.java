@@ -23,4 +23,8 @@ public final class TypeConstants {
 	public static final String GAME_OVER = "gameOver";
 	public static final String CURRENT_PLAYER = "currentPlayer";
 	public static final String LOCATIONS = "locations";
+	public static final String DONATION = "donation";
+	public static final String VICIOUS_RUMOR = "viciousRumor";
+	public static final String MANIPULATION = "manipulation";
+	public static final String ARREST = "arrest";
 }
