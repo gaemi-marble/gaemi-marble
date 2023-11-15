@@ -1,3 +1,4 @@
+import Emotes from '@components/GameBoard/Emotes';
 import GameBoard from '@components/GameBoard/GameBoard';
 import GameHeader from '@components/Header/GameHeader';
 import GameOverModal from '@components/Modal/GameOverModal/GameOverModal';
@@ -72,6 +73,7 @@ export default function GamePage() {
           <GameBoard />
           <RightPlayers />
         </Main>
+        <Emotes />
       </Container>
       {isLocatedGoldCard &&
         isMoveFinished &&
