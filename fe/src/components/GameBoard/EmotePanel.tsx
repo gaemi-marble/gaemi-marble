@@ -1,23 +1,22 @@
 import { Icon } from '@components/icon/Icon';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
+import { EmoteNameType } from '@store/reducer/type';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 
-type DropdownProps = {
+type EmotePanelProps = {
   isActive: boolean;
 };
 
-type EmoteType = 'hi' | 'angry' | 'laugh' | 'cry' | 'celebrate' | 'clock';
-
-export default function Dropdown({ isActive }: DropdownProps) {
+export default function EmotePanel({ isActive }: EmotePanelProps) {
   const playerId = usePlayerIdValue();
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
 
-  const sendEmote = (name: EmoteType) => {
+  const sendEmote = (name: EmoteNameType) => {
     const message = {
       type: 'emoticon',
       playerId,

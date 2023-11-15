@@ -1,21 +1,21 @@
 import { Icon } from '@components/icon/Icon';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import Dropdown from './Dropdown';
+import EmotePanel from './EmotePanel';
 
 export default function Emotes() {
   const [isActive, setIsActive] = useState(false);
 
-  const handleToggleDropdown = () => {
+  const handleToggleEmotePanel = () => {
     setIsActive((prev) => !prev);
   };
 
   return (
     <>
-      <Button onClick={handleToggleDropdown}>
+      <Button onClick={handleToggleEmotePanel}>
         <Icon name="emote" />
       </Button>
-      <Dropdown isActive={isActive} />
+      <EmotePanel isActive={isActive} />
     </>
   );
 }
