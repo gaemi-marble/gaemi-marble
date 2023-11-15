@@ -2,45 +2,36 @@ import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
-  usePlayersValue,
   useResetGoldCard,
   useSetGameInfo,
+  useSetPlayers,
 } from '@store/reducer';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import { DefaultTheme } from 'styled-components/dist/types';
+import GoldCardNoTarget from './GoldCardNoTarget';
+import GoldCardPlayer from './GoldCardPlayer';
+import GoldCardStock from './GoldCardStock';
+import { NEED_NOTHING, NEED_PLAYER, NEED_STOCK } from './constants';
 
-// Memo: 서버에서 골드카드의 유형도 받으면 다른 황금 카드도 구현 가능할 듯
-// 예) target: { player: boolean, stock: boolean }
 export default function GoldCardModalContent() {
   const { goldCardInfo } = useGameInfoValue();
-  const { title, description } = goldCardInfo;
+  const { cardType, title, description } = goldCardInfo;
   const { gameId } = useParams();
-  const players = usePlayersValue();
   const playerId = usePlayerIdValue();
+  const setPlayers = useSetPlayers();
+  const { currentPlayerId } = useGameInfoValue();
   const resetGoldCard = useResetGoldCard();
   const setGameInfo = useSetGameInfo();
-  const [targetId, setTargetId] = useState('');
+  const [targetPlayer, setTargetPlayer] = useState('');
+  const [targetStock, setTargetStock] = useState('');
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
 
-  const handleClickAttack = () => {
-    if (!targetId) {
-      alert('타겟을 선택해주세요.');
-      return;
-    }
-
-    sendJsonMessage({
-      gameId,
-      type: 'rob',
-      playerId: playerId,
-      targetId: targetId,
-    });
-
+  const resetGoldCardInfo = () => {
     resetGoldCard();
     setGameInfo((prev) => {
       return {
@@ -50,16 +41,78 @@ export default function GoldCardModalContent() {
     });
   };
 
-  const handleChooseTarget = (target: string) => {
-    if (targetId === target) {
-      setTargetId('');
+  const handleChoosePlayer = (target: string) => {
+    if (targetPlayer === target) {
+      setTargetPlayer('');
       return;
     }
 
-    setTargetId(target);
+    setTargetPlayer(target);
   };
 
-  const currentPlayers = players.filter((player) => player.playerId);
+  const handleChooseStock = (stock: string) => {
+    if (targetStock === stock) {
+      setTargetPlayer('');
+      return;
+    }
+
+    setTargetStock(stock);
+  };
+
+  const handleClickPlayerAttack = () => {
+    if (!targetPlayer) {
+      alert('타겟을 선택해주세요');
+      return;
+    }
+
+    sendJsonMessage({
+      gameId,
+      type: cardType,
+      playerId: playerId,
+      targetId: targetPlayer,
+    });
+
+    resetGoldCardInfo();
+  };
+
+  const handleClickStockAttack = () => {
+    if (!targetStock) {
+      alert('타겟을 선택해주세요');
+      return;
+    }
+
+    sendJsonMessage({
+      gameId,
+      type: cardType,
+      stockName: targetStock,
+    });
+
+    resetGoldCardInfo();
+  };
+
+  const handleClickNoTarget = () => {
+    resetGoldCardInfo();
+
+    setPlayers((prev) => {
+      return prev.map((player) => {
+        if (player.playerId === currentPlayerId) {
+          return {
+            ...player,
+            gameBoard: {
+              ...player.gameBoard,
+              status: 'teleport',
+            },
+          };
+        }
+
+        return player;
+      });
+    });
+  };
+
+  const isTargetNeedNothing = NEED_NOTHING.includes(cardType);
+  const isTargetNeedPlayer = NEED_PLAYER.includes(cardType);
+  const isTargetNeedStock = NEED_STOCK.includes(cardType);
 
   return (
     <Content>
@@ -67,22 +120,23 @@ export default function GoldCardModalContent() {
         <Title>{title}</Title>
         <Description>{description}</Description>
       </GoldCard>
-      <Instructions>공격할 상대를 선택하세요</Instructions>
-      <PlayerToggleWrapper>
-        {currentPlayers.map((player) => (
-          <PlayerToggle
-            key={player.playerId}
-            disabled={playerId === player.playerId}
-            onClick={() => handleChooseTarget(player.playerId)}
-            $isTarget={player.playerId === targetId}
-            $order={player.order}
-          >
-            {player.playerId}
-          </PlayerToggle>
-        ))}
-      </PlayerToggleWrapper>
-      <Target>타겟: {targetId}</Target>
-      <AttackButton onClick={handleClickAttack}>공격하기</AttackButton>
+      {isTargetNeedPlayer && (
+        <GoldCardPlayer
+          targetPlayer={targetPlayer}
+          handleChoosePlayer={handleChoosePlayer}
+          handleClickButton={handleClickPlayerAttack}
+        />
+      )}
+      {isTargetNeedStock && (
+        <GoldCardStock
+          targetStock={targetStock}
+          handleChooseStock={handleChooseStock}
+          handleClickButton={handleClickStockAttack}
+        />
+      )}
+      {isTargetNeedNothing && (
+        <GoldCardNoTarget handleClickButton={handleClickNoTarget} />
+      )}
     </Content>
   );
 }
@@ -104,45 +158,8 @@ const GoldCard = styled.div`
   background-color: ${({ theme }) => theme.color.accentGold};
 `;
 
-const Instructions = styled.span``;
-
 const Title = styled.span`
   font-size: ${({ theme }) => theme.fontSize.sMedium};
 `;
 
 const Description = styled.span``;
-
-const PlayerToggleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-`;
-
-const PlayerToggle = styled.button<{ $isTarget: boolean; $order: number }>`
-  width: 5rem;
-  height: 3rem;
-  border: ${({ theme, $isTarget }) =>
-    $isTarget ? 'none' : `1px solid ${theme.color.neutralBorder}`};
-  border-radius: ${({ theme }) => theme.radius.small};
-  color: ${({ theme, $isTarget }) =>
-    $isTarget ? theme.color.accentText : theme.color.neutralText};
-  background-color: ${({ theme, $order, $isTarget }) =>
-    $isTarget
-      ? theme.color[`player${$order}` as keyof DefaultTheme['color']]
-      : 'none'};
-
-  &:disabled {
-    display: none;
-  }
-`;
-
-const Target = styled.span``;
-
-const AttackButton = styled.button`
-  width: 7rem;
-  height: 3rem;
-  border-radius: ${({ theme }) => theme.radius.medium};
-  color: ${({ theme }) => theme.color.accentText};
-  background-color: ${({ theme }) => theme.color.accentBackground};
-`;

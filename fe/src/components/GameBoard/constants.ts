@@ -76,8 +76,6 @@ export const DIRECTIONS = {
 };
 
 export const DICE_MOVE_DELAY = 200;
-export const TELEPORT_MOVE_DELAY = 100;
-export const RECONNECT_MOVE_DELAY = 0;
 
 export const changeDirection = (direction: DirectionType) => {
   switch (direction) {
@@ -93,3 +91,35 @@ export const changeDirection = (direction: DirectionType) => {
       return 'top';
   }
 };
+
+export const CELL_COORDINATES: { [key: number]: { x: number; y: number } } = {
+  0: { x: 0, y: 0 },
+  1: { x: 0, y: -6 },
+  2: { x: 0, y: -12 },
+  3: { x: 0, y: -18 },
+  4: { x: 0, y: -24 },
+  5: { x: 0, y: -30 },
+  6: { x: 0, y: -36 },
+  7: { x: 6, y: -36 },
+  8: { x: 12, y: -36 },
+  9: { x: 18, y: -36 },
+  10: { x: 24, y: -36 },
+  11: { x: 30, y: -36 },
+  12: { x: 36, y: -36 },
+  13: { x: 36, y: -30 },
+  14: { x: 36, y: -24 },
+  15: { x: 36, y: -18 },
+  16: { x: 36, y: -12 },
+  17: { x: 36, y: -6 },
+  18: { x: 36, y: 0 },
+  19: { x: 30, y: 0 },
+  20: { x: 24, y: 0 },
+  21: { x: 18, y: 0 },
+  22: { x: 12, y: 0 },
+  23: { x: 6, y: 0 },
+};
+
+export const LINE_1_CELLS = [0, 1, 2, 3, 4, 5];
+export const LINE_2_CELLS = [6, 7, 8, 9, 10, 11];
+export const LINE_3_CELLS = [12, 13, 14, 15, 16, 17];
+export const LINE_4_CELLS = [18, 19, 20, 21, 22, 23];

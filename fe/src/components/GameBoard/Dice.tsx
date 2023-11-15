@@ -12,7 +12,7 @@ import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 import { styled } from 'styled-components';
 
 type DiceProps = {
-  sendCellMessage: () => void;
+  sendCellMessage: (playerId: string) => void;
 };
 
 export default function Dice({ sendCellMessage }: DiceProps) {
@@ -60,7 +60,7 @@ export default function Dice({ sendCellMessage }: DiceProps) {
     });
 
     if (isMyTurn) {
-      sendCellMessage();
+      sendCellMessage(playerId);
     }
 
     setGameInfo((prev) => {
