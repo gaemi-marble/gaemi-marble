@@ -5,6 +5,7 @@ export const colors = {
   black: '#000',
   blue: '#007AFF',
   royalBlue: '#4169E1',
+  sky: '#6699ff',
   purple: '#823FE8',
   red: '#FF3B30',
   yellow: '#FFCC00',
@@ -63,6 +64,7 @@ export const designSystem = {
     accentSecondary: colors.purple,
     accentTertiary: colors.green,
     accentGold: colors.yellow,
+    accentSky: colors.sky,
 
     systemWarning: colors.red,
     systemBackground: colors.white,
