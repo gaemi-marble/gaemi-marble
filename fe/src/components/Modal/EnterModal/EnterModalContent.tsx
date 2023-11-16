@@ -1,3 +1,4 @@
+import { API_STATUS } from '@api/constants';
 import { getGameCheck } from '@api/index';
 import { ROUTE_PATH } from '@router/constants';
 import { useState } from 'react';
@@ -16,7 +17,7 @@ export default function EnterModalContent() {
     const res = await getGameCheck(gameId);
     const { isPresent, isFull } = res.data;
 
-    if (!(res.status === 200)) {
+    if (!(res.status === API_STATUS.SUCCESS)) {
       // Todo: 방 입장 실패 시 토스트 띄우기
       alert('서버오류로 입장할 수 없습니다');
       return;

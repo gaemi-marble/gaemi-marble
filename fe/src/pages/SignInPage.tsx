@@ -1,3 +1,4 @@
+import { API_STATUS } from '@api/constants';
 import { postSignin } from '@api/index';
 import { ROUTE_PATH } from '@router/constants';
 import {
@@ -27,7 +28,7 @@ export default function SignInPage() {
 
     const res = await postSignin(playerId, password);
 
-    if (res.status === 200) {
+    if (res.status === API_STATUS.SUCCESS) {
       setPlayer(res.data.playerId);
       setAccessToken(res.headers['authorization']);
       setRefreshToken(res.headers['refresh-token']);
