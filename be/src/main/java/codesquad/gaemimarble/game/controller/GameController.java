@@ -22,15 +22,15 @@ import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
 import codesquad.gaemimarble.game.dto.request.GamePrisonDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
-import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameArrestRequest;
-import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameDonationRequest;
-import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GameRollDiceRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
 import codesquad.gaemimarble.game.dto.request.GameStartRequest;
 import codesquad.gaemimarble.game.dto.request.GameStatusBoardRequest;
 import codesquad.gaemimarble.game.dto.request.GameStockBuyRequest;
 import codesquad.gaemimarble.game.dto.request.GameTeleportRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameArrestRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameDonationRequest;
+import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameRobRequest;
 import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameStockManipulationRequest;
 import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameViciousRumorRequest;
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
@@ -44,6 +44,7 @@ import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
 import codesquad.gaemimarble.game.entity.Player;
 import codesquad.gaemimarble.game.entity.TypeConstants;
+import codesquad.gaemimarble.game.player.service.PlayerService;
 import codesquad.gaemimarble.game.service.GameService;
 import codesquad.gaemimarble.util.Constants;
 
@@ -52,10 +53,12 @@ public class GameController {
 	private final Map<String, Class<?>> typeMap;
 	private final Map<Class<?>, Consumer<Object>> handlers;
 	private final GameService gameService;
+	private final PlayerService playerService;
 	private final SocketDataSender socketDataSender;
 
-	public GameController(GameService gameService, SocketDataSender socketDataSender) {
+	public GameController(GameService gameService, PlayerService playerService, SocketDataSender socketDataSender) {
 		this.gameService = gameService;
+		this.playerService = playerService;
 		this.socketDataSender = socketDataSender;
 		this.typeMap = new HashMap<>();
 		typeMap.put(TypeConstants.READY, GameReadyRequest.class);
@@ -77,7 +80,6 @@ public class GameController {
 		typeMap.put(TypeConstants.MANIPULATION, GameStockManipulationRequest.class);
 		typeMap.put(TypeConstants.ARREST, GameArrestRequest.class);
 
-
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
 		handlers.put(GameStartRequest.class, req -> sendFirstPlayer((GameStartRequest)req));
@@ -95,7 +97,8 @@ public class GameController {
 		handlers.put(GameCellArrivalRequest.class, req -> sendCellArrival((GameCellArrivalRequest)req));
 		handlers.put(GameDonationRequest.class, req -> sendDonationResult((GameDonationRequest)req));
 		handlers.put(GameViciousRumorRequest.class, req -> sendViciousRumorResult((GameViciousRumorRequest)req));
-		handlers.put(GameStockManipulationRequest.class, req -> sendStockManipulationResult((GameStockManipulationRequest)req));
+		handlers.put(GameStockManipulationRequest.class,
+			req -> sendStockManipulationResult((GameStockManipulationRequest)req));
 		handlers.put(GameArrestRequest.class, req -> sendArrestResult((GameArrestRequest)req));
 	}
 
@@ -115,17 +118,18 @@ public class GameController {
 	}
 
 	private void sendDonationResult(GameDonationRequest gameDonationRequest) {
-		List<Player> players = gameService.donate(gameDonationRequest);
+		List<Player> players = playerService.donate(gameDonationRequest);
 		players.forEach(
-			p -> socketDataSender.send(gameDonationRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
-				gameService.createUserBoardResponse(p))));
+			p -> socketDataSender.send(gameDonationRequest.getGameId(),
+				new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+					playerService.createUserBoardResponse(p))));
 	}
 
 	private void sendRobResult(GameRobRequest gameRobRequest) {
-		List<Player> players = gameService.rob(gameRobRequest);
+		List<Player> players = playerService.rob(gameRobRequest);
 		players.forEach(
 			p -> socketDataSender.send(gameRobRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
-				gameService.createUserBoardResponse(p))));
+				playerService.createUserBoardResponse(p))));
 	}
 
 	private void sendNextPlayer(GameEndTurnRequest gameEndTurnRequest) {
@@ -146,7 +150,7 @@ public class GameController {
 		if (gameService.checkGameOver(gameEventResultRequest.getGameId())) {
 			socketDataSender.send(
 				gameEventResultRequest.getGameId(), new ResponseDTO<>(TypeConstants.GAME_OVER,
-					gameService.createUserRanking(gameEventResultRequest.getGameId())));
+					playerService.createUserRanking(gameEventResultRequest.getGameId())));
 		}
 	}
 
@@ -160,21 +164,21 @@ public class GameController {
 	public void enterGame(Long gameId, WebSocketSession session, String playerId) {
 		if (socketDataSender.saveSocket(gameId, playerId, session)) {
 			if (gameService.checkSellingTime(gameId)) {
-				socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.EVENTS,
+				socketDataSender.sendToPlayer(playerId, gameId, new ResponseDTO<>(TypeConstants.EVENTS,
 					gameService.selectedEvents(gameId)));
 			}
-			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.CURRENT_PLAYER,
+			socketDataSender.sendToPlayer(playerId, gameId, new ResponseDTO<>(TypeConstants.CURRENT_PLAYER,
 				gameService.getCurrentPlayer(gameId)));
-			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.LOCATIONS,
-				gameService.getLocations(gameId)));
-			socketDataSender.sendToPlayer(playerId,gameId,
+			socketDataSender.sendToPlayer(playerId, gameId, new ResponseDTO<>(TypeConstants.LOCATIONS,
+				playerService.getLocations(gameId)));
+			socketDataSender.sendToPlayer(playerId, gameId,
 				new ResponseDTO<>(TypeConstants.ENTER, gameService.reenter(gameId)));
-			sendAllUserStatusBoardResponseToPlayer(playerId,gameId);
-			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
+			sendAllUserStatusBoardResponseToPlayer(playerId, gameId);
+			socketDataSender.sendToPlayer(playerId, gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 				gameService.createGameStatusBoardResponse(gameId)));
 		} else {
 			socketDataSender.send(gameId,
-				new ResponseDTO<>(TypeConstants.ENTER, gameService.enterGame(gameId, playerId)));
+				new ResponseDTO<>(TypeConstants.ENTER, playerService.enterGame(gameId, playerId)));
 		}
 	}
 
@@ -185,15 +189,16 @@ public class GameController {
 	}
 
 	private void sendAllUserStatusBoardResponseToPlayer(String playerId, Long gameId) {
-		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+		List<GameUserBoardResponse> gameUserBoardResponses = playerService.createUserStatusBoardResponse(
 			gameId);
 		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
-			socketDataSender.sendToPlayer(playerId,gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
+			socketDataSender.sendToPlayer(playerId, gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 				gameUserBoardResponse));
 		}
 	}
+
 	private void sendAllUserStatusBoardResponse(Long gameId) {
-		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+		List<GameUserBoardResponse> gameUserBoardResponses = playerService.createUserStatusBoardResponse(
 			gameId);
 		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
 			socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
@@ -203,7 +208,7 @@ public class GameController {
 
 	@GetMapping("/api/games/{gameId}")
 	public ResponseEntity<GameAccessibleResponse> checkAccessiblity(@PathVariable Long gameId) {
-		return ResponseEntity.ok().body(gameService.checkAccessibility(gameId));
+		return ResponseEntity.ok().body(playerService.checkAccessibility(gameId));
 	}
 
 	public Map<String, Class<?>> getTypeMap() {
@@ -221,17 +226,17 @@ public class GameController {
 
 	private void sendReadyStatus(GameReadyRequest gameReadyRequest) {
 		socketDataSender.send(gameReadyRequest.getGameId(), new ResponseDTO<>(TypeConstants.READY,
-			gameService.readyGame(gameReadyRequest)));
+			playerService.readyGame(gameReadyRequest)));
 	}
 
 	// 게임 시작
 	private void sendFirstPlayer(GameStartRequest gameStartRequest) {
-		String playerId = gameService.getFirstPlayer(gameStartRequest.getGameId());
+		String playerId = playerService.getFirstPlayer(gameStartRequest.getGameId());
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.START,
 			Map.of("playerId", playerId)));
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
 			gameService.createGameStatusBoardResponse(gameStartRequest.getGameId())));
-		List<GameUserBoardResponse> gameUserBoardResponses = gameService.createUserStatusBoardResponse(
+		List<GameUserBoardResponse> gameUserBoardResponses = playerService.createUserStatusBoardResponse(
 			gameStartRequest.getGameId());
 		for (GameUserBoardResponse gameUserBoardResponse : gameUserBoardResponses) {
 			socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
@@ -251,7 +256,8 @@ public class GameController {
 	}
 
 	private void sendCellArrival(GameCellArrivalRequest gameCellArrivalRequest) {
-		GameCellResponse gameCellResponse = gameService.arriveAtCell(gameCellArrivalRequest.getGameId(), gameCellArrivalRequest.getPlayerId());
+		GameCellResponse gameCellResponse = playerService.arriveAtCell(gameCellArrivalRequest.getGameId(),
+			gameCellArrivalRequest.getPlayerId());
 		socketDataSender.send(gameCellArrivalRequest.getGameId(), new ResponseDTO<>(TypeConstants.CELL,
 			gameCellResponse));
 		actCell(gameCellArrivalRequest.getGameId(), gameCellResponse);
@@ -284,19 +290,20 @@ public class GameController {
 
 	public void sendBailResult(GameBailRequest gameBailRequest) {
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
-			gameService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(), Constants.BAIL_MONEY)));
+			playerService.payExpense(gameBailRequest.getGameId(), gameBailRequest.getPlayerId(),
+				Constants.BAIL_MONEY)));
 		Boolean hasPayed = true;
 		socketDataSender.send(gameBailRequest.getGameId(), new ResponseDTO<>(TypeConstants.PRISON_DICE,
 			gameService.prisonDice(GamePrisonDiceRequest.builder().gameId(gameBailRequest.getGameId()).playerId(
-				gameBailRequest.getPlayerId()).build(),hasPayed )));
+				gameBailRequest.getPlayerId()).build(), hasPayed)));
 	}
 
-	private void sendUserStatusBoardResponse(Long gameId, String playerId){
+	private void sendUserStatusBoardResponse(Long gameId, String playerId) {
 		socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
-			gameService.createUserStatusBoardResponse(gameId)
+			playerService.createUserStatusBoardResponse(gameId)
 				.stream()
 				.filter(o -> o.getPlayerId().equals(playerId))
-				.findFirst().orElseThrow(()-> new PlayTimeException("잘못된 플레이어 아이디입니다", playerId, gameId))));
+				.findFirst().orElseThrow(() -> new PlayTimeException("잘못된 플레이어 아이디입니다", playerId, gameId))));
 	}
 
 	private void actCell(Long gameId, GameCellResponse gameCellResponse) {
@@ -306,7 +313,7 @@ public class GameController {
 				break;
 			case 9, 21: // 황금카드
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.GOLD_CARD,
-					gameService.selectGoldCard(gameId, gameCellResponse.getPlayerId())));
+					gameService.selectGoldCard()));
 				sendUserStatusBoardResponse(gameId, gameCellResponse.getPlayerId());
 				break;
 			case 12: // 호재
@@ -316,7 +323,7 @@ public class GameController {
 				break;
 			case 15: // 세금
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
-					gameService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
+					playerService.payExpense(gameId, gameCellResponse.getPlayerId(), 10_000_000)));
 				break;
 			default: // 기업
 				socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.STATUS_BOARD,
