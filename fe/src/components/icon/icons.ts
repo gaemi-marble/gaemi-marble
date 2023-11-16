@@ -6,8 +6,10 @@ import arrowDown from '@assets/icon/arrowDown.svg?react';
 import arrowLeft from '@assets/icon/arrowLeft.svg?react';
 import arrowRight from '@assets/icon/arrowRight.svg?react';
 import arrowUp from '@assets/icon/arrowUp.svg?react';
+import enter from '@assets/icon/enter.svg?react';
 import exit from '@assets/icon/exit.svg?react';
 import plus from '@assets/icon/plus.svg?react';
+import refresh from '@assets/icon/refresh.svg?react';
 import sample from '@assets/icon/sample.svg?react';
 import soundMute from '@assets/icon/soundMute.svg?react';
 import soundPlaying from '@assets/icon/soundPlaying.svg?react';
@@ -22,8 +24,10 @@ export const icons = {
   arrowLeft,
   arrowRight,
   arrowUp,
+  enter,
   exit,
   plus,
+  refresh,
   sample,
   soundMute,
   soundPlaying,
