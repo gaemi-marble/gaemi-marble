@@ -33,3 +33,8 @@ export const getGameCheck = async (gameId: string) => {
   const res = await fetcher.get(`${API_END_POINT.GAMES}/${gameId}`);
   return res;
 };
+
+export const getGameRooms = async () => {
+  const res = await fetcher.get(API_END_POINT.ROOMS);
+  return res;
+};

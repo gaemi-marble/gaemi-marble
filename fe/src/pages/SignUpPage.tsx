@@ -1,3 +1,4 @@
+import { API_STATUS } from '@api/constants';
 import { postSignup } from '@api/index';
 import { ROUTE_PATH } from '@router/constants';
 import { FormEvent, useState } from 'react';
@@ -17,7 +18,7 @@ export default function SignUpPage() {
     event.preventDefault();
 
     const res = await postSignup(playerId, password);
-    if (res.status === 201) {
+    if (res.status === API_STATUS.CREATED) {
       navigate(ROUTE_PATH.SIGN_IN);
     }
     // TODO: 회원가입시 에러 처리

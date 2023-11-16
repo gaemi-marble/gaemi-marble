@@ -1,9 +1,10 @@
+import { RoomInfo } from '@store/type';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-// Memo: 전역으로 쓰이는 상태는 여기에 !!!
 const playerIdAtom = atom(localStorage.getItem('playerId') || '');
 const accessTokenAtom = atom(localStorage.getItem('accessToken') || '');
 const refreshTokenAtom = atom(localStorage.getItem('refreshToken') || '');
+export const gameRoomsAtom = atom<RoomInfo[]>([]);
 
 const playerIdAtomWithStorage = atom(
   (get) => get(playerIdAtom),
@@ -29,7 +30,9 @@ const refreshTokenAtomWithStorage = atom(
 
 export const useAuth = () => useAtomValue(accessTokenAtom);
 export const usePlayerIdValue = () => useAtomValue(playerIdAtom);
+export const useGameRoomsValue = () => useAtomValue(gameRoomsAtom);
 
 export const useSetPlayer = () => useSetAtom(playerIdAtomWithStorage);
 export const useSetAccessToken = () => useSetAtom(accessTokenAtomWithStorage);
 export const useSetRefreshToken = () => useSetAtom(refreshTokenAtomWithStorage);
+export const useSetGameRooms = () => useSetAtom(gameRoomsAtom);
