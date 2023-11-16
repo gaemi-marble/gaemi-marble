@@ -1,6 +1,6 @@
-import { DirectionType, PlayerStatusType } from './type';
+import { PlayerType } from './type';
 
-export const INITIAL_PLAYER = [
+export const INITIAL_PLAYER: PlayerType[] = [
   {
     playerId: '',
     order: 1,
@@ -14,11 +14,15 @@ export const INITIAL_PLAYER = [
     },
     gameBoard: {
       ref: null,
-      status: 'default' as PlayerStatusType,
+      status: 'default',
       location: 0,
-      direction: 'top' as DirectionType,
+      direction: 'top',
       coordinates: { x: 0, y: 0 },
       hasEscaped: true,
+    },
+    emote: {
+      isActive: false,
+      name: '',
     },
   },
   {
@@ -34,11 +38,15 @@ export const INITIAL_PLAYER = [
     },
     gameBoard: {
       ref: null,
-      status: 'default' as PlayerStatusType,
+      status: 'default',
       location: 0,
-      direction: 'top' as DirectionType,
+      direction: 'top',
       coordinates: { x: 0, y: 0 },
       hasEscaped: true,
+    },
+    emote: {
+      isActive: false,
+      name: '',
     },
   },
   {
@@ -54,11 +62,15 @@ export const INITIAL_PLAYER = [
     },
     gameBoard: {
       ref: null,
-      status: 'default' as PlayerStatusType,
+      status: 'default',
       location: 0,
-      direction: 'top' as DirectionType,
+      direction: 'top',
       coordinates: { x: 0, y: 0 },
       hasEscaped: true,
+    },
+    emote: {
+      isActive: false,
+      name: '',
     },
   },
   {
@@ -74,11 +86,15 @@ export const INITIAL_PLAYER = [
     },
     gameBoard: {
       ref: null,
-      status: 'default' as PlayerStatusType,
+      status: 'default',
       location: 0,
-      direction: 'top' as DirectionType,
+      direction: 'top',
       coordinates: { x: 0, y: 0 },
       hasEscaped: true,
+    },
+    emote: {
+      isActive: false,
+      name: '',
     },
   },
 ];

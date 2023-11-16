@@ -23,6 +23,7 @@ export type GameActionType = {
   gameOver: GameOverPayloadType;
   currentPlayer: CurrentPlayerPayloadType;
   locations: LocationsPayloadType[];
+  emoticon: EmoticonPayloadType;
 };
 
 export type GameInfoType = {
@@ -66,6 +67,7 @@ export type PlayerType = {
   location: number;
   userStatusBoard: UserStatusType;
   gameBoard: GameBoardType;
+  emote: EmoteType;
 };
 
 type UserStatusType = {
@@ -83,6 +85,19 @@ export type GameBoardType = {
   coordinates: { x: number; y: number };
   hasEscaped: boolean;
 };
+
+type EmoteType = {
+  isActive: boolean;
+  name: EmoteNameType | '';
+};
+
+export type EmoteNameType =
+  | 'hi'
+  | 'angry'
+  | 'laugh'
+  | 'cry'
+  | 'celebrate'
+  | 'clock';
 
 export type EnterPayloadType = {
   order: number;
@@ -177,4 +192,9 @@ export type CurrentPlayerPayloadType = {
 export type LocationsPayloadType = {
   playerId: string;
   location: number;
+};
+
+export type EmoticonPayloadType = {
+  playerId: string;
+  name: EmoteNameType;
 };
