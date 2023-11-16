@@ -1,9 +1,11 @@
 import { Icon } from '@components/icon/Icon';
 import { ANT_LIST } from '@pages/constants';
-import { useGameInfoValue } from '@store/reducer';
+import { useGameInfoValue, useResetPlayerEmote } from '@store/reducer';
 import { PlayerType } from '@store/reducer/type';
 import { addCommasToNumber } from '@utils/index';
+import { useEffect } from 'react';
 import { styled } from 'styled-components';
+import EmoteBubble from './EmoteBubble';
 
 type PlayerInfoProps = {
   player: PlayerType;
@@ -12,14 +14,24 @@ type PlayerInfoProps = {
 export default function PlayerInfo({ player }: PlayerInfoProps) {
   const antName = ANT_LIST.find((ant) => ant.order === player?.order)!.antName;
   const { currentPlayerId } = useGameInfoValue();
-  const { userStatusBoard, playerId } = player;
+  const resetPlayerEmote = useResetPlayerEmote();
+  const { userStatusBoard, playerId, emote } = player;
+  const { isActive: isEmoteActive, name: emoteName } = emote;
   const { cashAsset, stockAsset, totalAsset } = userStatusBoard;
   const isCurrentPlayer = currentPlayerId === playerId;
+
+  useEffect(() => {
+    if (!isEmoteActive || !emoteName) return;
+    setTimeout(() => {
+      resetPlayerEmote(playerId);
+    }, 2000);
+  }, [isEmoteActive, emoteName, playerId, resetPlayerEmote]);
 
   return (
     <UserInfo $isCurrentPlayer={isCurrentPlayer}>
       <IconContainer>
         <Icon name={antName} size="8rem" />
+        {isEmoteActive && emoteName && <EmoteBubble emoteName={emoteName} />}
       </IconContainer>
       <PlayerInfoContainer>
         <PlayerId>{playerId}</PlayerId>
@@ -54,6 +66,7 @@ const UserInfo = styled.div<{ $isCurrentPlayer: boolean }>`
 const IconContainer = styled.div`
   width: 8rem;
   height: 10rem;
+  position: relative;
   display: flex;
   align-items: center;
   border-radius: ${({ theme: { radius } }) => radius.small};
