@@ -1,3 +1,4 @@
+import { API_STATUS } from '@api/constants';
 import { postLogout } from '@api/index';
 import { SOUND_PATH } from '@components/constants';
 import useHover from '@hooks/useHover';
@@ -28,7 +29,7 @@ export default function HomeHeader() {
 
   const handleLogout = async () => {
     const res = await postLogout();
-    if (res.status === 200) {
+    if (res.status === API_STATUS.SUCCESS) {
       setPlayer('');
       setAccessToken('');
       setRefreshToken('');
