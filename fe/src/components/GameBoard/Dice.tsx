@@ -47,7 +47,10 @@ export default function Dice({ sendCellMessage }: DiceProps) {
     setIsRolling(false);
 
     if (!targetPlayer) return;
-    if (!targetPlayer.gameBoard.hasEscaped) return;
+    if (!targetPlayer.gameBoard.hasEscaped) {
+      sendCellMessage(playerId);
+      return;
+    }
 
     await moveToken({
       diceCount: totalDiceValue,
