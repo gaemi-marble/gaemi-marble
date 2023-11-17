@@ -530,6 +530,11 @@ public class GameService {
 		Player targetId = gameRepository.getPlayer(gameDonationRequest.getGameId(), gameDonationRequest.getTargetId());
 		targetId.addCashAsset(10_000_000);
 		return List.of(giver, targetId);
+
+	public boolean checkGameOver(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		return gameStatus.getRoundCount() > 5;
+
 	}
 
 	public void dropStockPrice(GameViciousRumorRequest gameViciousRumorRequest) {
