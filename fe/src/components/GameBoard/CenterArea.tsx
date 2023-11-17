@@ -6,7 +6,6 @@ import {
   useGameInfoValue,
   usePlayersValue,
   useResetTeleportStatus,
-  useSetIsArrivedTrue,
 } from '@store/reducer';
 import { PlayerStatusType } from '@store/reducer/type';
 import { useCallback, useEffect } from 'react';
@@ -48,7 +47,6 @@ export default function CenterArea({
     teleportLocation,
   } = useGameInfoValue();
   const teleportToken = useTeleportToken();
-  const setIsArrivedTrue = useSetIsArrivedTrue();
   const resetTeleportStatus = useResetTeleportStatus();
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
@@ -101,7 +99,6 @@ export default function CenterArea({
     if (playerId === teleportPlayerId) {
       sendCellMessage(teleportPlayerId);
     }
-    setIsArrivedTrue();
     resetTargetLocation();
     resetTeleportStatus();
   }, [
@@ -111,12 +108,11 @@ export default function CenterArea({
     teleportLocation,
     teleportToken,
     sendCellMessage,
-    setIsArrivedTrue,
     resetTargetLocation,
     resetTeleportStatus,
   ]);
 
-  const throwDice = () => {
+  const handleThrowDice = () => {
     const message = {
       type: 'dice',
       gameId,
@@ -125,7 +121,7 @@ export default function CenterArea({
     sendJsonMessage(message);
   };
 
-  const endTurn = () => {
+  const handleEndTurn = () => {
     const message = {
       type: 'endTurn',
       gameId,
@@ -184,7 +180,7 @@ export default function CenterArea({
       )}
       {!eventTime && <Dice sendCellMessage={sendCellMessage} />}
       {defaultStart && (
-        <Button onClick={throwDice} disabled={isMoveFinished}>
+        <Button onClick={handleThrowDice} disabled={isMoveFinished}>
           굴리기
         </Button>
       )}
@@ -212,7 +208,9 @@ export default function CenterArea({
           <Button onClick={handleTeleport}>이동하기</Button>
         </>
       )}
-      {isMyTurn && isMoveFinished && <Button onClick={endTurn}>턴종료</Button>}
+      {isMyTurn && isMoveFinished && (
+        <Button onClick={handleEndTurn}>턴종료</Button>
+      )}
     </Center>
   );
 }

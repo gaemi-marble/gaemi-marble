@@ -2,11 +2,7 @@ import { SOUND_PATH } from '@components/constants';
 import useMoveToken from '@hooks/useMoveToken';
 import useSound from '@hooks/useSound';
 import { usePlayerIdValue } from '@store/index';
-import {
-  useGameInfoValue,
-  usePlayersValue,
-  useSetGameInfo,
-} from '@store/reducer';
+import { useGameInfoValue, usePlayersValue } from '@store/reducer';
 import { useEffect, useRef, useState } from 'react';
 import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 import { styled } from 'styled-components';
@@ -21,7 +17,6 @@ export default function Dice({ sendCellMessage }: DiceProps) {
   const playerId = usePlayerIdValue();
   const { currentPlayerId, dice } = useGameInfoValue();
   const [dice1, dice2] = dice;
-  const setGameInfo = useSetGameInfo();
   const moveToken = useMoveToken();
   const [diceValue, setDiceValue] = useState(0);
   const [isRolling, setIsRolling] = useState(false);
@@ -62,13 +57,6 @@ export default function Dice({ sendCellMessage }: DiceProps) {
     if (isMyTurn) {
       sendCellMessage(playerId);
     }
-
-    setGameInfo((prev) => {
-      return {
-        ...prev,
-        isArrived: true,
-      };
-    });
   };
 
   return (

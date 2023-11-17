@@ -17,7 +17,7 @@ import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import { GOLD_CARD_LOCATIONS, STOCK_LOCATION } from './constants';
+import { STOCK_LOCATION } from './constants';
 
 export default function GamePage() {
   const navigate = useNavigate();
@@ -60,9 +60,11 @@ export default function GamePage() {
   const currentLocation = playersInfo.find(
     (player) => player.playerId === playerId
   )?.location;
-  const isLocatedGoldCard = GOLD_CARD_LOCATIONS.includes(currentLocation ?? 0);
   const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
-  const isGameOver = !isPlaying && ranking.length !== 0;
+  const isGameOver = !isPlaying && ranking.length;
+  const isGoldCardOpen = isCurrentPlayer && goldCardInfo.title;
+  const isStockBuyModalOpen =
+    isLocatedStockCell && isMoveFinished && isCurrentPlayer && isArrived;
 
   return (
     <>
@@ -75,14 +77,8 @@ export default function GamePage() {
         </Main>
         <EmoteMenu />
       </Container>
-      {isLocatedGoldCard &&
-        isMoveFinished &&
-        isCurrentPlayer &&
-        isArrived &&
-        goldCardInfo.title && <GoldCardModal />}
-      {isLocatedStockCell && isMoveFinished && isCurrentPlayer && isArrived && (
-        <StockBuyModal />
-      )}
+      {isGoldCardOpen && <GoldCardModal />}
+      {isStockBuyModalOpen && <StockBuyModal />}
       {isGameOver && <GameOverModal />}
       {isGameOver && <Confetti width={width} height={height} />}
     </>

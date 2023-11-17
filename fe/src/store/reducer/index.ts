@@ -24,11 +24,11 @@ stocksAtom.debugLabel = 'stocksAtom';
 
 export const playerAtomsAtom = splitAtom(playersAtom);
 
-const setIsArrivedTrueAtom = atom(null, (_get, set) => {
+const setIsArrivedFalseAtom = atom(null, (_get, set) => {
   set(gameInfoAtom, (prev) => {
     return {
       ...prev,
-      isArrived: true,
+      isArrived: false,
     };
   });
 });
@@ -50,7 +50,6 @@ const resetEventRoundAtom = atom(null, (_get, set) => {
       eventList: [],
       eventResult: '',
       currentPlayerId: prev.firstPlayerId,
-      isArrived: false,
     };
   });
 });
@@ -108,7 +107,7 @@ export const useSetPlayers = () => useSetAtom(playersAtom);
 
 export const useSetTeleportLocation = () => useSetAtom(setTeleportLocationAtom);
 export const useResetTeleportStatus = () => useSetAtom(resetTeleportAtom);
-export const useSetIsArrivedTrue = () => useSetAtom(setIsArrivedTrueAtom);
+export const useSetIsArrivedFalse = () => useSetAtom(setIsArrivedFalseAtom);
 export const useResetGoldCard = () => useSetAtom(resetGoldCardAtom);
 export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useResetPlayerEmote = () => useSetAtom(resetPlayerEmoteAtom);

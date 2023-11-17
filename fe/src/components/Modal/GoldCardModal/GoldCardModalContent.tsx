@@ -3,7 +3,6 @@ import { usePlayerIdValue } from '@store/index';
 import {
   useGameInfoValue,
   useResetGoldCard,
-  useSetGameInfo,
   useSetPlayers,
 } from '@store/reducer';
 import { useState } from 'react';
@@ -23,23 +22,12 @@ export default function GoldCardModalContent() {
   const setPlayers = useSetPlayers();
   const { currentPlayerId } = useGameInfoValue();
   const resetGoldCard = useResetGoldCard();
-  const setGameInfo = useSetGameInfo();
   const [targetPlayer, setTargetPlayer] = useState('');
   const [targetStock, setTargetStock] = useState('');
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
-
-  const resetGoldCardInfo = () => {
-    resetGoldCard();
-    setGameInfo((prev) => {
-      return {
-        ...prev,
-        isArrived: false,
-      };
-    });
-  };
 
   const handleChoosePlayer = (target: string) => {
     if (targetPlayer === target) {
@@ -72,7 +60,7 @@ export default function GoldCardModalContent() {
       targetId: targetPlayer,
     });
 
-    resetGoldCardInfo();
+    resetGoldCard();
   };
 
   const handleClickStockAttack = () => {
@@ -87,11 +75,11 @@ export default function GoldCardModalContent() {
       stockName: targetStock,
     });
 
-    resetGoldCardInfo();
+    resetGoldCard();
   };
 
   const handleClickNoTarget = () => {
-    resetGoldCardInfo();
+    resetGoldCard();
 
     setPlayers((prev) => {
       return prev.map((player) => {
