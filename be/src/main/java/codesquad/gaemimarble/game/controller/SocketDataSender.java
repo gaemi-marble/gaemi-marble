@@ -10,11 +10,10 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import codesquad.gaemimarble.exception.PlayTimeException;
 import codesquad.gaemimarble.exception.SocketException;
 import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.SocketErrorResponse;
-import codesquad.gaemimarble.game.entity.TypeConstants;
+import codesquad.gaemimarble.game.gameStatus.entity.TypeConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,22 +52,21 @@ public class SocketDataSender {
 		}
 		System.out.println("전송 완료");
 	}
-	public <T> void sendToPlayer(String playerId,Long gameId, T object) {
-			try {
-				gameSocketMap.get(gameId).get(playerId).sendMessage(new TextMessage(objectMapper.writeValueAsString(object)));
-			} catch (IOException e) {
-				log.error(e.getMessage(), e);
-			}
+
+	public <T> void sendToPlayer(String playerId, Long gameId, T object) {
+		try {
+			gameSocketMap.get(gameId)
+				.get(playerId)
+				.sendMessage(new TextMessage(objectMapper.writeValueAsString(object)));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
 		System.out.println("전송 완료");
 	}
 
-	public void sendErrorMessage(Long gameId, String playerId, String message) {
+	public void sendErrorMessage(WebSocketSession session, String message) {
 		try {
-			if (playerId == null) {
-				send(gameId, new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse(message)));
-				return;
-			}
-			gameSocketMap.get(gameId).get(playerId).sendMessage(new TextMessage(objectMapper.writeValueAsString(
+			session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
 				new ResponseDTO<>(TypeConstants.ERROR, new SocketErrorResponse(message)))));
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);

@@ -1,4 +1,4 @@
-package codesquad.gaemimarble.game.entity;
+package codesquad.gaemimarble.game.gameStatus.entity;
 
 public final class TypeConstants {
 	public static final String READY = "ready";
