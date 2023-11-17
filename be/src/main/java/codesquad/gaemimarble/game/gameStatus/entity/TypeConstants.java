@@ -27,4 +27,5 @@ public final class TypeConstants {
 	public static final String VICIOUS_RUMOR = "viciousRumor";
 	public static final String MANIPULATION = "manipulation";
 	public static final String ARREST = "arrest";
+	public static final String EMOTION = "emotion";
 }

@@ -18,6 +18,7 @@ import codesquad.gaemimarble.game.currentPlayer.service.CurrentPlayerService;
 import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.request.GameBailRequest;
 import codesquad.gaemimarble.game.dto.request.GameCellArrivalRequest;
+import codesquad.gaemimarble.game.dto.request.GameEmotionRequest;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -37,6 +38,7 @@ import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameViciousRumorRe
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
+import codesquad.gaemimarble.game.dto.response.GameEmotionResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
@@ -87,6 +89,7 @@ public class GameController {
 		typeMap.put(TypeConstants.VICIOUS_RUMOR, GameViciousRumorRequest.class);
 		typeMap.put(TypeConstants.MANIPULATION, GameStockManipulationRequest.class);
 		typeMap.put(TypeConstants.ARREST, GameArrestRequest.class);
+		typeMap.put(TypeConstants.EMOTION, GameEmotionRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -108,6 +111,13 @@ public class GameController {
 		handlers.put(GameStockManipulationRequest.class,
 			req -> sendStockManipulationResult((GameStockManipulationRequest)req));
 		handlers.put(GameArrestRequest.class, req -> sendArrestResult((GameArrestRequest)req));
+		handlers.put(GameEmotionRequest.class, req -> sendEmotion((GameEmotionRequest)req));
+	}
+
+	private void sendEmotion(GameEmotionRequest gameEmotionRequest) {
+		socketDataSender.send(gameEmotionRequest.getGameId(), new ResponseDTO<>(TypeConstants.EMOTION,
+			GameEmotionResponse.builder().playerId(gameEmotionRequest.getPlayerId()).name(
+				gameEmotionRequest.getName()).build()));
 	}
 
 	private void sendArrestResult(GameArrestRequest gameArrestRequest) {
