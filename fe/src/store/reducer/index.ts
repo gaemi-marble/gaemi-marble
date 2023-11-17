@@ -24,11 +24,11 @@ stocksAtom.debugLabel = 'stocksAtom';
 
 export const playerAtomsAtom = splitAtom(playersAtom);
 
-const setIsArrivedFalseAtom = atom(null, (_get, set) => {
+const setIsStockBuyModalOpenFalse = atom(null, (_get, set) => {
   set(gameInfoAtom, (prev) => {
     return {
       ...prev,
-      isArrived: false,
+      isStockBuyModalOpen: false,
     };
   });
 });
@@ -107,7 +107,8 @@ export const useSetPlayers = () => useSetAtom(playersAtom);
 
 export const useSetTeleportLocation = () => useSetAtom(setTeleportLocationAtom);
 export const useResetTeleportStatus = () => useSetAtom(resetTeleportAtom);
-export const useSetIsArrivedFalse = () => useSetAtom(setIsArrivedFalseAtom);
+export const useSetIsStockBuyModalFalse = () =>
+  useSetAtom(setIsStockBuyModalOpenFalse);
 export const useResetGoldCard = () => useSetAtom(resetGoldCardAtom);
 export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useResetPlayerEmote = () => useSetAtom(resetPlayerEmoteAtom);

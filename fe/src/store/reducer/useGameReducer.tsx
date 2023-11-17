@@ -59,7 +59,7 @@ export default function useGameReducer() {
               ...prev.game,
               currentPlayerId: payload.nextPlayerId,
               isMoveFinished: false,
-              isArrived: false,
+              isStockBuyModalOpen: false,
             },
           };
         }
@@ -152,7 +152,7 @@ export default function useGameReducer() {
             game: {
               ...prev.game,
               isMoveFinished: true,
-              isArrived: true,
+              isStockBuyModalOpen: true,
             },
             players: prev.players.map((player) => {
               if (player.playerId !== payload.playerId) {

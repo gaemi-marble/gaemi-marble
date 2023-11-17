@@ -24,11 +24,10 @@ export default function GamePage() {
   const playersInfo = usePlayersValue();
   const playerId = usePlayerIdValue();
   const {
-    isMoveFinished,
-    currentPlayerId,
-    goldCardInfo,
-    isArrived,
     isPlaying,
+    currentPlayerId,
+    isStockBuyModalOpen,
+    goldCardInfo,
     ranking,
   } = useGameInfoValue();
   const { dispatch } = useGameReducer();
@@ -63,8 +62,8 @@ export default function GamePage() {
   const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
   const isGameOver = !isPlaying && ranking.length;
   const isGoldCardOpen = isCurrentPlayer && goldCardInfo.title;
-  const isStockBuyModalOpen =
-    isLocatedStockCell && isMoveFinished && isCurrentPlayer && isArrived;
+  const stockBuyModalOpen =
+    isLocatedStockCell && isCurrentPlayer && isStockBuyModalOpen;
 
   return (
     <>
@@ -78,7 +77,7 @@ export default function GamePage() {
         <EmoteMenu />
       </Container>
       {isGoldCardOpen && <GoldCardModal />}
-      {isStockBuyModalOpen && <StockBuyModal />}
+      {stockBuyModalOpen && <StockBuyModal />}
       {isGameOver && <GameOverModal />}
       {isGameOver && <Confetti width={width} height={height} />}
     </>

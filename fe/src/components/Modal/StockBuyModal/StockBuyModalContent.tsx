@@ -2,7 +2,7 @@ import { cellImageMap } from '@assets/images';
 import { Icon } from '@components/icon/Icon';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
-import { useGameValue, useSetIsArrivedFalse } from '@store/reducer';
+import { useGameValue, useSetIsStockBuyModalFalse } from '@store/reducer';
 import { addCommasToNumber } from '@utils/index';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -13,7 +13,7 @@ export default function StockBuyModalContent() {
   const { gameId } = useParams();
   const playerId = usePlayerIdValue();
   const { game, players, stocks } = useGameValue();
-  const setIsArrivedFalse = useSetIsArrivedFalse();
+  const handleClose = useSetIsStockBuyModalFalse();
   const [purchaseQuantity, setPurchaseQuantity] = useState(0);
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
@@ -30,7 +30,7 @@ export default function StockBuyModalContent() {
     };
     sendJsonMessage(message);
 
-    setIsArrivedFalse();
+    handleClose();
   };
 
   const handlePurchaseQuantity = (perQuantity: number) => {
@@ -93,7 +93,7 @@ export default function StockBuyModalContent() {
       </StockInfoTable>
       {playerId === game.currentPlayerId && (
         <ButtonWrapper>
-          <Button className="close" onClick={setIsArrivedFalse}>
+          <Button className="close" onClick={handleClose}>
             닫기
           </Button>
           <PurchaseQuantityWrapper>

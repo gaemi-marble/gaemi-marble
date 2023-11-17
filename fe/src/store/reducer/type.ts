@@ -35,6 +35,7 @@ export type GameInfoType = {
   eventList: RouletteEvent[];
   eventResult: string;
   isMoveFinished: boolean;
+  isStockBuyModalOpen: boolean;
   teleportPlayerId: string;
   teleportLocation: number | null;
   goldCardInfo: {
@@ -42,7 +43,6 @@ export type GameInfoType = {
     title: string;
     description: string;
   };
-  isArrived: boolean;
   ranking: PlayerRankingType[];
 };
 
