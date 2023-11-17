@@ -2,18 +2,23 @@ import { cellImageMap } from '@assets/images';
 import { Icon } from '@components/icon/Icon';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
-import { useGameValue, useSetIsStockBuyModalFalse } from '@store/reducer';
+import { useGameValue } from '@store/reducer';
 import { addCommasToNumber } from '@utils/index';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 
-export default function StockBuyModalContent() {
+type StockBuyModalContentProps = {
+  handleClose: () => void;
+};
+
+export default function StockBuyModalContent({
+  handleClose,
+}: StockBuyModalContentProps) {
   const { gameId } = useParams();
   const playerId = usePlayerIdValue();
   const { game, players, stocks } = useGameValue();
-  const handleClose = useSetIsStockBuyModalFalse();
   const [purchaseQuantity, setPurchaseQuantity] = useState(0);
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {

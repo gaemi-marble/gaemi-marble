@@ -247,7 +247,6 @@ export const INITIAL_GAME = {
   eventList: [],
   eventResult: '',
   isMoveFinished: false,
-  isStockBuyModalOpen: false,
   teleportPlayerId: '',
   teleportLocation: null,
   goldCardInfo: { cardType: '', title: '', description: '' },

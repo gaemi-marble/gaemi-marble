@@ -24,15 +24,6 @@ stocksAtom.debugLabel = 'stocksAtom';
 
 export const playerAtomsAtom = splitAtom(playersAtom);
 
-const setIsStockBuyModalOpenFalse = atom(null, (_get, set) => {
-  set(gameInfoAtom, (prev) => {
-    return {
-      ...prev,
-      isStockBuyModalOpen: false,
-    };
-  });
-});
-
 const resetGoldCardAtom = atom(null, (_get, set) => {
   set(gameInfoAtom, (prev) => {
     return {
@@ -107,8 +98,6 @@ export const useSetPlayers = () => useSetAtom(playersAtom);
 
 export const useSetTeleportLocation = () => useSetAtom(setTeleportLocationAtom);
 export const useResetTeleportStatus = () => useSetAtom(resetTeleportAtom);
-export const useSetIsStockBuyModalFalse = () =>
-  useSetAtom(setIsStockBuyModalOpenFalse);
 export const useResetGoldCard = () => useSetAtom(resetGoldCardAtom);
 export const useResetEventRound = () => useSetAtom(resetEventRoundAtom);
 export const useResetPlayerEmote = () => useSetAtom(resetPlayerEmoteAtom);
