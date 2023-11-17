@@ -3,6 +3,7 @@ import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
 import { EmoteNameType } from '@store/reducer/type';
 import debounce from 'lodash.debounce';
+import { useParams } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 import { EMOTE_DEBOUNCE_DELAY, EMOTE_LIST } from './constants';
@@ -12,6 +13,7 @@ type EmotePanelProps = {
 };
 
 export default function EmotePanel({ isActive }: EmotePanelProps) {
+  const { gameId } = useParams();
   const playerId = usePlayerIdValue();
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
@@ -20,9 +22,10 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
 
   const sendEmote = (name: EmoteNameType) => {
     const message = {
-      type: 'emoticon',
+      gameId,
       playerId,
       name,
+      type: 'emoticon',
     };
     sendJsonMessage(message);
   };
