@@ -27,6 +27,17 @@ export default function Cell({
   selectTargetLocation,
 }: CellProps) {
   const { logo, name, location, theme } = cell;
+
+  const handleClickCell = () => {
+    if (playerStatus !== 'teleport') return;
+    if (location === 18) {
+      alert('이동할 수 없는 위치입니다.');
+      return;
+    }
+    selectTargetLocation(location);
+    return;
+  };
+
   const isSelected = targetLocation === location;
   const isPrison = location === PRISON_CELL;
 
@@ -35,15 +46,7 @@ export default function Cell({
       $status={playerStatus}
       $isSelected={isSelected}
       $isPrison={isPrison}
-      onClick={() => {
-        if (playerStatus !== 'teleport') return;
-        if (location === 18) {
-          alert('이동할 수 없는 위치입니다.');
-          return;
-        }
-        selectTargetLocation(location);
-        return;
-      }}
+      onClick={handleClickCell}
     >
       {theme && (
         <Header>

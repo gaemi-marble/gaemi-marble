@@ -42,7 +42,6 @@ export type GameInfoType = {
     title: string;
     description: string;
   };
-  isArrived: boolean;
   ranking: PlayerRankingType[];
 };
 

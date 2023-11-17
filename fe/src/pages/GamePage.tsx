@@ -12,32 +12,31 @@ import { ROUTE_PATH } from '@router/constants';
 import { usePlayerIdValue } from '@store/index';
 import { useGameInfoValue, usePlayersValue } from '@store/reducer';
 import useGameReducer from '@store/reducer/useGameReducer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import { GOLD_CARD_LOCATIONS, STOCK_LOCATION } from './constants';
+import { STOCK_LOCATION } from './constants';
 
 export default function GamePage() {
   const navigate = useNavigate();
   const playersInfo = usePlayersValue();
   const playerId = usePlayerIdValue();
-  const {
-    isMoveFinished,
-    currentPlayerId,
-    goldCardInfo,
-    isArrived,
-    isPlaying,
-    ranking,
-  } = useGameInfoValue();
+  const { isPlaying, currentPlayerId, isMoveFinished, goldCardInfo, ranking } =
+    useGameInfoValue();
   const { dispatch } = useGameReducer();
   const socketUrl = useGetSocketUrl();
   const { width, height } = useWindowSize();
+  const [isStockBuyModalOpen, setIsStockBuyModalOpen] = useState(false);
 
   const handleCloseSocket = () => {
     alert('유효하지 않은 게임방입니다');
     navigate(ROUTE_PATH.HOME);
+  };
+
+  const handleCloseStockBuyModal = () => {
+    setIsStockBuyModalOpen(false);
   };
 
   const { lastMessage } = useWebSocket(socketUrl, {
@@ -45,7 +44,14 @@ export default function GamePage() {
     onClose: handleCloseSocket,
   });
 
-  // Memo: dependency에 dispatch 추가시 무한렌더링
+  const isCurrentPlayer = currentPlayerId === playerId;
+  const currentLocation = playersInfo.find(
+    (player) => player.playerId === playerId
+  )?.location;
+  const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
+  const isGameOver = !isPlaying && ranking.length;
+  const isGoldCardOpen = isCurrentPlayer && goldCardInfo.title;
+
   useEffect(() => {
     if (lastMessage) {
       const messageFromServer = JSON.parse(lastMessage?.data);
@@ -54,15 +60,14 @@ export default function GamePage() {
         payload: messageFromServer.data,
       });
     }
+    // Memo: dependency에 dispatch 추가시 무한렌더링
   }, [lastMessage]);
 
-  const isCurrentPlayer = currentPlayerId === playerId;
-  const currentLocation = playersInfo.find(
-    (player) => player.playerId === playerId
-  )?.location;
-  const isLocatedGoldCard = GOLD_CARD_LOCATIONS.includes(currentLocation ?? 0);
-  const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
-  const isGameOver = !isPlaying && ranking.length !== 0;
+  useEffect(() => {
+    if (isCurrentPlayer && isLocatedStockCell && isMoveFinished) {
+      setIsStockBuyModalOpen(true);
+    }
+  }, [isCurrentPlayer, isLocatedStockCell, isMoveFinished]);
 
   return (
     <>
@@ -75,13 +80,9 @@ export default function GamePage() {
         </Main>
         <EmoteMenu />
       </Container>
-      {isLocatedGoldCard &&
-        isMoveFinished &&
-        isCurrentPlayer &&
-        isArrived &&
-        goldCardInfo.title && <GoldCardModal />}
-      {isLocatedStockCell && isMoveFinished && isCurrentPlayer && isArrived && (
-        <StockBuyModal />
+      {isGoldCardOpen && <GoldCardModal />}
+      {isStockBuyModalOpen && (
+        <StockBuyModal handleClose={handleCloseStockBuyModal} />
       )}
       {isGameOver && <GameOverModal />}
       {isGameOver && <Confetti width={width} height={height} />}

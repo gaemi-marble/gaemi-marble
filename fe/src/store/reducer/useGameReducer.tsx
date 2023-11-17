@@ -59,7 +59,6 @@ export default function useGameReducer() {
               ...prev.game,
               currentPlayerId: payload.nextPlayerId,
               isMoveFinished: false,
-              isArrived: false,
             },
           };
         }
@@ -73,7 +72,6 @@ export default function useGameReducer() {
             game: {
               ...prev.game,
               dice: [dice1, dice2],
-              isArrived: false,
             },
           };
         }
@@ -203,7 +201,6 @@ export default function useGameReducer() {
               ...prev.game,
               timer: payload.timer,
               eventList: [...payload.events],
-              isArrived: false,
             },
           };
         }
@@ -216,7 +213,6 @@ export default function useGameReducer() {
             game: {
               ...prev.game,
               eventResult: payload.name,
-              isArrived: false,
             },
           };
         }
@@ -247,7 +243,6 @@ export default function useGameReducer() {
               game: {
                 ...prev.game,
                 dice: [dice1, dice2],
-                isArrived: false,
               },
               players: prev.players.map((player) => {
                 if (player.playerId !== payload.playerId) {
@@ -268,7 +263,6 @@ export default function useGameReducer() {
             game: {
               ...prev.game,
               dice: [dice1, dice2],
-              isArrived: false,
             },
             players: prev.players.map((player) => {
               if (player.playerId !== payload.playerId) {
@@ -294,7 +288,6 @@ export default function useGameReducer() {
               ...prev.game,
               teleportPlayerId: payload.playerId,
               teleportLocation: payload.location,
-              isArrived: false,
             },
           };
         }

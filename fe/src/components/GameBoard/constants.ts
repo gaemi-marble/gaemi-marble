@@ -1,4 +1,4 @@
-import { DirectionType } from '@store/reducer/type';
+import { DirectionType, EmoteNameType } from '@store/reducer/type';
 
 export const INITIAL_BOARD = [
   [
@@ -124,3 +124,12 @@ export const LINE_1_CELLS = [0, 1, 2, 3, 4, 5];
 export const LINE_2_CELLS = [6, 7, 8, 9, 10, 11];
 export const LINE_3_CELLS = [12, 13, 14, 15, 16, 17];
 export const LINE_4_CELLS = [18, 19, 20, 21, 22, 23];
+
+export const EMOTE_LIST: EmoteNameType[] = [
+  'hi',
+  'angry',
+  'laugh',
+  'cry',
+  'celebrate',
+  'clock',
+];
