@@ -1,12 +1,13 @@
-package codesquad.gaemimarble.game.entity;
+package codesquad.gaemimarble.game.currentPlayer.entity;
 
+import codesquad.gaemimarble.game.player.entity.Player;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CurrentPlayerInfo {
+public class CurrentPlayer {
 	private String playerId;
 	private Integer order;
 	private Integer countDouble;
@@ -14,7 +15,7 @@ public class CurrentPlayerInfo {
 	private Boolean hasMoved;
 
 	@Builder
-	private CurrentPlayerInfo(String playerId, Integer order) {
+	private CurrentPlayer(String playerId, Integer order) {
 		this.playerId = playerId;
 		this.order = order;
 		this.countDouble = 0;
@@ -22,7 +23,7 @@ public class CurrentPlayerInfo {
 		this.hasMoved = false;
 	}
 
-	public int increaseCountDouble() {
+	public int increaseDoubleCount() {
 		rolledDouble = true;
 		return this.countDouble += 1;
 	}
@@ -33,9 +34,11 @@ public class CurrentPlayerInfo {
 		this.countDouble = 0;
 		this.rolledDouble = false;
 	}
-	public void move(){
+
+	public void move() {
 		hasMoved = true;
 	}
+
 	public void resetMove() {
 		hasMoved = false;
 	}
@@ -47,6 +50,5 @@ public class CurrentPlayerInfo {
 	public void initRolledDouble() {
 		rolledDouble = false;
 	}
-
 
 }

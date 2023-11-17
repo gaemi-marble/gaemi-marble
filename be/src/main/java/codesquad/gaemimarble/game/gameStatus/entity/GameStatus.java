@@ -1,4 +1,4 @@
-package codesquad.gaemimarble.game.entity;
+package codesquad.gaemimarble.game.gameStatus.entity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -12,21 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GameStatus {
 	private final Boolean isStarted;
-	private final List<Stock> stocks;
 	private final Board board;
+	private final List<Events> selectedEvents;
 	private Integer roundCount;
-	private CurrentPlayerInfo currentPlayerInfo;
-	private List<Events> selectedEvents;
 	private Integer sellingTime;
 
 	@Builder
-	private GameStatus(Boolean isStarted, List<Stock> stocks, Board board, Integer roundCount,
-		CurrentPlayerInfo currentPlayerInfo, List<Events> selectedEvents, Integer sellingTime) {
+	private GameStatus(Boolean isStarted, Board board, Integer roundCount, List<Events> selectedEvents,
+		Integer sellingTime) {
 		this.isStarted = isStarted;
-		this.stocks = stocks;
 		this.board = board;
 		this.roundCount = roundCount;
-		this.currentPlayerInfo = currentPlayerInfo;
 		this.selectedEvents = selectedEvents;
 		this.sellingTime = sellingTime;
 	}
@@ -42,13 +38,6 @@ public class GameStatus {
 			}
 		}
 		sellingTime = Constants.SELLING_TIME;
-	}
-
-	public void initCurrentPlayerInfo(Player player) {
-		this.currentPlayerInfo = CurrentPlayerInfo.builder()
-			.playerId(player.getPlayerId())
-			.order(player.getOrder())
-			.build();
 	}
 
 	public void incrementRoundCount() {

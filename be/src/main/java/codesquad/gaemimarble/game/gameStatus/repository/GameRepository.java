@@ -1,4 +1,4 @@
-package codesquad.gaemimarble.game.repository;
+package codesquad.gaemimarble.game.gameStatus.repository;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
 
-import codesquad.gaemimarble.game.entity.GameStatus;
+import codesquad.gaemimarble.game.gameStatus.entity.GameStatus;
 
 @Repository
 public class GameRepository {

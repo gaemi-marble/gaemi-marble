@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.stereotype.Repository;
 
-import codesquad.gaemimarble.game.entity.Player;
+import codesquad.gaemimarble.game.player.entity.Player;
 
 @Repository
 public class PlayerRepository {
