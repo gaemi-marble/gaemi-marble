@@ -5,7 +5,7 @@ import { EmoteNameType } from '@store/reducer/type';
 import debounce from 'lodash.debounce';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import { EMOTE_DEBOUNCE_DELAY } from './constants';
+import { EMOTE_DEBOUNCE_DELAY, EMOTE_LIST } from './constants';
 
 type EmotePanelProps = {
   isActive: boolean;
@@ -35,28 +35,13 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
 
   return (
     <Panel $isActive={isActive}>
-      <Icon name="hi" size="4rem" onClick={() => debounceSendEmote('hi')} />
-      <Icon
-        name="angry"
-        size="4rem"
-        onClick={() => debounceSendEmote('angry')}
-      />
-      <Icon
-        name="laugh"
-        size="4rem"
-        onClick={() => debounceSendEmote('laugh')}
-      />
-      <Icon name="cry" size="4rem" onClick={() => debounceSendEmote('cry')} />
-      <Icon
-        name="celebrate"
-        size="4rem"
-        onClick={() => debounceSendEmote('celebrate')}
-      />
-      <Icon
-        name="clock"
-        size="4rem"
-        onClick={() => debounceSendEmote('clock')}
-      />
+      {EMOTE_LIST.map((emote) => (
+        <Icon
+          name={emote}
+          size="4rem"
+          onClick={() => debounceSendEmote(emote)}
+        />
+      ))}
     </Panel>
   );
 }
