@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import codesquad.gaemimarble.exception.PlayTimeException;
+import codesquad.gaemimarble.game.currentPlayer.entity.CurrentPlayer;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
@@ -25,6 +27,7 @@ import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameEnterResponse;
 import codesquad.gaemimarble.game.dto.response.GameLocationResponse;
 import codesquad.gaemimarble.game.dto.response.GameReadyResponse;
+import codesquad.gaemimarble.game.dto.response.GameRoomResponse;
 import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
 import codesquad.gaemimarble.game.dto.response.PlayerAsset;
 import codesquad.gaemimarble.game.dto.response.UserRankingResponse;
@@ -320,5 +323,14 @@ public class PlayerService {
 
 	public void createPlayers(Long gameId) {
 		playerRepository.createPlayers(gameId);
+	}
+
+	public List<GameRoomResponse> setRooms(List<GameRoomResponse> rooms) {
+		ConcurrentMap<Long, List<Player>> playerMap = playerRepository.getPlayerMap();
+		for (GameRoomResponse room : rooms) {
+			room.setPlayerCount(playerMap.get(room.getGameId()).size());
+		}
+		rooms.sort(Comparator.comparing(GameRoomResponse::getIsPlaying).reversed());
+		return rooms;
 	}
 }

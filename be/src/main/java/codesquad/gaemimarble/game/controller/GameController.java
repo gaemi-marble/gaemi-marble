@@ -43,8 +43,10 @@ import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.GameRoomResponse;
 import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
+import codesquad.gaemimarble.game.gameStatus.entity.GameStatus;
 import codesquad.gaemimarble.game.gameStatus.entity.TypeConstants;
 import codesquad.gaemimarble.game.gameStatus.service.GameService;
 import codesquad.gaemimarble.game.player.entity.Player;
@@ -228,6 +230,12 @@ public class GameController {
 			socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.USER_STATUS_BOARD,
 				gameUserBoardResponse));
 		}
+	}
+
+	@GetMapping("/api/games/rooms")
+	public ResponseEntity<List<GameRoomResponse>> getRooms() {
+		List<GameRoomResponse> rooms = gameService.getRooms();
+		return ResponseEntity.ok().body(playerService.setRooms(rooms));
 	}
 
 	@GetMapping("/api/games/{gameId}")

@@ -14,6 +14,7 @@ import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
 import codesquad.gaemimarble.game.dto.response.GameGoldCardResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
+import codesquad.gaemimarble.game.dto.response.GameRoomResponse;
 import codesquad.gaemimarble.game.gameStatus.entity.Board;
 import codesquad.gaemimarble.game.gameStatus.entity.Events;
 import codesquad.gaemimarble.game.gameStatus.entity.GameStatus;
@@ -137,5 +138,17 @@ public class GameService {
 			.title(goldCard.getTitle())
 			.description(goldCard.getDescription())
 			.build();
+	}
+
+	public List<GameRoomResponse> getRooms() {
+		List<GameRoomResponse> gameRoomResponses = new ArrayList<>();
+		for (Map.Entry<Long, GameStatus> entry : gameRepository.getGameStatusMap().entrySet()) {
+			gameRoomResponses.add(GameRoomResponse.builder()
+				.gameId(entry.getKey())
+				.isPlaying(entry.getValue().getIsStarted())
+				.playerCount(null)
+				.build());
+		}
+		return gameRoomResponses;
 	}
 }

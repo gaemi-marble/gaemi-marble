@@ -8,9 +8,11 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.stereotype.Repository;
 
 import codesquad.gaemimarble.game.player.entity.Player;
+import lombok.Getter;
 
 @Repository
 public class PlayerRepository {
+	@Getter
 	private final ConcurrentMap<Long, List<Player>> playerMap = new ConcurrentHashMap<>();
 
 	public List<Player> enterGame(Long gameId, Player player) {
