@@ -57,10 +57,14 @@ const UserInfo = styled.div<{ $isCurrentPlayer: boolean }>`
   gap: 0.5rem;
   padding: 0.5rem;
   border: ${({ $isCurrentPlayer, theme: { color } }) =>
-    $isCurrentPlayer ? `3px solid ${color.systemWarning}` : 'none'};
+    $isCurrentPlayer ? `4px solid ${color.accentTertiary}` : 'none'};
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
+  box-shadow: ${(props) =>
+    props.$isCurrentPlayer
+      ? `0 0 5px ${props.theme.color.accentTertiary}, 0 0 10px ${props.theme.color.accentTertiary}`
+      : 'none'};
 `;
 
 const IconContainer = styled.div`

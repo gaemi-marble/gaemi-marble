@@ -133,6 +133,7 @@ const BackFace = styled.div`
   height: 6rem;
   position: absolute;
   border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
+  background-color: ${({ theme: { color } }) => color.accentText};
   transform: rotateY(180deg) translateZ(1rem);
 `;
 
