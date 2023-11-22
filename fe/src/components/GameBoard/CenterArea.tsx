@@ -225,6 +225,7 @@ const Center = styled.div`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  transform: rotateZ(45deg);
 `;
 
 const Wrapper = styled.div`

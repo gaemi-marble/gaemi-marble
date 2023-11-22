@@ -109,11 +109,15 @@ const Board = styled.div`
   min-height: 42rem;
   position: relative;
   border-color: ${({ theme: { color } }) => color.accentText};
+  transform-style: preserve-3d;
+  transform: perspective(10000px) rotateZ(-55deg) rotateX(30deg) rotateY(35deg)
+    translateZ(20px);
 `;
 
 const Line = styled.div<{ $lineNum: number }>`
   position: absolute;
   display: flex;
+  transform-style: preserve-3d;
   ${({ $lineNum }) => drawLine($lineNum)}
 `;
 
@@ -123,7 +127,7 @@ const Button = styled.button`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotateZ(45deg);
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
@@ -136,34 +140,22 @@ const drawLine = (lineNum: number) => {
         top: 6rem;
         left: 0;
         flex-direction: column-reverse;
-        div {
-          border-top: none;
-        }
       `;
     case 2:
       return css`
         top: 0;
         flex-direction: row;
-        div {
-          border-right: none;
-        }
       `;
     case 3:
       return css`
         right: 0;
         flex-direction: column;
-        div {
-          border-bottom: none;
-        }
       `;
     case 4:
       return css`
         bottom: 0;
-        left: 6rem;
+        right: 0;
         flex-direction: row-reverse;
-        div {
-          border-left: none;
-        }
       `;
     default:
       return css``;
