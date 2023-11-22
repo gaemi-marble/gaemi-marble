@@ -106,5 +106,4 @@ const Main = styled.div`
   display: flex;
   justify-content: space-between;
   flex: 1;
-  padding: 0 1rem;
 `;
