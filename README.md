@@ -16,6 +16,11 @@
 | <img src="https://avatars.githubusercontent.com/u/76121068?s=400&u=ffcc1c5dce2edf84ef611313c14e42700782f33a&v=4" width="120"/>| <img src="https://avatars.githubusercontent.com/u/101464713?v=4" width="120"/> | <img src="https://avatars.githubusercontent.com/u/98851575?s=64&v=4" width="120"/> | <img src="https://avatars.githubusercontent.com/u/48724199?v=4" width="120"/> |
 | **[퓨즈](https://github.com/silvertae)** | **[토코](https://github.com/aaaz425)** | **[무비](https://github.com/yhpark95)** | **[Tommy](https://github.com/HyowonSin)** |
 
+## 데모 영상
+
+https://github.com/gaemi-marble/gaemi-marble/assets/98851575/edc6334a-a633-49de-af09-2aaa1081dad8
+
+
 ## 팀 Notion 링크
 https://seasoned-fire-6f4.notion.site/gaemi-marble-764722298de04f178211d518fdbb5c99?pvs=4
 
