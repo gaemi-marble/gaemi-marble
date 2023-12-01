@@ -20,6 +20,10 @@
 
 https://github.com/gaemi-marble/gaemi-marble/assets/98851575/edc6334a-a633-49de-af09-2aaa1081dad8
 
+## 배포 링크
+
+http://djzn7ais1np2a.cloudfront.net
+
 
 ## 팀 Notion 링크
 https://seasoned-fire-6f4.notion.site/gaemi-marble-764722298de04f178211d518fdbb5c99?pvs=4
