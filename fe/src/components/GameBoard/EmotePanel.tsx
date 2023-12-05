@@ -41,6 +41,7 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
       {EMOTE_LIST.map((emote) => (
         <Icon
           name={emote}
+          key={emote}
           size="4rem"
           onClick={() => debounceSendEmote(emote)}
         />
