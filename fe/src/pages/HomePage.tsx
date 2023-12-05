@@ -47,4 +47,5 @@ const HomeMain = styled.div`
   flex-direction: column;
   gap: 2rem;
   padding: 0 2rem;
+  overflow-y: scroll;
 `;
