@@ -233,7 +233,7 @@ public class GameController {
 
 	@GetMapping("/api/games/rooms")
 	public ResponseEntity<List<GameRoomResponse>> getRooms() {
-		List<GameRoomResponse> rooms = gameService.getRooms();
+		List<GameRoomResponse> rooms = gameService.getRooms(socketDataSender.openRoomIds());
 		return ResponseEntity.ok().body(playerService.setRooms(rooms));
 	}
 
