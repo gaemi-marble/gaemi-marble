@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GameEmotionResponse {
+public class GameEmoticonResponse {
 	private String playerId;
 	private String name;
 
 	@Builder
-	public GameEmotionResponse(String playerId, String name) {
+	public GameEmoticonResponse(String playerId, String name) {
 		this.playerId = playerId;
 		this.name = name;
 	}

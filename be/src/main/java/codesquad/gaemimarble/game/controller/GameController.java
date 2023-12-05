@@ -18,7 +18,7 @@ import codesquad.gaemimarble.game.currentPlayer.service.CurrentPlayerService;
 import codesquad.gaemimarble.game.dto.ResponseDTO;
 import codesquad.gaemimarble.game.dto.request.GameBailRequest;
 import codesquad.gaemimarble.game.dto.request.GameCellArrivalRequest;
-import codesquad.gaemimarble.game.dto.request.GameEmotionRequest;
+import codesquad.gaemimarble.game.dto.request.GameEmoticonRequest;
 import codesquad.gaemimarble.game.dto.request.GameEndTurnRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventRequest;
 import codesquad.gaemimarble.game.dto.request.GameEventResultRequest;
@@ -38,7 +38,7 @@ import codesquad.gaemimarble.game.dto.request.GoldCardRequest.GameViciousRumorRe
 import codesquad.gaemimarble.game.dto.response.GameAccessibleResponse;
 import codesquad.gaemimarble.game.dto.response.GameCellResponse;
 import codesquad.gaemimarble.game.dto.response.GameDiceResult;
-import codesquad.gaemimarble.game.dto.response.GameEmotionResponse;
+import codesquad.gaemimarble.game.dto.response.GameEmoticonResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventListResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventNameResponse;
 import codesquad.gaemimarble.game.dto.response.GameEventResponse;
@@ -46,7 +46,6 @@ import codesquad.gaemimarble.game.dto.response.GameRoomCreateResponse;
 import codesquad.gaemimarble.game.dto.response.GameRoomResponse;
 import codesquad.gaemimarble.game.dto.response.GameTeleportResponse;
 import codesquad.gaemimarble.game.dto.response.userStatusBoard.GameUserBoardResponse;
-import codesquad.gaemimarble.game.gameStatus.entity.GameStatus;
 import codesquad.gaemimarble.game.gameStatus.entity.TypeConstants;
 import codesquad.gaemimarble.game.gameStatus.service.GameService;
 import codesquad.gaemimarble.game.player.entity.Player;
@@ -91,7 +90,7 @@ public class GameController {
 		typeMap.put(TypeConstants.VICIOUS_RUMOR, GameViciousRumorRequest.class);
 		typeMap.put(TypeConstants.MANIPULATION, GameStockManipulationRequest.class);
 		typeMap.put(TypeConstants.ARREST, GameArrestRequest.class);
-		typeMap.put(TypeConstants.EMOTION, GameEmotionRequest.class);
+		typeMap.put(TypeConstants.EMOTICON, GameEmoticonRequest.class);
 
 		this.handlers = new HashMap<>();
 		handlers.put(GameReadyRequest.class, req -> sendReadyStatus((GameReadyRequest)req));
@@ -113,13 +112,13 @@ public class GameController {
 		handlers.put(GameStockManipulationRequest.class,
 			req -> sendStockManipulationResult((GameStockManipulationRequest)req));
 		handlers.put(GameArrestRequest.class, req -> sendArrestResult((GameArrestRequest)req));
-		handlers.put(GameEmotionRequest.class, req -> sendEmotion((GameEmotionRequest)req));
+		handlers.put(GameEmoticonRequest.class, req -> sendEmoticon((GameEmoticonRequest)req));
 	}
 
-	private void sendEmotion(GameEmotionRequest gameEmotionRequest) {
-		socketDataSender.send(gameEmotionRequest.getGameId(), new ResponseDTO<>(TypeConstants.EMOTION,
-			GameEmotionResponse.builder().playerId(gameEmotionRequest.getPlayerId()).name(
-				gameEmotionRequest.getName()).build()));
+	private void sendEmoticon(GameEmoticonRequest gameEmoticonRequest) {
+		socketDataSender.send(gameEmoticonRequest.getGameId(), new ResponseDTO<>(TypeConstants.EMOTICON,
+			GameEmoticonResponse.builder().playerId(gameEmoticonRequest.getPlayerId()).name(
+				gameEmoticonRequest.getName()).build()));
 	}
 
 	private void sendArrestResult(GameArrestRequest gameArrestRequest) {
