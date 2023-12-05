@@ -13,7 +13,7 @@ import lombok.Getter;
 public class GameRepository {
 	@Getter
 	private final ConcurrentMap<Long, GameStatus> gameStatusMap = new ConcurrentHashMap<>();
-	private final AtomicLong gameId = new AtomicLong(0);
+	private final AtomicLong gameId = new AtomicLong(1);
 
 	public Long createRoom(GameStatus gameStatus) {
 		Long gameRoomId = gameId.getAndAdd(1L);

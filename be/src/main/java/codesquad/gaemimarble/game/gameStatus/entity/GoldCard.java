@@ -22,7 +22,6 @@ public enum GoldCard {
 	}
 
 	public static GoldCard getRandomGoldCard() {
-		return GoldCard.ARREST;
-		// return GoldCard.values()[(int) (Math.random() * GoldCard.values().length)];
+		return GoldCard.values()[(int) (Math.random() * GoldCard.values().length)];
 	}
 }
