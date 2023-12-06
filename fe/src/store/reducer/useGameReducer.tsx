@@ -59,11 +59,6 @@ export default function useGameReducer() {
               ...prev.game,
               currentPlayerId: payload.nextPlayerId,
               isMoveFinished: false,
-              goldCardInfo: {
-                cardType: '',
-                title: '',
-                description: '',
-              },
             },
           };
         }
@@ -206,6 +201,11 @@ export default function useGameReducer() {
               ...prev.game,
               timer: payload.timer,
               eventList: [...payload.events],
+              goldCardInfo: {
+                cardType: '',
+                title: '',
+                description: '',
+              },
             },
           };
         }
