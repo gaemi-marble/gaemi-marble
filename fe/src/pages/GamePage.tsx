@@ -17,7 +17,7 @@ import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import { STOCK_LOCATION } from './constants';
+import { GOLD_CARD_LOCATIONS, STOCK_LOCATION } from './constants';
 
 export default function GamePage() {
   const navigate = useNavigate();
@@ -49,8 +49,12 @@ export default function GamePage() {
     (player) => player.playerId === playerId
   )?.location;
   const isLocatedStockCell = STOCK_LOCATION.includes(currentLocation ?? 0);
-  const isGameOver = !isPlaying && ranking.length;
-  const isGoldCardOpen = isCurrentPlayer && goldCardInfo.title;
+  const isLocatedGoldCardCell = GOLD_CARD_LOCATIONS.includes(
+    currentLocation ?? 0
+  );
+  const isGameOver = !isPlaying && !!ranking.length;
+  const isGoldCardOpen =
+    isCurrentPlayer && isLocatedGoldCardCell && goldCardInfo.title;
 
   useEffect(() => {
     if (lastMessage) {

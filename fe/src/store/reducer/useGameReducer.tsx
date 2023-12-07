@@ -59,6 +59,11 @@ export default function useGameReducer() {
               ...prev.game,
               currentPlayerId: payload.nextPlayerId,
               isMoveFinished: false,
+              goldCardInfo: {
+                cardType: '',
+                title: '',
+                description: '',
+              },
             },
           };
         }
@@ -134,14 +139,6 @@ export default function useGameReducer() {
                 userStatusBoard: payload.userStatusBoard,
               };
             }),
-            game: {
-              ...prev.game,
-              goldCardInfo: {
-                title: '',
-                cardType: '',
-                description: '',
-              },
-            },
           };
         }
 
@@ -197,14 +194,6 @@ export default function useGameReducer() {
                 price: newStock.price,
               };
             }),
-            game: {
-              ...prev.game,
-              goldCardInfo: {
-                title: '',
-                cardType: '',
-                description: '',
-              },
-            },
           };
         }
 
@@ -304,11 +293,6 @@ export default function useGameReducer() {
               ...prev.game,
               teleportPlayerId: payload.playerId,
               teleportLocation: payload.location,
-              goldCardInfo: {
-                title: '',
-                cardType: '',
-                description: '',
-              },
             },
           };
         }
