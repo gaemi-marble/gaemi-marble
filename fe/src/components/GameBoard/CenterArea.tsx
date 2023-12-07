@@ -226,7 +226,7 @@ const Center = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 3rem;
   transform: rotateZ(45deg);
 `;
 
