@@ -140,12 +140,13 @@ public class GameService {
 			.build();
 	}
 
-	public List<GameRoomResponse> getRooms() {
+	public List<GameRoomResponse> getRooms(List<Long> openRoomIds) {
 		List<GameRoomResponse> gameRoomResponses = new ArrayList<>();
-		for (Map.Entry<Long, GameStatus> entry : gameRepository.getGameStatusMap().entrySet()) {
+		for (Long openRoomId : openRoomIds) {
+			GameStatus gameStatus = gameRepository.getGameStatus(openRoomId);
 			gameRoomResponses.add(GameRoomResponse.builder()
-				.gameId(entry.getKey())
-				.isPlaying(entry.getValue().getIsStarted())
+				.gameId(openRoomId)
+				.isPlaying(gameStatus.getIsStarted())
 				.playerCount(null)
 				.build());
 		}

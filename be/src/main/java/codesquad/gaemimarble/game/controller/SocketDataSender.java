@@ -1,6 +1,8 @@
 package codesquad.gaemimarble.game.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -71,5 +73,32 @@ public class SocketDataSender {
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
+	}
+
+	public boolean isGameSessionActive(Long gameId) {
+		ConcurrentMap<String, WebSocketSession> sessions = gameSocketMap.get(gameId);
+		if (sessions == null || sessions.isEmpty()) {
+			return false; // 게임 ID에 대한 세션이 없거나, 세션 목록이 비어있으면 비활성 상태로 간주
+		}
+
+		for (WebSocketSession session : sessions.values()) {
+			if (session.isOpen()) {
+				return true; // 하나라도 열린 세션이 있으면 활성 상태로 간주
+			}
+		}
+
+		return false; // 모든 세션이 닫혔으면 비활성 상태로 간주
+	}
+
+	public List<Long> openRoomIds() {
+		List<Long> openRoomIds = new ArrayList<>();
+		for (Long gameId : gameSocketMap.keySet()) {
+			if (isGameSessionActive(gameId)) { // 해당 게임방에 활성 세션이 있는 경우
+				openRoomIds.add(gameId); // 리스트에 게임방 ID 추가
+			} else {
+				gameSocketMap.remove(gameId);
+			}
+		}
+		return openRoomIds; // 활성 게임방의 ID 리스트 반환
 	}
 }
