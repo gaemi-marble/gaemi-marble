@@ -62,12 +62,15 @@ export type DicePayloadType = {
 export type PlayerType = {
   playerId: string;
   order: number;
+  position: PlayerCardPositionType;
   isReady: boolean;
   location: number;
   userStatusBoard: UserStatusType;
   gameBoard: GameBoardType;
   emote: EmoteType;
 };
+
+type PlayerCardPositionType = 'top' | 'bottom';
 
 type UserStatusType = {
   cashAsset: number;
