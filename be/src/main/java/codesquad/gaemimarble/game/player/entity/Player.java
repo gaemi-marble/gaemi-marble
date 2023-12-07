@@ -71,8 +71,12 @@ public class Player {
 	}
 
 	public void updateStockAsset(String stockName, int currentPrice) {
-		stockAsset = myStocks.get(stockName) * currentPrice;
+		stockAsset += myStocks.get(stockName) * currentPrice;
 		totalAsset = cashAsset + stockAsset;
+	}
+
+	public void initStockAsset() {
+		stockAsset = 0;
 	}
 
 	public void escapePrison(int diceResult) {
