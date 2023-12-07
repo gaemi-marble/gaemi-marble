@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Slf4j
 public class GameStatus {
-	private final Boolean isStarted;
+	private Boolean isStarted;
 	private final Board board;
 	private final List<Events> selectedEvents;
 	private Integer roundCount;
@@ -42,5 +42,9 @@ public class GameStatus {
 
 	public void incrementRoundCount() {
 		roundCount++;
+	}
+
+	public void startGame() {
+		this.isStarted = true;
 	}
 }

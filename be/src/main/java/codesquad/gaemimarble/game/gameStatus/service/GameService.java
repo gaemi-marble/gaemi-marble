@@ -142,6 +142,7 @@ public class GameService {
 
 	public List<GameRoomResponse> getRooms(List<Long> openRoomIds) {
 		List<GameRoomResponse> gameRoomResponses = new ArrayList<>();
+		openRoomIds.sort((o1, o2) -> (int) (o1 - o2));
 		for (Long openRoomId : openRoomIds) {
 			GameStatus gameStatus = gameRepository.getGameStatus(openRoomId);
 			gameRoomResponses.add(GameRoomResponse.builder()
@@ -151,5 +152,10 @@ public class GameService {
 				.build());
 		}
 		return gameRoomResponses;
+	}
+
+	public void initGame(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		gameStatus.startGame();
 	}
 }
