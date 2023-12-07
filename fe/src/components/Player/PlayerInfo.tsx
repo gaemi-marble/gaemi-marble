@@ -6,6 +6,7 @@ import { addCommasToNumber } from '@utils/index';
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import EmoteBubble from './EmoteBubble';
+import { EMOTE_DISPLAY_TIME } from './constants';
 
 type PlayerInfoProps = {
   player: PlayerType;
@@ -24,7 +25,7 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
     if (!isEmoteActive || !emoteName) return;
     setTimeout(() => {
       resetPlayerEmote(playerId);
-    }, 2000);
+    }, EMOTE_DISPLAY_TIME);
   }, [isEmoteActive, emoteName, playerId, resetPlayerEmote]);
 
   return (

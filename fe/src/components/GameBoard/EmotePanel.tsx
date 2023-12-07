@@ -2,7 +2,7 @@ import { Icon } from '@components/icon/Icon';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
 import { EmoteNameType } from '@store/reducer/type';
-import debounce from 'lodash.debounce';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
@@ -19,22 +19,23 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     share: true,
   });
+  const [canSendEmote, setCanSendEmote] = useState(true);
 
-  const sendEmote = (name: EmoteNameType) => {
-    const message = {
-      gameId,
-      playerId,
-      name,
-      type: 'emoticon',
-    };
-    sendJsonMessage(message);
+  const debounceSendEmote = (name: EmoteNameType) => {
+    if (canSendEmote) {
+      const message = {
+        gameId,
+        playerId,
+        name,
+        type: 'emoticon',
+      };
+      sendJsonMessage(message);
+      setCanSendEmote(false);
+      setTimeout(() => {
+        setCanSendEmote(true);
+      }, EMOTE_DEBOUNCE_DELAY);
+    }
   };
-
-  const debounceSendEmote = debounce(
-    (name: EmoteNameType) => sendEmote(name),
-    EMOTE_DEBOUNCE_DELAY,
-    { leading: true, trailing: false }
-  );
 
   return (
     <Panel $isActive={isActive}>
