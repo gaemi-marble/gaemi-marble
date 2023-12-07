@@ -95,6 +95,8 @@ public class SocketDataSender {
 		for (Long gameId : gameSocketMap.keySet()) {
 			if (isGameSessionActive(gameId)) { // 해당 게임방에 활성 세션이 있는 경우
 				openRoomIds.add(gameId); // 리스트에 게임방 ID 추가
+			} else {
+				gameSocketMap.remove(gameId);
 			}
 		}
 		return openRoomIds; // 활성 게임방의 ID 리스트 반환
