@@ -127,10 +127,17 @@ const Button = styled.button`
   position: absolute;
   top: 50%;
   left: 50%;
+  box-shadow: 0 0.5rem 0 #9d9d9d;
   transform: translate(-50%, -50%) rotateZ(45deg);
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
+
+  &:active {
+    box-shadow: none;
+    transform: translate(-50%, -50%) rotateZ(45deg) translateY(0.5rem);
+    transition: transform 0.1s box-shadow 0.1s;
+  }
 `;
 
 const drawLine = (lineNum: number) => {

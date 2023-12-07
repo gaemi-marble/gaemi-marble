@@ -216,6 +216,7 @@ export default function CenterArea({
 }
 
 const Center = styled.div`
+  z-index: 99;
   width: 30rem;
   height: 30rem;
   position: absolute;
@@ -223,8 +224,9 @@ const Center = styled.div`
   left: 6rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+  gap: 1rem;
   transform: rotateZ(45deg);
 `;
 
@@ -236,12 +238,14 @@ const Wrapper = styled.div`
 const Button = styled.button`
   width: 8rem;
   height: 4rem;
-  padding: 0.5rem;
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
+  box-shadow: 0 0.5rem 0 #9d9d9d;
 
-  &:disabled {
-    opacity: 0.6;
+  &:active {
+    box-shadow: none;
+    transform: translateY(0.5rem);
+    transition: transform 0.1s box-shadow 0.1s;
   }
 `;
