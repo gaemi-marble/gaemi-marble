@@ -46,16 +46,12 @@ export default function Dice({ sendCellMessage }: DiceProps) {
     );
     setIsRolling(false);
 
-    if (!targetPlayer) return;
-    if (!targetPlayer.gameBoard.hasEscaped) {
-      sendCellMessage(playerId);
-      return;
+    if (targetPlayer && targetPlayer.gameBoard.hasEscaped) {
+      await moveToken({
+        diceCount: totalDiceValue,
+        playerGameBoardData: targetPlayer.gameBoard,
+      });
     }
-
-    await moveToken({
-      diceCount: totalDiceValue,
-      playerGameBoardData: targetPlayer.gameBoard,
-    });
 
     if (isMyTurn) {
       sendCellMessage(playerId);
