@@ -76,7 +76,7 @@ export const DIRECTIONS = {
 };
 
 export const DICE_MOVE_DELAY = 200;
-export const EMOTE_DEBOUNCE_DELAY = 1000;
+export const EMOTE_DEBOUNCE_DELAY = 2000;
 
 export const changeDirection = (direction: DirectionType) => {
   switch (direction) {
