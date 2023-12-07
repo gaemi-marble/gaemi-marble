@@ -21,7 +21,7 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
   });
   const [canSendEmote, setCanSendEmote] = useState(true);
 
-  const sendEmote = (name: EmoteNameType) => {
+  const debounceSendEmote = (name: EmoteNameType) => {
     if (canSendEmote) {
       const message = {
         gameId,
@@ -44,7 +44,7 @@ export default function EmotePanel({ isActive }: EmotePanelProps) {
           name={emote}
           key={emote}
           size="4rem"
-          onClick={() => sendEmote(emote)}
+          onClick={() => debounceSendEmote(emote)}
         />
       ))}
     </Panel>
