@@ -27,6 +27,10 @@ export default function HomeHeader() {
     src: SOUND_PATH.HOME_PAGE,
   });
 
+  const handleReload = () => {
+    location.reload();
+  };
+
   const handleLogout = async () => {
     const res = await postLogout();
     if (res.status === API_STATUS.SUCCESS) {
@@ -41,7 +45,9 @@ export default function HomeHeader() {
   return (
     <>
       <StyledHeader>
-        <Logo>Gaemi Marble</Logo>
+        <Logo onClick={handleReload}>
+          <h1>Gaemi Marble</h1>
+        </Logo>
         <IconWrapper>
           <IconContainer>
             <Icon
@@ -79,22 +85,32 @@ const StyledHeader = styled.div`
   background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
-const Logo = styled.h1`
-  display: block;
+const Logo = styled.button`
+  padding: 0 1rem;
+  border-radius: ${({ theme: { radius } }) => radius.medium};
+  outline: ${({ theme: { color } }) =>
+    `1px solid ${color.neutralBorderStrong}`};
+  outline-offset: 3px;
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.25);
   color: ${({ theme: { color } }) => color.accentText};
-  cursor: pointer;
 `;
 
 const IconWrapper = styled.div`
+  padding: 0.5rem;
   display: flex;
   gap: 1rem;
+  border-radius: ${({ theme: { radius } }) => radius.large};
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.25);
+  background-color: ${({ theme: { color } }) => color.accentSecondary};
 `;
 
-const IconContainer = styled.div`
+const IconContainer = styled.button`
   width: 3rem;
   height: 3rem;
   border-radius: ${({ theme: { radius } }) => radius.half};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
+  outline: ${({ theme: { color } }) => `1px solid ${color.accentText}`};
+  outline-offset: 2px;
   cursor: pointer;
 
   &:hover {
