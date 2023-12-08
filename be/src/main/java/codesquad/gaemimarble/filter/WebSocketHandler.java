@@ -1,6 +1,7 @@
 package codesquad.gaemimarble.filter;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -28,6 +29,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		Long gameId = extractGameIdFromUri(session.getUri().getPath());
 		String playerId = extractPlayerIdFromUri(session.getUri().getPath());
 		gameController.enterGame(gameId, session, playerId);
+	}
+
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+		Long gameId = extractGameIdFromUri(session.getUri().getPath());
+		String playerId = extractPlayerIdFromUri(session.getUri().getPath());
+		gameController.leaveGame(gameId, playerId);
 	}
 
 	@Override

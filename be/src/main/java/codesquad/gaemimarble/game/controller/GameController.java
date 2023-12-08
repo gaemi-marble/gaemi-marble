@@ -369,4 +369,12 @@ public class GameController {
 				break;
 		}
 	}
+
+	public void leaveGame(Long gameId, String playerId) {
+		if (!gameService.isPlaying(gameId)) {
+			socketDataSender.removeSocket(gameId, playerId);
+			socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER,
+				playerService.leaveGame(gameId, playerId)));
+		}
+	}
 }

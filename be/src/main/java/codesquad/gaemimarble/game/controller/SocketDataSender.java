@@ -101,4 +101,8 @@ public class SocketDataSender {
 		}
 		return openRoomIds; // 활성 게임방의 ID 리스트 반환
 	}
+
+	public void removeSocket(Long gameId, String playerId) {
+		gameSocketMap.get(gameId).remove(playerId);
+	}
 }

@@ -335,4 +335,11 @@ public class PlayerService {
 		rooms.sort(Comparator.comparing(GameRoomResponse::getIsPlaying).reversed());
 		return rooms;
 	}
+
+	public List<GameEnterResponse> leaveGame(Long gameId, String playerId) {
+		List<Player> players = playerRepository.leaveGame(gameId, playerId);
+		return players.stream()
+			.map(p -> GameEnterResponse.of(p.getOrder(), p.getPlayerId(), p.getIsReady()))
+			.collect(Collectors.toList());
+	}
 }
