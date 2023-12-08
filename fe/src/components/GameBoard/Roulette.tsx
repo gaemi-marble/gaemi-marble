@@ -106,7 +106,7 @@ const Container = styled.div`
 const Wrapper = styled.div`
   position: fixed;
   padding: 0.5rem 1rem;
-  top: -2rem;
+  top: -6rem;
   display: flex;
   justify-content: center;
   background-color: black;

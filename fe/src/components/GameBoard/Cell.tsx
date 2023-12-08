@@ -96,6 +96,7 @@ const FrontFace = styled.div<{
   transform: rotateY(0deg) translateZ(1rem)
     ${({ $lineNum }) =>
       $lineNum === 1 || $lineNum === 3 ? 'rotateZ(90deg)' : ''};
+  cursor: ${({ $status }) => ($status === 'teleport' ? 'pointer' : 'default')};
 `;
 
 const Header = styled.div`
