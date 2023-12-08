@@ -87,7 +87,7 @@ export default function CenterArea({
   );
 
   useEffect(() => {
-    if (!teleportLocation) return;
+    if (!teleportLocation || !targetLocation) return;
     const targetPlayer = players.find(
       (player) => player.playerId === teleportPlayerId
     );
@@ -104,6 +104,7 @@ export default function CenterArea({
   }, [
     players,
     playerId,
+    targetLocation,
     teleportPlayerId,
     teleportLocation,
     teleportToken,
