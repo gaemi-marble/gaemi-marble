@@ -45,6 +45,7 @@ const Token = styled.div<{ $order: number }>`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.color.accentTertiary};
+  background-color: ${({ theme, $order }) =>
+    (theme.color as { [key: string]: string })[`player${$order}`]};
   transition: transform 0.2s;
 `;

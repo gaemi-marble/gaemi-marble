@@ -4,6 +4,7 @@ const INITIAL_PLAYER: PlayerType[] = [
   {
     playerId: '',
     order: 1,
+    position: 'top',
     isReady: false,
     location: 0,
     userStatusBoard: {
@@ -28,6 +29,7 @@ const INITIAL_PLAYER: PlayerType[] = [
   {
     playerId: '',
     order: 2,
+    position: 'top',
     isReady: false,
     location: 0,
     userStatusBoard: {
@@ -52,6 +54,7 @@ const INITIAL_PLAYER: PlayerType[] = [
   {
     playerId: '',
     order: 3,
+    position: 'bottom',
     isReady: false,
     location: 0,
     userStatusBoard: {
@@ -76,6 +79,7 @@ const INITIAL_PLAYER: PlayerType[] = [
   {
     playerId: '',
     order: 4,
+    position: 'bottom',
     isReady: false,
     location: 0,
     userStatusBoard: {

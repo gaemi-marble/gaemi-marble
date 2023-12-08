@@ -46,7 +46,7 @@ export const GlobalStyle = createGlobalStyle`
     border-spacing:0
   }
   #root {
-    font-family: 'NeoDunggeunmo', sans-serif;
+    font-family: Galmuri14, sans-serif;
   }
   ul {
     list-style: none;

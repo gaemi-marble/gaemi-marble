@@ -1,6 +1,6 @@
 import EmoteMenu from '@components/GameBoard/EmoteMenu';
 import GameBoard from '@components/GameBoard/GameBoard';
-import GameHeader from '@components/Header/GameHeader';
+// import GameHeader from '@components/Header/GameHeader';
 import GameOverModal from '@components/Modal/GameOverModal/GameOverModal';
 import GoldCardModal from '@components/Modal/GoldCardModal/GoldCardModal';
 import StockBuyModal from '@components/Modal/StockBuyModal/StockBuyModal';
@@ -76,7 +76,7 @@ export default function GamePage() {
   return (
     <>
       <Container>
-        <GameHeader />
+        {/* <GameHeader /> */}
         <Main>
           <LeftPlayers />
           <GameBoard />
@@ -110,5 +110,4 @@ const Main = styled.div`
   display: flex;
   justify-content: space-between;
   flex: 1;
-  padding: 0 1rem;
 `;

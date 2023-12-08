@@ -26,6 +26,7 @@ export default function Roulette({ sendStatusBoardMessage }: RouletteProps) {
   const { sound: RouletteRollingSound } = useSound({
     src: SOUND_PATH.ROULETTE,
   });
+  const paddedSeconds = String(rouletteTimer).padStart(2, '0');
 
   useEffect(() => {
     let isMounted = true;
@@ -74,34 +75,47 @@ export default function Roulette({ sendStatusBoardMessage }: RouletteProps) {
 
   return (
     <>
-      <Wheel
-        mustStartSpinning={mustSpin}
-        prizeNumber={prizeNumber}
-        data={wheelData}
-        fontSize={16}
-        spinDuration={0.5}
-        radiusLineWidth={2}
-        outerBorderWidth={2}
-        pointerProps={{ style: { width: '70px', height: '70px' } }}
-        textColors={['#FCF5ED', '#000']}
-        backgroundColors={['#3e3e3e', '#f4acb7']}
-        onStopSpinning={handleSpinDone}
-      />
+      <Container>
+        <Wheel
+          mustStartSpinning={mustSpin}
+          prizeNumber={prizeNumber}
+          data={wheelData}
+          fontSize={16}
+          spinDuration={0.5}
+          radiusLineWidth={2}
+          outerBorderWidth={2}
+          pointerProps={{ style: { width: '70px', height: '70px' } }}
+          textColors={['#FCF5ED', '#000']}
+          backgroundColors={['#3e3e3e', '#f4acb7']}
+          onStopSpinning={handleSpinDone}
+        />
+        {isEventModalOpen && <EventModal />}
+        {isRolling && RouletteRollingSound}
+      </Container>
       <Wrapper>
-        <Timer>남은 매도시간: {rouletteTimer}</Timer>
+        <Timer $seconds={rouletteTimer}>00:{paddedSeconds}</Timer>
       </Wrapper>
-      {isEventModalOpen && <EventModal />}
-      {isRolling && RouletteRollingSound}
     </>
   );
 }
 
-const Wrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
+const Container = styled.div`
+  transform: rotateX(30deg);
 `;
 
-const Timer = styled.div`
+const Wrapper = styled.div`
+  position: fixed;
+  padding: 0.5rem 1rem;
+  top: -2rem;
+  display: flex;
+  justify-content: center;
+  background-color: black;
+  border-radius: 10px; // 모서리를 둥글게 만듭니다.
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); // 그림자를 추가합니다.
+`;
+
+const Timer = styled.div<{ $seconds: number }>`
+  color: ${({ $seconds }) => ($seconds <= 5 ? 'red' : 'limegreen')};
+  font-family: 'Digital-7', monospace;
   font-size: ${({ theme }) => theme.fontSize.sMedium};
 `;
