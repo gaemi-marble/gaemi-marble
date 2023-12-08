@@ -2,6 +2,7 @@ package codesquad.gaemimarble.game.player.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -17,8 +18,17 @@ public class PlayerRepository {
 
 	public List<Player> enterGame(Long gameId, Player player) {
 		List<Player> players = playerMap.get(gameId);
-		player.setOrder(players.size() + 1);
+		int order = 1;
+		for (Player p : players) {
+			if (Objects.equals(p.getOrder(), order)) {
+				order += 1;
+			} else {
+				break;
+			}
+		}
+		player.setOrder(order);
 		players.add(player);
+		players.sort((p1, p2) -> p1.getOrder().compareTo(p2.getOrder()));
 		return players;
 	}
 
@@ -36,5 +46,11 @@ public class PlayerRepository {
 			.filter(p -> p.getPlayerId().equals(playerId))
 			.findFirst()
 			.orElseThrow(() -> new RuntimeException("해당 플레이어가 존재하지 않습니다"));
+	}
+
+	public List<Player> removePlayer(Long gameId, String playerId) {
+		List<Player> players = getAllPlayer(gameId);
+		players.remove(getPlayer(gameId, playerId));
+		return players;
 	}
 }

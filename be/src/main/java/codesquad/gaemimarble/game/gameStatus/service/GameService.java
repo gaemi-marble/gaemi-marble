@@ -158,4 +158,9 @@ public class GameService {
 		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
 		gameStatus.startGame();
 	}
+
+	public Boolean isPlaying(Long gameId) {
+		GameStatus gameStatus = gameRepository.getGameStatus(gameId);
+		return gameStatus.getIsStarted();
+	}
 }

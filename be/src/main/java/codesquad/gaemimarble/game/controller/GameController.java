@@ -239,7 +239,7 @@ public class GameController {
 
 	@GetMapping("/api/games/{gameId}")
 	public ResponseEntity<GameAccessibleResponse> checkAccessiblity(@PathVariable Long gameId) {
-		return ResponseEntity.ok().body(playerService.checkAccessibility(gameId));
+		return ResponseEntity.ok().body(playerService.checkAccessibility(gameId, gameService.isPlaying(gameId)));
 	}
 
 	public Map<String, Class<?>> getTypeMap() {
@@ -367,6 +367,14 @@ public class GameController {
 					new ResponseDTO<>(TypeConstants.STATUS_BOARD, stockService.createGameStatusBoardResponse(gameId)));
 				sendAllUserStatusBoardResponse(gameId);
 				break;
+		}
+	}
+
+	public void leaveGame(Long gameId, String playerId) {
+		if (!gameService.isPlaying(gameId)) {
+			socketDataSender.removeSocket(gameId, playerId);
+			socketDataSender.send(gameId, new ResponseDTO<>(TypeConstants.ENTER,
+				playerService.leaveGame(gameId, playerId)));
 		}
 	}
 }

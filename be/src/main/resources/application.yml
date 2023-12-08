@@ -19,5 +19,5 @@ spring:
         highlight_sql: true
 jwt:
   secret_key: ${key}
-  access_token_expiration_time: 180000000
+  access_token_expiration_time: 180000000000
   refresh_token_expiration_time: 360000000
