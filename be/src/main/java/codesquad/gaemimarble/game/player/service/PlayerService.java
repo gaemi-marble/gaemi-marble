@@ -85,17 +85,19 @@ public class PlayerService {
 			.build();
 	}
 
-	public GameAccessibleResponse checkAccessibility(Long gameId) {
+	public GameAccessibleResponse checkAccessibility(Long gameId, Boolean isPlaying) {
 		List<Player> players = playerRepository.getAllPlayer(gameId);
 		boolean isPresent = false;
 		boolean isFull = false;
-		if (players != null) {
+		if (!players.isEmpty()) {
 			isPresent = true;
 			if (players.size() == 4) {
 				isFull = true;
 			}
 		}
-		return GameAccessibleResponse.builder().isPresent(isPresent).isFull(isFull).build();
+		return GameAccessibleResponse.builder().isPresent(isPresent).isFull(isFull)
+			.isPlaying(isPresent && isPlaying)
+			.build();
 	}
 
 	public GameCellResponse arriveAtCell(Long gameId, String playerId) {

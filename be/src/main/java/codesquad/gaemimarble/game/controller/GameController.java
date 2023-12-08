@@ -239,7 +239,7 @@ public class GameController {
 
 	@GetMapping("/api/games/{gameId}")
 	public ResponseEntity<GameAccessibleResponse> checkAccessiblity(@PathVariable Long gameId) {
-		return ResponseEntity.ok().body(playerService.checkAccessibility(gameId));
+		return ResponseEntity.ok().body(playerService.checkAccessibility(gameId, gameService.isPlaying(gameId)));
 	}
 
 	public Map<String, Class<?>> getTypeMap() {
