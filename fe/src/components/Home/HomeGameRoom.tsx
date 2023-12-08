@@ -42,7 +42,7 @@ const GameRoom = styled.li`
   padding: 1rem;
   border: ${({ theme: { color } }) => `1px solid ${color.accentBorder}`};
   border-radius: ${({ theme: { radius } }) => radius.medium};
-  background-color: ${({ theme: { color } }) => color.accentSky};
+  background-color: ${({ theme: { color } }) => color.accentSecondary};
   box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
   font-size: ${({ theme: { fontSize } }) => fontSize.medium};
 

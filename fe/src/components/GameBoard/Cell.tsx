@@ -27,6 +27,7 @@ export default function Cell({
   selectTargetLocation,
 }: CellProps) {
   const { logo, name, location, theme } = cell;
+  const lineNum = Math.floor(location / 6) + 1;
 
   const handleClickCell = () => {
     if (playerStatus !== 'teleport') return;
@@ -42,40 +43,59 @@ export default function Cell({
   const isPrison = location === PRISON_CELL;
 
   return (
-    <Container
-      $status={playerStatus}
-      $isSelected={isSelected}
-      $isPrison={isPrison}
-      onClick={handleClickCell}
-    >
-      {theme && (
-        <Header>
-          <Name>{name}</Name>
-        </Header>
-      )}
-      <Content>
-        {theme && <Logo src={cellImageMap[logo]} />}
-        {!theme && <CellImg src={cellImageMap[logo]} />}
-        {price && <span>{addCommasToNumber(price)}</span>}
-      </Content>
-    </Container>
+    <Box>
+      <FrontFace
+        $status={playerStatus}
+        $isSelected={isSelected}
+        $isPrison={isPrison}
+        $lineNum={lineNum}
+        onClick={handleClickCell}
+      >
+        {theme && (
+          <Header>
+            <Name>{name}</Name>
+          </Header>
+        )}
+        <Content>
+          {theme && <Logo src={cellImageMap[logo]} />}
+          {!theme && <CellImg src={cellImageMap[logo]} />}
+          {price && <span>{addCommasToNumber(price)}</span>}
+        </Content>
+      </FrontFace>
+      <BackFace />
+      <RightFace />
+      <LeftFace />
+      <TopFace />
+      <BottomFace />
+    </Box>
   );
 }
 
-const Container = styled.div<{
+const Box = styled.div`
+  width: 6rem;
+  height: 6rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(-1rem);
+`;
+
+const FrontFace = styled.div<{
   $status: PlayerStatusType;
   $isSelected: boolean;
   $isPrison: boolean;
+  $lineNum: number;
 }>`
   width: 6rem;
   height: 6rem;
+  position: absolute;
   display: flex;
   flex-direction: column;
   border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
   background-color: ${({ theme, $isSelected }) =>
     $isSelected ? theme.color.accentTertiary : theme.color.accentText};
-  box-shadow: ${({ $isPrison }) =>
-    $isPrison ? 'none' : '10px 5px 5px rgba(0, 0, 0, 1)'};
+  transform: rotateY(0deg) translateZ(1rem)
+    ${({ $lineNum }) =>
+      $lineNum === 1 || $lineNum === 3 ? 'rotateZ(90deg)' : ''};
 `;
 
 const Header = styled.div`
@@ -106,4 +126,53 @@ const Content = styled.div`
   justify-content: space-evenly;
   align-items: center;
   color: ${({ theme: { color } }) => color.neutralText};
+`;
+
+const BackFace = styled.div`
+  width: 6rem;
+  height: 6rem;
+  position: absolute;
+  border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
+  background-color: ${({ theme: { color } }) => color.accentText};
+  transform: rotateY(180deg) translateZ(1rem);
+`;
+
+const RightFace = styled.div`
+  width: 2rem;
+  height: 6rem;
+  position: absolute;
+  right: 0;
+  border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
+  background-color: ${({ theme: { color } }) => color.accentText};
+  transform: rotateY(90deg) translateZ(1rem);
+`;
+
+const LeftFace = styled.div`
+  width: 2rem;
+  height: 6rem;
+  position: absolute;
+  left: 0;
+  border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
+  background-color: ${({ theme: { color } }) => color.accentText};
+  transform: rotateY(-90deg) translateZ(1rem);
+`;
+
+const TopFace = styled.div`
+  width: 6rem;
+  height: 2rem;
+  position: absolute;
+  top: 2rem;
+  border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
+  background-color: ${({ theme: { color } }) => color.accentText};
+  transform: rotateX(90deg) translateZ(3rem);
+`;
+
+const BottomFace = styled.div`
+  width: 6rem;
+  height: 2rem;
+  position: absolute;
+  top: 2rem;
+  border: ${({ theme }) => `1px solid ${theme.color.neutralBackgroundBold}`};
+  background-color: ${({ theme: { color } }) => color.accentText};
+  transform: rotateX(-90deg) translateZ(3rem);
 `;

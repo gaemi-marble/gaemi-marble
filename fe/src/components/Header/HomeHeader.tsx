@@ -81,6 +81,8 @@ const StyledHeader = styled.div`
 
 const Logo = styled.h1`
   display: block;
+  font-family: Galmuri11, sans-serif;
+  font-weight: 700;
   color: ${({ theme: { color } }) => color.accentText};
   cursor: pointer;
 `;

@@ -80,17 +80,18 @@ export default function GameBoard() {
         {!isPlaying && isEveryoneReady && isCaptain && (
           <Button onClick={handleStart}>게임 시작</Button>
         )}
-        {isPlaying && (
-          <CenterArea
-            currentStatus={currentPlayerStatus}
-            targetLocation={targetLocation}
-            resetTargetLocation={resetTargetLocation}
-          />
-        )}
+
         {playerAtoms.map((playerAtom) => {
           return <PlayerToken key={`${playerAtom}`} playerAtom={playerAtom} />;
         })}
       </Board>
+      {isPlaying && (
+        <CenterArea
+          currentStatus={currentPlayerStatus}
+          targetLocation={targetLocation}
+          resetTargetLocation={resetTargetLocation}
+        />
+      )}
     </Container>
   );
 }
@@ -109,11 +110,15 @@ const Board = styled.div`
   min-height: 42rem;
   position: relative;
   border-color: ${({ theme: { color } }) => color.accentText};
+  transform-style: preserve-3d;
+  transform: perspective(10000px) rotateZ(-55deg) rotateX(30deg) rotateY(35deg)
+    translateZ(20px);
 `;
 
 const Line = styled.div<{ $lineNum: number }>`
   position: absolute;
   display: flex;
+  transform-style: preserve-3d;
   ${({ $lineNum }) => drawLine($lineNum)}
 `;
 
@@ -123,10 +128,17 @@ const Button = styled.button`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  box-shadow: 0 0.5rem 0 #9d9d9d;
+  transform: translate(-50%, -50%) rotateZ(45deg);
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
+
+  &:active {
+    box-shadow: none;
+    transform: translate(-50%, -50%) rotateZ(45deg) translateY(0.5rem);
+    transition: transform 0.1s box-shadow 0.1s;
+  }
 `;
 
 const drawLine = (lineNum: number) => {
@@ -136,34 +148,22 @@ const drawLine = (lineNum: number) => {
         top: 6rem;
         left: 0;
         flex-direction: column-reverse;
-        div {
-          border-top: none;
-        }
       `;
     case 2:
       return css`
         top: 0;
         flex-direction: row;
-        div {
-          border-right: none;
-        }
       `;
     case 3:
       return css`
         right: 0;
         flex-direction: column;
-        div {
-          border-bottom: none;
-        }
       `;
     case 4:
       return css`
         bottom: 0;
-        left: 6rem;
+        right: 0;
         flex-direction: row-reverse;
-        div {
-          border-left: none;
-        }
       `;
     default:
       return css``;

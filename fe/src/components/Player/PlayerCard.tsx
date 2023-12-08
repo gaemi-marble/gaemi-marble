@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import EmptyCard from './EmptyCard';
 import PlayerInfo from './PlayerInfo';
 import PlayerStock from './PlayerStock';
 import { SCROLL_ONCE } from './constants';
@@ -52,7 +51,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
 
   return (
     <>
-      {playerId ? (
+      {playerId && (
         <CardWrapper>
           <PlayerInfo player={player} />
           {!!userStatusBoard.stockList.length && (
@@ -73,13 +72,15 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             </>
           )}
           {!isPlaying && (
-            <Button
-              onClick={handleReady}
-              disabled={!isMyButton}
-              $isReady={isReady}
-            >
-              {isReady ? '준비완료' : '준비'}
-            </Button>
+            <ButtonWrapper>
+              <ReadyButton
+                onClick={handleReady}
+                disabled={!isMyButton}
+                $isReady={isReady}
+              >
+                {isReady ? '준비완료' : '준비'}
+              </ReadyButton>
+            </ButtonWrapper>
           )}
           {isMyButton && eventTime && beforeRouletteSpin && (
             <StockSellButton onClick={toggleStockSellModal}>
@@ -90,10 +91,6 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             <StockSellModal handleClose={toggleStockSellModal} />
           )}
         </CardWrapper>
-      ) : (
-        <EmptyCardWrapper>
-          <EmptyCard />
-        </EmptyCardWrapper>
       )}
     </>
   );
@@ -133,21 +130,35 @@ const ArrowButton = styled.button`
   background-color: ${({ theme: { color } }) => color.neutralBackgroundBold};
 `;
 
-const Button = styled.button<{ $isReady: boolean }>`
-  width: 6rem;
+const ButtonWrapper = styled.div`
+  height: 3.5rem;
+`;
+
+const ReadyButton = styled.button<{ $isReady: boolean }>`
+  z-index: -1;
+  width: 8rem;
   height: 3rem;
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color }, $isReady }) =>
     $isReady ? color.accentTertiary : color.neutralBackground};
+  box-shadow: 0 0.5rem 0 ${({ $isReady }) => ($isReady ? '#007076' : '#9d9d9d')};
+
+  &:hover {
+    box-shadow: none;
+    transform: translateY(0.5rem);
+    transition: transform 0.1s box-shadow 0.1s;
+  }
+
+  &:active {
+    height: 2.5rem;
+    box-shadow: 0 -0.5rem 0 ${({ $isReady }) => ($isReady ? '#007076' : '#9d9d9d')};
+    transform: translateY(1rem);
+  }
 
   &:disabled {
     cursor: not-allowed;
   }
-`;
-
-const EmptyCardWrapper = styled(CardWrapper)`
-  margin: 4.5rem 0;
 `;
 
 const StockSellButton = styled.button`

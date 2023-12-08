@@ -16,7 +16,7 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
   const antName = ANT_LIST.find((ant) => ant.order === player?.order)!.antName;
   const { currentPlayerId } = useGameInfoValue();
   const resetPlayerEmote = useResetPlayerEmote();
-  const { userStatusBoard, playerId, emote } = player;
+  const { position, userStatusBoard, playerId, emote } = player;
   const { isActive: isEmoteActive, name: emoteName } = emote;
   const { cashAsset, stockAsset, totalAsset } = userStatusBoard;
   const isCurrentPlayer = currentPlayerId === playerId;
@@ -32,7 +32,9 @@ export default function PlayerInfo({ player }: PlayerInfoProps) {
     <UserInfo $isCurrentPlayer={isCurrentPlayer}>
       <IconContainer>
         <Icon name={antName} size="8rem" />
-        {isEmoteActive && emoteName && <EmoteBubble emoteName={emoteName} />}
+        {isEmoteActive && emoteName && (
+          <EmoteBubble emoteName={emoteName} position={position} />
+        )}
       </IconContainer>
       <PlayerInfoContainer>
         <PlayerId>{playerId}</PlayerId>
@@ -58,10 +60,14 @@ const UserInfo = styled.div<{ $isCurrentPlayer: boolean }>`
   gap: 0.5rem;
   padding: 0.5rem;
   border: ${({ $isCurrentPlayer, theme: { color } }) =>
-    $isCurrentPlayer ? `3px solid ${color.systemWarning}` : 'none'};
+    $isCurrentPlayer ? `4px solid ${color.accentTertiary}` : 'none'};
   border-radius: ${({ theme: { radius } }) => radius.small};
   color: ${({ theme: { color } }) => color.neutralText};
   background-color: ${({ theme: { color } }) => color.neutralBackground};
+  box-shadow: ${(props) =>
+    props.$isCurrentPlayer
+      ? `0 0 5px ${props.theme.color.accentTertiary}, 0 0 10px ${props.theme.color.accentTertiary}`
+      : 'none'};
 `;
 
 const IconContainer = styled.div`

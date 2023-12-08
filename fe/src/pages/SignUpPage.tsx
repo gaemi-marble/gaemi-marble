@@ -75,6 +75,8 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
+  font-family: Galmuri11, sans-serif;
+  font-weight: 700;
   font-size: ${({ theme: { fontSize } }) => fontSize.xLarge};
 `;
 
