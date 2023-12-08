@@ -2,6 +2,7 @@ import { ROUTE_PATH } from '@router/constants';
 import { RoomInfo } from '@store/type';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { FULL_PLAYER_COUNT } from './constants';
 
 type HomeGameRoomProps = { room: RoomInfo };
 
@@ -11,14 +12,12 @@ export default function HomeGameRoom({ room }: HomeGameRoomProps) {
 
   const handleClickRoom = () => {
     if (isPlaying) {
-      alert('게임이 진행중입니다.');
+      alert('게임이 이미 진행중입니다.');
       return;
     }
 
     navigate(`${ROUTE_PATH.GAME}/${gameId}`);
   };
-
-  const FULL_PLAYER_COUNT = 4;
 
   return (
     <GameRoom onClick={handleClickRoom}>
@@ -40,7 +39,6 @@ const GameRoom = styled.li`
   gap: 2rem;
   margin-bottom: 1rem;
   padding: 1rem;
-  border: ${({ theme: { color } }) => `1px solid ${color.accentBorder}`};
   border-radius: ${({ theme: { radius } }) => radius.medium};
   background-color: ${({ theme: { color } }) => color.accentSecondary};
   box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
@@ -49,6 +47,7 @@ const GameRoom = styled.li`
   &:hover {
     cursor: pointer;
     opacity: ${({ theme: { opacity } }) => opacity.hover};
+    background-color: ${({ theme: { color } }) => color.neutralBackground};
   }
 `;
 

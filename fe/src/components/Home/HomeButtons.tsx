@@ -59,8 +59,13 @@ export default function HomeButtons() {
 }
 
 const Buttons = styled.div`
+  margin: 0 1rem;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
+  border-radius: ${({ theme: { radius } }) => radius.medium};
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.25);
+  background-color: ${({ theme: { color } }) => color.accentPrimary};
 `;
 
 const RoomButtonWrapper = styled.div`
@@ -74,13 +79,13 @@ const Button = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 1rem;
-  border: ${({ theme: { color } }) => `1px solid ${color.accentBorder}`};
   border-radius: ${({ theme: { radius } }) => radius.medium};
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.25);
   font-size: ${({ theme: { fontSize } }) => fontSize.medium};
+  background-color: ${({ theme: { color } }) => color.accentSecondary};
   cursor: pointer;
 
   &:hover {
-    border-color: ${({ theme: { color } }) => color.neutralBorderStrong};
     color: ${({ theme: { color } }) => color.neutralTextStrong};
     background-color: ${({ theme: { color } }) => color.neutralBackground};
 

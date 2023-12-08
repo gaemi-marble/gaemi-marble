@@ -1,6 +1,6 @@
 import { PlayerType } from './type';
 
-export const INITIAL_PLAYER: PlayerType[] = [
+const INITIAL_PLAYER: PlayerType[] = [
   {
     playerId: '',
     order: 1,
@@ -103,7 +103,7 @@ export const INITIAL_PLAYER: PlayerType[] = [
   },
 ];
 
-export const INITIAL_STOCK = [
+const INITIAL_STOCK = [
   {
     logo: 'codesquad',
     name: '코드스쿼드',
@@ -242,7 +242,7 @@ export const INITIAL_STOCK = [
   },
 ];
 
-export const INITIAL_GAME = {
+const INITIAL_GAME = {
   isPlaying: false,
   firstPlayerId: '',
   currentPlayerId: '',
@@ -256,4 +256,10 @@ export const INITIAL_GAME = {
   goldCardInfo: { cardType: '', title: '', description: '' },
   isArrived: false,
   ranking: [],
+};
+
+export const INITIAL_GAME_STATE = {
+  game: INITIAL_GAME,
+  players: INITIAL_PLAYER,
+  stocks: INITIAL_STOCK,
 };

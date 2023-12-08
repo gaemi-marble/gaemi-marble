@@ -1,14 +1,10 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { splitAtom } from 'jotai/utils';
 import { focusAtom } from 'jotai-optics';
-import { INITIAL_GAME, INITIAL_PLAYER, INITIAL_STOCK } from './constants';
+import { INITIAL_GAME_STATE } from './constants';
 import { GameType } from './type';
 
-export const gameAtom = atom<GameType>({
-  game: INITIAL_GAME,
-  players: INITIAL_PLAYER,
-  stocks: INITIAL_STOCK,
-});
+export const gameAtom = atom<GameType>(INITIAL_GAME_STATE);
 gameAtom.debugLabel = 'gameAtom';
 
 export const gameInfoAtom = focusAtom(gameAtom, (optic) => optic.prop('game'));
