@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
-import EmptyCard from './EmptyCard';
 import PlayerInfo from './PlayerInfo';
 import PlayerStock from './PlayerStock';
 import { SCROLL_ONCE } from './constants';
@@ -52,7 +51,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
 
   return (
     <>
-      {playerId ? (
+      {playerId && (
         <CardWrapper>
           <PlayerInfo player={player} />
           {!!userStatusBoard.stockList.length && (
@@ -92,10 +91,6 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             <StockSellModal handleClose={toggleStockSellModal} />
           )}
         </CardWrapper>
-      ) : (
-        <EmptyCardWrapper>
-          <EmptyCard />
-        </EmptyCardWrapper>
       )}
     </>
   );
@@ -164,10 +159,6 @@ const ReadyButton = styled.button<{ $isReady: boolean }>`
   &:disabled {
     cursor: not-allowed;
   }
-`;
-
-const EmptyCardWrapper = styled(CardWrapper)`
-  margin: 4.5rem 0;
 `;
 
 const StockSellButton = styled.button`
