@@ -264,6 +264,7 @@ public class GameController {
 	private void sendFirstPlayer(GameStartRequest gameStartRequest) {
 		String playerId = playerService.selectFirstPlayer(gameStartRequest.getGameId());
 		currentPlayerService.initCurrentPlayer(gameStartRequest.getGameId(), playerId);
+		gameService.initGame(gameStartRequest.getGameId());
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.START,
 			Map.of("playerId", playerId)));
 		socketDataSender.send(gameStartRequest.getGameId(), new ResponseDTO<>(TypeConstants.STATUS_BOARD,
