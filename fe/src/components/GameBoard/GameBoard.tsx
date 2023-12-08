@@ -80,17 +80,18 @@ export default function GameBoard() {
         {!isPlaying && isEveryoneReady && isCaptain && (
           <Button onClick={handleStart}>게임 시작</Button>
         )}
-        {isPlaying && (
-          <CenterArea
-            currentStatus={currentPlayerStatus}
-            targetLocation={targetLocation}
-            resetTargetLocation={resetTargetLocation}
-          />
-        )}
+
         {playerAtoms.map((playerAtom) => {
           return <PlayerToken key={`${playerAtom}`} playerAtom={playerAtom} />;
         })}
       </Board>
+      {isPlaying && (
+        <CenterArea
+          currentStatus={currentPlayerStatus}
+          targetLocation={targetLocation}
+          resetTargetLocation={resetTargetLocation}
+        />
+      )}
     </Container>
   );
 }

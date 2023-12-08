@@ -216,18 +216,18 @@ export default function CenterArea({
 }
 
 const Center = styled.div`
-  z-index: 99;
+  z-index: 70;
   width: 30rem;
   height: 30rem;
   position: absolute;
-  top: 6rem;
-  left: 6rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3rem;
-  transform: rotateZ(45deg);
+  gap: 1rem;
 `;
 
 const Wrapper = styled.div`
