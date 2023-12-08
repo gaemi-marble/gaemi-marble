@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import codesquad.gaemimarble.exception.PlayTimeException;
-import codesquad.gaemimarble.game.currentPlayer.entity.CurrentPlayer;
 import codesquad.gaemimarble.game.dto.GameMapper;
 import codesquad.gaemimarble.game.dto.request.GameReadyRequest;
 import codesquad.gaemimarble.game.dto.request.GameSellStockRequest;
@@ -128,6 +127,7 @@ public class PlayerService {
 
 	public void updatePlayersAsset(Long gameId) {
 		for (Player player : playerRepository.getAllPlayer(gameId)) {
+			player.initStockAsset();
 			List<Stock> stockList = stockService.getMatchingStocks(gameId, player.getMyStocks().keySet());
 			for (Stock stock : stockList) {
 				player.updateStockAsset(stock.getName(), stock.getCurrentPrice());
