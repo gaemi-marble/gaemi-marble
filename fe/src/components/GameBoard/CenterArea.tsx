@@ -178,7 +178,9 @@ export default function CenterArea({
       {eventTime && (
         <Roulette sendStatusBoardMessage={sendStatusBoardMessage} />
       )}
-      {!eventTime && <Dice sendCellMessage={sendCellMessage} />}
+      {!eventTime && !teleportStart && (
+        <Dice sendCellMessage={sendCellMessage} />
+      )}
       {defaultStart && (
         <Button onClick={handleThrowDice} disabled={isMoveFinished}>
           굴리기
@@ -204,7 +206,8 @@ export default function CenterArea({
       )}
       {teleportStart && (
         <>
-          <div>이동할 칸을 선택한 후 이동하기 버튼을 눌러주세요.</div>
+          <span>이동할 칸을 선택한 후</span>
+          <span>이동하기 버튼을 눌러주세요.</span>
           <Button onClick={handleTeleport}>이동하기</Button>
         </>
       )}
@@ -216,9 +219,8 @@ export default function CenterArea({
 }
 
 const Center = styled.div`
-  z-index: 70;
-  width: 30rem;
-  height: 30rem;
+  width: 20rem;
+  height: 20rem;
   position: absolute;
   top: 50%;
   left: 50%;
