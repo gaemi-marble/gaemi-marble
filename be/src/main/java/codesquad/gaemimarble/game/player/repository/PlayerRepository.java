@@ -48,7 +48,7 @@ public class PlayerRepository {
 			.orElseThrow(() -> new RuntimeException("해당 플레이어가 존재하지 않습니다"));
 	}
 
-	public List<Player> leaveGame(Long gameId, String playerId) {
+	public List<Player> removePlayer(Long gameId, String playerId) {
 		List<Player> players = getAllPlayer(gameId);
 		players.remove(getPlayer(gameId, playerId));
 		return players;

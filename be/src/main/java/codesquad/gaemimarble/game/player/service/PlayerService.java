@@ -337,7 +337,7 @@ public class PlayerService {
 	}
 
 	public List<GameEnterResponse> leaveGame(Long gameId, String playerId) {
-		List<Player> players = playerRepository.leaveGame(gameId, playerId);
+		List<Player> players = playerRepository.removePlayer(gameId, playerId);
 		return players.stream()
 			.map(p -> GameEnterResponse.of(p.getOrder(), p.getPlayerId(), p.getIsReady()))
 			.collect(Collectors.toList());
