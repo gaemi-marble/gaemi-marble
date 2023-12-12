@@ -18,7 +18,7 @@
 
 ## 데모 영상
 
-https://github.com/gaemi-marble/gaemi-marble/assets/98851575/edc6334a-a633-49de-af09-2aaa1081dad8
+https://github.com/gaemi-marble/gaemi-marble/assets/76121068/d76f0c0e-70ab-4569-b544-5c1f1d35bb7f
 
 ## 배포 링크
 
