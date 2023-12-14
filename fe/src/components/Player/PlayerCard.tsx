@@ -66,9 +66,11 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             </ButtonWrapper>
           )}
           {isMyButton && eventTime && beforeRouletteSpin && (
-            <StockSellButton onClick={toggleStockSellModal}>
-              매도하기
-            </StockSellButton>
+            <ButtonWrapper>
+              <StockSellButton onClick={toggleStockSellModal}>
+                매도하기
+              </StockSellButton>
+            </ButtonWrapper>
           )}
         </CardWrapper>
       )}
@@ -125,4 +127,19 @@ const StockSellButton = styled.button`
   height: 3rem;
   border: 1px solid;
   border-radius: ${({ theme: { radius } }) => radius.small};
+  box-shadow: 0 0.5rem 0 #9d9d9d;
+  color: ${({ theme: { color } }) => color.neutralText};
+  background-color: ${({ theme: { color } }) => color.neutralBackground};
+
+  &:hover {
+    box-shadow: none;
+    transform: translateY(0.5rem);
+    transition: transform 0.1s box-shadow 0.1s;
+  }
+
+  &:active {
+    height: 2.5rem;
+    box-shadow: 0 -0.5rem 0 #9d9d9d;
+    transform: translateY(1rem);
+  }
 `;
