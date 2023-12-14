@@ -57,6 +57,7 @@ export default function useGameReducer() {
             ...prev,
             game: {
               ...prev.game,
+              dice: [0, 0],
               currentPlayerId: payload.nextPlayerId,
               isMoveFinished: false,
               goldCardInfo: {
