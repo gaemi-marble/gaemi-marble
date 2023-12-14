@@ -44,7 +44,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
     setIsStockSellModalOpen((prev) => !prev);
   };
 
-  const isBottomCard = BOTTOM_PLAYERS.includes(order ?? 0);
+  const isBottomCard = BOTTOM_PLAYERS.includes(order);
 
   return (
     <>
