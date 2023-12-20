@@ -50,6 +50,10 @@ const StockImgWrapper = styled.li`
   position: relative;
   border-radius: ${({ theme }) => theme.radius.small};
   background-color: ${({ theme }) => theme.color.accentText};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StockImg = styled.img`

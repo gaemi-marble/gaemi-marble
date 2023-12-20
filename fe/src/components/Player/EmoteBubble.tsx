@@ -28,6 +28,7 @@ const Bubble = styled.div<{ $position: BubblePositionType }>`
   align-items: center;
   border-radius: ${({ theme }) => theme.radius.large};
   background-color: ${({ theme }) => theme.color.accentBeige};
+  z-index: 100;
 
   &:after {
     content: '';

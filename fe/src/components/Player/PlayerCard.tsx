@@ -1,6 +1,4 @@
 import StockSellModal from '@components/Modal/StockSellModal/StockSellModal';
-import { Icon } from '@components/icon/Icon';
-import useClickScrollButton from '@hooks/useClickScrollButton';
 import useGetSocketUrl from '@hooks/useGetSocketUrl';
 import { usePlayerIdValue } from '@store/index';
 import { useGameInfoValue } from '@store/reducer';
@@ -10,21 +8,18 @@ import { useParams } from 'react-router';
 import useWebSocket from 'react-use-websocket';
 import { styled } from 'styled-components';
 import PlayerInfo from './PlayerInfo';
-import PlayerStock from './PlayerStock';
-import { SCROLL_ONCE } from './constants';
+import PlayerStockList from './PlayerStockList';
+import { BOTTOM_PLAYERS } from './constants';
 
 type PlayerCardProps = {
   player: PlayerType;
 };
 
 export default function PlayerCard({ player }: PlayerCardProps) {
-  const { ref, handleClickScroll } = useClickScrollButton<HTMLUListElement>({
-    width: SCROLL_ONCE,
-  });
   const { gameId } = useParams();
   const myId = usePlayerIdValue();
   const { currentPlayerId, eventResult, isPlaying } = useGameInfoValue();
-  const { isReady, playerId, userStatusBoard } = player;
+  const { isReady, playerId, userStatusBoard, order } = player;
   const [isStockSellModalOpen, setIsStockSellModalOpen] = useState(false);
   const socketUrl = useGetSocketUrl();
   const { sendJsonMessage } = useWebSocket(socketUrl, {
@@ -49,27 +44,15 @@ export default function PlayerCard({ player }: PlayerCardProps) {
     setIsStockSellModalOpen((prev) => !prev);
   };
 
+  const isBottomCard = BOTTOM_PLAYERS.includes(order);
+
   return (
     <>
       {playerId && (
-        <CardWrapper>
+        <CardWrapper $isBottomCard={isBottomCard}>
           <PlayerInfo player={player} />
           {!!userStatusBoard.stockList.length && (
-            <>
-              <StockWrapper>
-                <ArrowButton onClick={() => handleClickScroll()}>
-                  <Icon name="arrowLeft" color="accentText" />
-                </ArrowButton>
-                <PlayerStockList ref={ref}>
-                  {userStatusBoard.stockList.map((stock) => (
-                    <PlayerStock key={stock.name} stockInfo={stock} />
-                  ))}
-                </PlayerStockList>
-                <ArrowButton onClick={() => handleClickScroll(true)}>
-                  <Icon name="arrowRight" color="accentText" />
-                </ArrowButton>
-              </StockWrapper>
-            </>
+            <PlayerStockList stockList={userStatusBoard.stockList} />
           )}
           {!isPlaying && (
             <ButtonWrapper>
@@ -83,51 +66,29 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             </ButtonWrapper>
           )}
           {isMyButton && eventTime && beforeRouletteSpin && (
-            <StockSellButton onClick={toggleStockSellModal}>
-              매도하기
-            </StockSellButton>
-          )}
-          {isStockSellModalOpen && eventTime && beforeRouletteSpin && (
-            <StockSellModal handleClose={toggleStockSellModal} />
+            <ButtonWrapper>
+              <StockSellButton onClick={toggleStockSellModal}>
+                매도하기
+              </StockSellButton>
+            </ButtonWrapper>
           )}
         </CardWrapper>
+      )}
+      {isStockSellModalOpen && eventTime && beforeRouletteSpin && (
+        <StockSellModal handleClose={toggleStockSellModal} />
       )}
     </>
   );
 }
 
-const CardWrapper = styled.div`
+const CardWrapper = styled.div<{
+  $isBottomCard: boolean;
+}>`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${({ $isBottomCard }) =>
+    $isBottomCard ? 'column-reverse' : 'column'};
   align-items: center;
   gap: 0.5rem;
-`;
-
-const StockWrapper = styled.div`
-  width: 22rem;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  border-radius: ${({ theme: { radius } }) => radius.small};
-  background-color: ${({ theme: { color } }) => color.neutralBackground};
-`;
-
-const PlayerStockList = styled.ul`
-  flex: 1;
-  display: flex;
-  gap: 0.5rem;
-  overflow: scroll;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const ArrowButton = styled.button`
-  width: 1rem;
-  height: 3rem;
-  border-radius: ${({ theme: { radius } }) => radius.small};
-  background-color: ${({ theme: { color } }) => color.neutralBackgroundBold};
 `;
 
 const ButtonWrapper = styled.div`
@@ -166,4 +127,19 @@ const StockSellButton = styled.button`
   height: 3rem;
   border: 1px solid;
   border-radius: ${({ theme: { radius } }) => radius.small};
+  box-shadow: 0 0.5rem 0 #9d9d9d;
+  color: ${({ theme: { color } }) => color.neutralText};
+  background-color: ${({ theme: { color } }) => color.neutralBackground};
+
+  &:hover {
+    box-shadow: none;
+    transform: translateY(0.5rem);
+    transition: transform 0.1s box-shadow 0.1s;
+  }
+
+  &:active {
+    height: 2.5rem;
+    box-shadow: 0 -0.5rem 0 #9d9d9d;
+    transform: translateY(1rem);
+  }
 `;
