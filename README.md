@@ -22,7 +22,7 @@ https://github.com/gaemi-marble/gaemi-marble/assets/76121068/d76f0c0e-70ab-4569-
 
 ## 배포 링크
 
-http://djzn7ais1np2a.cloudfront.net
+~~http://djzn7ais1np2a.cloudfront.net~~
 
 
 ## 팀 Notion 링크
