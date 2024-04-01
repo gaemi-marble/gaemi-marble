@@ -1,13 +1,11 @@
-![header](https://capsule-render.vercel.app/api?type=waving&height=200&section=header&text=자유%20프로젝트%20%204조&color=gradient)
-![](https://img.shields.io/badge/Last_Upadate-2023--10--10-blue)
-
-# 🐜 자유 프로젝트 - Gaemi Marble #4
-
-> - 자유 프로젝트 4조
-> - 2023 코드스쿼드 마스터즈 Max에서 진행한 자유 그룹 프로젝트 
-> - 미션 기간: 2023-10-10 (화) ~ 2023-11-03 (금)
-
-<br/>
+# 🐜 Gaemi Marble - FE
+실시간 웹 소켓을 이용한 주식 + 부루마블 웹 게임
+> - 기간: 2023-10-10 (화) ~ 2023-11-03 (금)
+> - 라이브러리: React
+> - 사용언어: TypeScript
+> - 상태관리: jotai
+> - CSS: styled-components
+> - 번들러: vite
 
 ## 👨‍👩‍👧‍👦 멤버 소개
 
@@ -15,6 +13,10 @@
 | :---: | :---: | :---: | :---: |
 | <img src="https://avatars.githubusercontent.com/u/76121068?s=400&u=ffcc1c5dce2edf84ef611313c14e42700782f33a&v=4" width="120"/>| <img src="https://avatars.githubusercontent.com/u/101464713?v=4" width="120"/> | <img src="https://avatars.githubusercontent.com/u/98851575?s=64&v=4" width="120"/> | <img src="https://avatars.githubusercontent.com/u/48724199?v=4" width="120"/> |
 | **[퓨즈](https://github.com/silvertae)** | **[토코](https://github.com/aaaz425)** | **[무비](https://github.com/yhpark95)** | **[Tommy](https://github.com/HyowonSin)** |
+
+## 데모 영상
+
+https://github.com/gaemi-marble/gaemi-marble/assets/76121068/d76f0c0e-70ab-4569-b544-5c1f1d35bb7f
 
 ## 팀 Notion 링크
 https://seasoned-fire-6f4.notion.site/gaemi-marble-764722298de04f178211d518fdbb5c99?pvs=4
