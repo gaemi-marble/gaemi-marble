@@ -6,25 +6,24 @@ export type GameType = {
   stocks: StockType[];
 };
 
-export type GameActionType = {
-  start: StartPayloadType;
-  endTurn: EndTurnPayloadType;
-  dice: DicePayloadType;
-  enter: EnterPayloadType[];
-  ready: ReadyPayloadType;
-  userStatusBoard: UserStatusPayloadType;
-  cell: CellPayloadType;
-  statusBoard: StatusBoardPayloadType;
-  events: EventsPayloadType;
-  eventResult: EventResultPayloadType;
-  goldCard: GoldCardPayloadType;
-  prisonDice: PrisonDicePayloadType;
-  teleport: TeleportPayloadType;
-  gameOver: GameOverPayloadType;
-  currentPlayer: CurrentPlayerPayloadType;
-  locations: LocationsPayloadType[];
-  emoticon: EmoticonPayloadType;
-};
+export type GameActionType =
+  | { type: 'start'; payload: StartPayloadType }
+  | { type: 'endTurn'; payload: EndTurnPayloadType }
+  | { type: 'dice'; payload: DicePayloadType }
+  | { type: 'enter'; payload: EnterPayloadType[] }
+  | { type: 'ready'; payload: ReadyPayloadType }
+  | { type: 'userStatusBoard'; payload: UserStatusPayloadType }
+  | { type: 'cell'; payload: CellPayloadType }
+  | { type: 'statusBoard'; payload: StatusBoardPayloadType }
+  | { type: 'events'; payload: EventsPayloadType }
+  | { type: 'eventResult'; payload: EventResultPayloadType }
+  | { type: 'goldCard'; payload: GoldCardPayloadType }
+  | { type: 'prisonDice'; payload: PrisonDicePayloadType }
+  | { type: 'teleport'; payload: TeleportPayloadType }
+  | { type: 'gameOver'; payload: GameOverPayloadType }
+  | { type: 'currentPlayer'; payload: CurrentPlayerPayloadType }
+  | { type: 'locations'; payload: LocationsPayloadType[] }
+  | { type: 'emoticon'; payload: EmoticonPayloadType };
 
 export type GameInfoType = {
   isPlaying: boolean;
