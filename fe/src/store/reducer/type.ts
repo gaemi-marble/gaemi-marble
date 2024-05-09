@@ -150,7 +150,7 @@ export type RouletteEvent = {
   impact: string;
 };
 
-export type PlayerStatusType = 'default' | 'prison' | 'teleport' | 'event';
+export type PlayerStatusType = 'default' | 'prison' | 'teleport';
 
 export type GoldCardPayloadType = {
   cardType: string;

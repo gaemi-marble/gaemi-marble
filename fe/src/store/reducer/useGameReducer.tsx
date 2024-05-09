@@ -8,7 +8,6 @@ import {
   EventResultPayloadType,
   EventsPayloadType,
   GameActionType,
-  PlayerStatusType,
   GoldCardPayloadType,
   PrisonDicePayloadType,
   ReadyPayloadType,
@@ -147,10 +146,10 @@ export default function useGameReducer() {
           const payload = action.payload as CellPayloadType;
           const playerStatus =
             payload.location === 6
-              ? 'prison'
+              ? ('prison' as const)
               : payload.location === 18
-              ? 'teleport'
-              : 'default';
+              ? ('teleport' as const)
+              : ('default' as const);
 
           return {
             ...prev,
@@ -168,7 +167,7 @@ export default function useGameReducer() {
                 location: payload.location,
                 gameBoard: {
                   ...player.gameBoard,
-                  status: playerStatus as PlayerStatusType,
+                  status: playerStatus,
                 },
               };
             }),
