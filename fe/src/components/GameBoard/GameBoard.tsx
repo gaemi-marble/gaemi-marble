@@ -35,7 +35,7 @@ export default function GameBoard() {
   const currentPlayer = players.find(
     (player) => player.playerId === currentPlayerId
   );
-  const currentPlayerStatus = currentPlayer?.gameBoard.status ?? 'event';
+  const currentPlayerStatus = currentPlayer!.gameBoard.status;
   const isCaptain =
     players.find((player) => player.playerId === playerId)?.order === 1;
 
